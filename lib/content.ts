@@ -9,4 +9,4 @@ export const services = [
   { title: 'Custom AI agents & autonomous workflows', text: 'Bespoke systems that carry out business tasks and connect tools, with agreed human oversight.' },
   { title: 'Maintenance & support', text: 'Ongoing care, improvements and technical support as your business and software evolve.' },
 ]
-export const projects = [{ slug: 'vib3pulse', title: 'Vib3Pulse', type: 'AeolusLabs-owned product', description: 'Event discovery, ticketing and social planning, brought together in one web platform.', color: 'cyan' }]
+export const projects = [{ slug: 'tikvah', title: 'Tikvah', type: 'Client project', description: 'A complete emotional-support web platform, including frontend and backend.', color: 'cyan' }, { slug: 'vib3pulse', title: 'Vib3Pulse', type: 'AeolusLabs-owned product', description: 'Event discovery, ticketing and social planning, brought together in one web platform.', color: 'cyan' }]

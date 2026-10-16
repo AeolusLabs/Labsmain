@@ -23,10 +23,10 @@ For direct delivery, copy `.env.example` to `.env.local`, provide `RESEND_API_KE
 
 Shared service/product data is in lib/content.ts. Founder names intentionally use Founder 1 and Founder 2. WhatsApp/socials are omitted.
 
-Client publication approvals are pending. Client names, internal discovery notes and screenshots are not included in this public repository. Add individual case studies only after approval and confirmation of contribution and outcomes.
+Tikvah has approved publication and is featured as a complete client application, including frontend and backend. Other client publication approvals are pending; their names, internal discovery notes and screenshots are excluded. Add individual case studies only after approval and confirmation of contribution and outcomes.
 
 Vib3Pulse is company-owned. Account-only capabilities are described as product-presented features, not independently tested functionality. The product panel is a typographic treatment, not an application screenshot.
 
 The angular logo SVG recreates the selected top-left reference; it is not an extracted original vector. Replace it with final brand artwork if supplied.
 
-Before launch: confirm client permissions, configure email and abuse protection, review privacy operations, add final social preview artwork, and run production/device checks. No Products/Insights placeholders or fabricated testimonials.
+Before launch: confirm remaining client permissions, configure email and abuse protection, review privacy operations, add final social preview artwork, and run production/device checks. No Products/Insights placeholders or fabricated testimonials.
