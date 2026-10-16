@@ -1,0 +1,1 @@
+export function Brand() { return <span className="brand-lockup"><svg viewBox="0 0 200 170" aria-hidden="true"><path fill="currentColor" d="M79 4h43l43 91h-45l-22-48-44 100-51 19L79 4Zm96 107 25 55h-48l-7-16-31 16H69l106-55Z" /></svg><span>Aeolus<span className="brand-muted">Labs</span></span></span> }

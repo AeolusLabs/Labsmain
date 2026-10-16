@@ -1,0 +1,15 @@
+'use client'
+import { useState, type FormEvent } from 'react'
+import Link from 'next/link'
+export function EnquiryForm() {
+ const [status,setStatus]=useState<'idle'|'loading'|'prepared'|'sent'|'error'>('idle')
+ const [message,setMessage]=useState('')
+ const [draft,setDraft]=useState('')
+ async function submit(e:FormEvent<HTMLFormElement>) {
+  e.preventDefault(); const form=e.currentTarget; const data=Object.fromEntries(new FormData(form)); setStatus('loading')
+  try { const response=await fetch('/api/enquiries',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); const result=await response.json(); if(!response.ok)throw new Error(result.error||'Your enquiry could not be sent. Please try again or email us directly.'); setDraft(result.mailto||'');setStatus(result.mode==='prepared'?'prepared':'sent'); }
+  catch(error){setMessage(error instanceof Error?error.message:'Please try again.');setStatus('error')}
+ }
+ if(status==='prepared'||status==='sent')return <div className="form-success" role="status"><h2>{status==='sent'?'Your enquiry has been sent.':'Your enquiry is ready to email.'}</h2><p>{status==='sent'?"Thank you. We'll reply using the email address you supplied.":'Email delivery is not connected in this local preview. Nothing has been sent or saved. Open the prepared email below, then send it from your email app.'}</p>{status==='prepared'&&<a className="button-link" href={draft}>Open prepared email</a>}<button className="text-button" onClick={()=>setStatus('idle')}>Start another enquiry</button></div>
+ return <form className="project-form" onSubmit={submit}><label>Your name<input required name="name" autoComplete="name" maxLength={100}/></label><label>Business or organisation <span>(optional)</span><input name="organization" autoComplete="organization" maxLength={150}/></label><label>Your email<input required type="email" name="email" autoComplete="email" maxLength={254}/></label><label>What do you need?<select name="need"><option>I'm not sure yet</option><option>Website or web application</option><option>Mobile application</option><option>Backend or integrations</option><option>AI solution or autonomous workflow</option><option>Maintenance and support</option></select></label><label>Describe your challenge<textarea required name="challenge" minLength={20} maxLength={5000} rows={6} placeholder="What happens today, and what would you like to improve?"/></label><div className="honeypot" aria-hidden="true"><label>Leave this empty<input name="website" tabIndex={-1} autoComplete="off"/></label></div><label className="consent"><input required type="checkbox" name="consent" value="yes"/><span>I agree that AeolusLabs may use these details to respond to my enquiry. <Link href="/privacy">Read the privacy notice.</Link></span></label>{status==='error'&&<p className="form-error" role="alert">{message}</p>}<button className="button-link" type="submit" disabled={status==='loading'}>{status==='loading'?'Preparing enquiry…':'Continue with enquiry'}</button><p className="form-note">If email delivery is unavailable, you can send a prepared email from your own email app.</p></form>
+}

@@ -1,0 +1,8 @@
+import { PageShell, PageIntro, SectionLabel, FeatureGrid, CtaBand, ContactPrompt } from "@/components/site-header"
+import { services } from "@/components/site-header"
+
+export const metadata = { title: "Solutions", description: "Practical digital solutions for real business problems." }
+
+export default function SolutionsPage() {
+  return <PageShell><PageIntro eyebrow="02 / SOLUTIONS" title="The right technology for the problem you're solving." text="You don't need to know the technical answer before starting. We listen to how your business works, find the friction and build what moves it forward." /><section className="content-section"><SectionLabel number="01">What we build</SectionLabel><FeatureGrid items={services} /></section><section className="split-section"><div><SectionLabel number="02">What we solve</SectionLabel><h2>Technology should remove friction, not add to it.</h2></div><div><p className="large-copy">Manual processes. Lost records. Disconnected systems. Poor digital experiences. These are operational problems first — software is the tool we use to solve them.</p><ContactPrompt /></div></section><section className="process-section"><SectionLabel number="03">Our process</SectionLabel><div className="process-list">{["Discover the problem", "Shape the solution", "Build deliberately", "Deploy and improve"].map((item, i) => <div key={item}><span>0{i + 1}</span><h3>{item}</h3><p>{["We ask the right questions and understand the people, goals and constraints involved.", "We turn the messy challenge into a clear, useful product direction.", "We design and develop with care, keeping the work transparent as it takes shape.", "We launch, learn from use and keep improving what matters."][i]}</p></div>)}</div></section><CtaBand /></PageShell>
+}
