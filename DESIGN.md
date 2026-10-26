@@ -27,7 +27,7 @@ Space Grotesk display and Inter body, using the existing Next font setup. Large 
 
 ## Interaction and accessibility
 
-Four native buttons explore business challenges. Exactly one is selected, exposed with aria-pressed; changes are announced in a polite live region. Preserve keyboard operation, visible focus, semantic headings, skip navigation and responsive layouts without horizontal overflow. Keep motion brief and honour reduced motion. Contact actions use the existing enquiry route.
+Four native buttons explore outcome-led product possibilities. Exactly one is selected, exposed with aria-pressed; explanatory changes are announced in a polite live region. Illustrative product scenes are labelled, use brief user-triggered transitions and contain no replay or numbered pipeline. Preserve keyboard operation, visible focus, semantic headings, skip navigation and responsive layouts without horizontal overflow. Keep motion brief and honour reduced motion. Contact actions use the existing enquiry route.
 
 ## Content and evidence
 
@@ -35,6 +35,6 @@ Tikvah is featured with permission according to the existing case study; further
 
 ## Implementation and references
 
-The actual homepage lives in app/page.tsx, with scoped styles in app/homepage.css and the client interaction in components/possibility-explorer.tsx. Shared routes, navigation and enquiry delivery remain in place. Other pages retain their current composition until adapted.
+The actual homepage lives in app/page.tsx, with scoped styles in app/homepage.css and the client interaction in components/possibility-studio.tsx. Shared routes, navigation and enquiry delivery remain in place. Other pages retain their current composition until adapted.
 
 public/homepage-concept.html records the approved brighter direction; public/homepage-concept-v1.html preserves the earlier version. design-explorations.md records owner feedback and pending assets.
