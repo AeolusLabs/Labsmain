@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "revision": 32,
+  "revision": 33,
   "project_id": "aeolus-labs-website-development",
   "name": "AeolusLabs website",
   "purpose": {
@@ -11,7 +11,7 @@
   "planning_home": "architecture",
   "existing_plan_files": [],
   "created_at": "2026-11-04T06:35:41+00:00",
-  "updated_at": "2026-11-04T06:59:45+00:00",
+  "updated_at": "2026-11-04T07:11:23+00:00",
   "tasks": [
     {
       "id": "T-001",
@@ -521,6 +521,12 @@
       "note": "2026-11-04: On codex/minimal-redesign the unused Tailwind/shadcn toolchain was removed; pnpm audit fell from 85 to 5 findings, all inside Next's own build tooling (partly addresses T-011). Solutions grey tile (T-012) and dead code (T-008) no longer exist on this branch. Navy branch still has all three.",
       "source": "package.json",
       "at": "2026-11-04T06:59:45+00:00"
+    },
+    {
+      "kind": "observed",
+      "note": "2026-11-04: App icons added on codex/minimal-redesign: apple-icon.png 180 (opaque, iOS), icon.png/icon.svg/favicon.ico (tabs), manifest with 192, 512 and maskable 512 PNGs (Android), iOS home-screen title. Built from the supplied-reference logo recreation; swap in final brand artwork if supplied (T-004). Served files and head tags checked on a production build; not yet tested by installing on a real iPhone or Android phone (T-009). Old v0 placeholder images removed.",
+      "source": "app/manifest.ts",
+      "at": "2026-11-04T07:11:23+00:00"
     }
   ],
   "active_session_id": null,
