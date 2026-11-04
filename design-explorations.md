@@ -83,3 +83,29 @@ Owner approved the navy in-context preview and requested implementation on a sep
 Browser verification: four choices, single selected state, Enter activation, contact navigation and reduced-motion behavior passed. No horizontal overflow at 390/768/1440, no console or page errors. Desktop/mobile screenshots inspected. main remains at its existing commit; this branch is not yet pushed.
 
 Final branch verification: TypeScript passed after integration. Production build compiled successfully, completed TypeScript and generated all 14 routes, but did not terminate after its route report; stopped the stalled command and restarted the development preview. Therefore a clean production-build exit is unverified.
+
+## Whole-site minimalist reset — 26 October 2026
+
+Latest owner direction: return to the drawing board for a simple whole-site style combining minimalism, cleanliness and sophistication. This supersedes earlier resistance to considering a broad redesign as a proposal, but is not approval to replace production or modify approved standards.
+
+Separate prototype: public/minimal-direction.html. Five views (Home, Work, Solutions, About, Contact), one neutral system, restrained Inter typography, thin dividers, small rectangular controls and actual project evidence. Light and dark are the same composition with theme variables, presented for comparison rather than two competing designs. Vib3Pulse retains product branding only within its artwork. No new claims, portraits or testimonials. Contact is explicitly a non-submitting prototype linking to the real enquiry page.
+
+Concept: quiet confidence through clarity and real work. Journey: understand the offer, inspect Tikvah, explore capabilities, meet founders and start a conversation. Motion level subtle: ordinary hover/focus feedback only; no signature animation or new dependency. Performance budget unspecified; existing project assets reused. Production, main and DESIGN.md are untouched; proposal is on codex/possibilities-studio.
+
+Verification: all five views and both appearances at 390/768/1440 passed overflow checks. Navigation and Enter activation passed; no JS errors. Desktop light/dark and mobile light homepage screenshots visually inspected. Owner feedback pending before implementation or publishing.
+
+## Intentional composition revision
+
+Owner liked the clean style but requested deliberate placement instead of recycling earlier layouts. New comparison prototype: public/minimal-composition.html. The original minimal-direction.html remains available for comparison.
+
+Recomposed all five views from their visitor tasks. Home: split offer/context/action, contextual featured project image with adjacent brief, expertise introduction opposite a concise service list, short approach note, final invitation. Work: full project rows with adjacent roles/scope instead of staggered cards. Solutions: small orientation column and readable grouped capabilities; decorative example UI removed. About: founders introduced before company history; no monogram placeholders. Contact: shorter opening, primary form column, secondary direct-email/expectation column. Retains neutral light/dark study, one typography voice, real evidence and understated motion; actual routes and standards unchanged.
+
+Verified five views at 390/768/1440 without overflow or JS errors. Keyboard page navigation and theme switch passed. Desktop Home/About/Contact and mobile Home screenshots visually inspected. Contact remains explicitly a non-submitting prototype. Main and production unchanged.
+
+## Full minimal redesign on its own branch — 4 November 2026
+
+Owner chose to build the whole site in the minimal ("grown-up") style on a separate branch, then decide between it and the navy direction. Branch: codex/minimal-redesign (from codex/possibilities-studio). Navy branch left untouched. Canonical address decided: www.aeoluslabsltd.com.
+
+Built from public/minimal-composition.html: every route (Home, Work, Tikvah and Vib3Pulse case studies, Solutions, Products, About, Contact, Privacy, 404) recomposed in one neutral system, with light and dark appearances. Body text raised from the prototype's 14px to 15px and the smallest labels from 10px to 11–12px for legibility; form fields are 16px. Navigation stays visible on phones. Products moved to the footer (still routed). Titles, theme colour, sitemap and robots now use the www address. Removed the old homepage explorer, Tikvah feature/gallery components and the Tailwind/shadcn toolchain, none of which the new design uses; audit findings fell from 85 to 5 (all inside Next's own build tooling).
+
+Verification (production build, Chromium): typecheck and build exit 0; all 10 routes at 390/768/1440 with no horizontal overflow, one h1 each and no console errors; appearance toggle persists across navigation and reload and follows the system setting when nothing is saved; image viewer opens and closes with Escape; enquiry form blocks empty submit and, without email credentials, returns the prepared-email result; skip link is first in tab order. Desktop pages, dark Solutions and phone Home/Contact screenshots inspected. Not measured: Lighthouse, real devices, screen reader. Tikvah captures are still served unoptimised (about 1.5 MB on phones); consider optimised delivery for thumbnails.

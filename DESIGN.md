@@ -1,40 +1,55 @@
-# AeolusLabs visual system
+# AeolusLabs visual system — minimal direction (proposal)
 
-## Approved direction: Start with what if
+**Status:** implemented on branch `codex/minimal-redesign` for the owner to compare with the navy "Start with what if" direction on `codex/possibilities-studio`. Not yet chosen. If the navy direction is chosen, discard this branch's design files and keep the shared fixes (see "Shared with the other branch").
 
-The owner approved the brighter second homepage concept on 25 October 2026 and requested integration. Show ambition through concrete possibilities, real projects and a grounded delivery process. Never promise unlimited feasibility or invent metrics, endorsements or outcomes.
+## Principles
 
-## Palette and colour roles
+Quiet confidence through clarity and real work. One neutral system, one typeface, thin dividers, small rectangular controls, generous spacing. Every element has a purpose; there is no decorative artwork. Evidence comes from real projects only. Never invent metrics, endorsements, outcomes, portraits or testimonials.
 
-| Colour | Value | Role |
+## Colour
+
+| Role | Light | Dark |
 | --- | --- | --- |
-| Midnight navy | #0B1220 | Primary background and brand anchor |
-| Electric blue | #254DFF | Explorer panel and closing invitation |
-| Acid lime | #D6FF62 | Primary actions, selected challenge and small accents |
-| Bright cyan | #53EAFF | Hero emphasis and links on navy |
-| Soft white | #F8FAFC | Primary text on dark backgrounds |
-| Blue-grey | #B9C6DA | Secondary text on navy |
-| Pale blue | #E0E7FF | Secondary text on electric blue |
-| Pale lavender | #EFF0FF | Project section background |
-| Lilac | #DBD8FF | Tikvah concept artwork |
-| Vib3Pulse lime | #B9F761 | Existing product artwork |
+| Background | #F8F8F6 | #141A20 |
+| Text | #202220 | #F0F0EB |
+| Secondary text | #5F635F | #A6AFB5 |
+| Dividers | #DEDFDA | #343E45 |
+| Raised surface (form fields) | #FFFFFF | #1D262D |
+| Accent (links in running text) | #315859 | #ABD1CF |
+| Vib3Pulse artwork | #B9F761 with #18320C text, in both themes | |
 
-Use dark #15200B text on lime and dark text on lavender. Navy remains dominant; blue marks interactive and conversion moments; lime signals actions and selection. Homepage compositions are scoped so other routes can adopt the direction deliberately.
+Light is the default. Dark follows the visitor's system setting until they use the "Dark appearance" button, then their choice is remembered. The saved or system choice is applied before first paint, so there is no flash. Vib3Pulse lime appears only inside that product's artwork.
 
-## Typography and composition
+## Typography and layout
 
-Space Grotesk display and Inter body, using the existing Next font setup. Large editorial headlines, generous spacing, restrained borders, readable copy and compact service rows. Alternate dark sections with a pale project showcase and an electric blue closing section. Use the existing angular A logo and shared header/footer.
+Inter only, loaded through the existing Next font setup (variable weight, 450 for headings). Large light headlines with tight tracking, small uppercase labels, body text at 15px. Pages are built from a 1160px column; each page opens with a headline on the left and one supporting paragraph on the right, then sections separated by thin rules. Buttons are small dark rectangles with a ↗ glyph; secondary actions are underlined text links.
+
+## Page compositions
+
+Each page follows its visitor's task rather than a shared template:
+
+- **Home:** split offer and action, then Tikvah as the featured proof, three expertise links, a short approach note and a closing invitation.
+- **Work:** one full-width row per project with its role and scope beside it.
+- **Case studies:** facts strip, large inspectable capture, challenge, experience, delivery and result. Image viewer opens in a native dialog and closes with Escape.
+- **Solutions:** short orientation column beside four grouped capabilities.
+- **About:** founders first, then why the company started and how it works.
+- **Contact:** the real enquiry form beside the direct email and what happens next.
 
 ## Interaction and accessibility
 
-Four native buttons explore outcome-led product possibilities. Exactly one is selected, exposed with aria-pressed; explanatory changes are announced in a polite live region. Illustrative product scenes are labelled, use brief user-triggered transitions and contain no replay or numbered pipeline. Preserve keyboard operation, visible focus, semantic headings, skip navigation and responsive layouts without horizontal overflow. Keep motion brief and honour reduced motion. Contact actions use the existing enquiry route.
+Motion is limited to a short underline and arrow nudge on links, and a slight scale on project images on hover, all removed under reduced motion. Skip link, visible focus rings, one `h1` per page, native controls, form fields at 16px so phones do not zoom, labels on every field, `aria-pressed` on the appearance button and `aria-current` on navigation. Navigation stays visible on phones (no hidden menu). Text and background pairs were chosen for readable contrast in both themes.
 
 ## Content and evidence
 
-Tikvah is featured with permission according to the existing case study; further client work requires permission. Vib3Pulse is an owned product. Label concept artwork accurately rather than presenting it as screenshots. Tikvah now uses real public-site captures from 25 October 2026. Vib3Pulse screenshots and founder portraits/biographies remain outstanding; do not fabricate them. Founder names confirmed by the owner: Allan Ajayi-Adjari and Bernard Nneboh. Contact email: info@aeoluslabsltd.com. Lilac is a showcase treatment, not a claim about Tikvah product branding.
+- Founders: Allan Ajayi-Adjari and Bernard Nneboh, both software developers. No portraits or biographies yet.
+- Tikvah is featured with permission, using real public-site captures from 25 October 2026. No other client is named.
+- Vib3Pulse is an owned product. Its page shows brand artwork, says interface imagery is pending, and says feature availability is shown in the product.
+- Public email: info@aeoluslabsltd.com. Canonical address: https://www.aeoluslabsltd.com.
 
-## Implementation and references
+## Implementation
 
-The actual homepage lives in app/page.tsx, with scoped styles in app/homepage.css and the client interaction in components/possibility-studio.tsx. Shared routes, navigation and enquiry delivery remain in place. Other pages retain their current composition until adapted.
+Single stylesheet `app/globals.css` (no CSS framework). Shared parts live in `components/site-header.tsx` (header, footer, page shell), `components/page-parts.tsx` (labels, links, buttons, closing line), `components/navigation.tsx` and `components/theme-toggle.tsx`. Pages are plain server components in `app/`. Enquiry delivery is unchanged (`app/api/enquiries/route.ts`).
 
-public/homepage-concept.html records the approved brighter direction; public/homepage-concept-v1.html preserves the earlier version. design-explorations.md records owner feedback and pending assets.
+## Shared with the other branch
+
+The Next.js 16.4.5 security upgrade (first commit on this branch), the `www` canonical address, and the checklist in `architecture/`.

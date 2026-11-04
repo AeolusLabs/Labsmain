@@ -2,6 +2,8 @@
 
 Local Next.js company website. No deployment has been performed.
 
+This branch (`codex/minimal-redesign`) holds the minimal "grown-up" redesign for comparison with the navy direction on `codex/possibilities-studio`. See DESIGN.md.
+
 ## Run
 
 Use Node.js 24 and pnpm 11.25.0.
@@ -21,7 +23,7 @@ For direct delivery, copy `.env.example` to `.env.local`, provide `RESEND_API_KE
 
 ## Content
 
-Shared service/product data is in lib/content.ts. Founder names intentionally use Founder 1 and Founder 2. WhatsApp/socials are omitted.
+Site constants (canonical address, email and external links) are in lib/content.ts. Founders are Allan Ajayi-Adjari and Bernard Nneboh (confirmed by the owner). WhatsApp/socials are omitted.
 
 Tikvah has approved publication and is featured as a complete client application, including frontend and backend. Other client publication approvals are pending; their names, internal discovery notes and screenshots are excluded. Add individual case studies only after approval and confirmation of contribution and outcomes.
 

@@ -1,8 +1,31 @@
-import { PageShell, PageIntro, SectionLabel, FeatureGrid, CtaBand, ContactPrompt } from "@/components/site-header"
-import { services } from "@/components/site-header"
+import { PageShell } from '@/components/site-header'
+import { ClosingLine, Eyebrow, TextLink } from '@/components/page-parts'
 
-export const metadata = { title: "Solutions", description: "Practical digital solutions for real business problems." }
+export const metadata = { title: 'Solutions', description: 'Practical websites, applications, systems and AI for real business problems.' }
 
-export default function SolutionsPage() {
-  return <PageShell><PageIntro eyebrow="02 / SOLUTIONS" title="The right technology for the problem you're solving." text="You don't need to know the technical answer before starting. We listen to how your business works, find the friction and build what moves it forward." /><section className="content-section"><SectionLabel number="01">What we build</SectionLabel><FeatureGrid items={services} /></section><section className="split-section"><div><SectionLabel number="02">What we solve</SectionLabel><h2>Technology should remove friction, not add to it.</h2></div><div><p className="large-copy">Manual processes. Lost records. Disconnected systems. Poor digital experiences. These are operational problems first — software is the tool we use to solve them.</p><ContactPrompt /></div></section><section className="process-section"><SectionLabel number="03">Our process</SectionLabel><div className="process-list">{["Discover the problem", "Shape the solution", "Build deliberately", "Deploy and improve"].map((item, i) => <div key={item}><span>0{i + 1}</span><h3>{item}</h3><p>{["We ask the right questions and understand the people, goals and constraints involved.", "We turn the messy challenge into a clear, useful product direction.", "We design and develop with care, keeping the work transparent as it takes shape.", "We launch, learn from use and keep improving what matters."][i]}</p></div>)}</div></section><CtaBand /></PageShell>
+const capabilities = [
+  { label: 'Build your digital presence', title: 'Websites & applications', text: 'Help people understand your business, use your services or engage with your product.', items: ['Business websites', 'Web applications & customer portals', 'Mobile applications'] },
+  { label: 'Bring your operations together', title: 'Systems & integrations', text: 'Shape software around your processes and connect the tools your team already uses.', items: ['Custom business systems', 'Backend development & APIs', 'Databases & integrations'] },
+  { label: 'Create space for better work', title: 'AI & automation', text: 'Organise information, prepare responses and support repeatable tasks, with agreed human oversight.', items: ['Practical AI integrations', 'Custom agents & workflows', 'Connections between business tools'] },
+  { label: 'Keep your software useful', title: 'Maintenance & support', text: 'Ongoing care, technical support and improvements as your needs evolve.', items: [] as string[] },
+]
+
+export default function Solutions() {
+  return <PageShell>
+    <div className="page-opening">
+      <Eyebrow>Capabilities</Eyebrow>
+      <h1>The right software<br />starts with your problem.</h1>
+      <p>Whether you’re building something new or improving what’s already there, we start by understanding what needs to change.</p>
+    </div>
+
+    <div className="capability-layout">
+      <aside><h2>Where do you<br />want to begin?</h2><p>Explore the scope below, or tell us what isn’t working. We’ll help you find a sensible starting point.</p><TextLink href="/contact">Talk it through</TextLink></aside>
+      <div className="capabilities">{capabilities.map(({ label, title, text, items }) => <article key={title}>
+        <Eyebrow>{label}</Eyebrow><h2>{title}</h2><p>{text}</p>
+        {items.length > 0 && <ul>{items.map(item => <li key={item}>{item}</li>)}</ul>}
+      </article>)}</div>
+    </div>
+
+    <ClosingLine title="A clear scope comes first." action="Discuss your project" />
+  </PageShell>
 }

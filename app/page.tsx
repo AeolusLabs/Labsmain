@@ -1,17 +1,46 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { SiteHeader, SiteFooter } from '@/components/site-header'
-import { PossibilityStudio } from '@/components/possibility-studio'
-import './homepage.css'
+import { PageShell } from '@/components/site-header'
+import { Arrow, ButtonLink, ClosingLine, Eyebrow, TextLink } from '@/components/page-parts'
+
+const expertise = [
+  ['Web & mobile', 'Websites, customer portals and applications.'],
+  ['Business systems', 'Custom tools, APIs and integrations.'],
+  ['AI & automation', 'Less repetitive work, with human oversight.'],
+]
 
 export default function Home() {
- return <div className="home-direction site-frame"><a className="skip-link" href="#main-content">Skip to content</a><SiteHeader /><main id="main-content">
-<section className="hero wrap"><div className="eyebrow"><span className="dot"></span>Software built around your ambition</div><h1>Big idea.<br />Difficult problem.<br /><span>Let’s build what’s next.</span></h1><div className="hero-end"><p>From your first website to software that changes how your business runs. Bring us your “what if”. We’ll help find the way forward.</p><div className="actions"><Link className="btn" href="/contact">Bring us your idea <span className="arrow" aria-hidden="true">↗</span></Link><Link className="text-link" href="#possibilities">Explore what’s possible ↓</Link></div></div><div className="hero-rail"><span>Digitalize. Automate. Elevate.</span><span>Web & mobile / Business systems / AI & automation</span><span>Nigeria first. Building beyond borders.</span></div></section>
-<PossibilityStudio />
-<section className="work" id="work"><div className="wrap"><div className="section-top"><span className="eyebrow">02 / Ideas in the real world</span><p>Client work. Products of our own.</p></div><div className="work-heading"><h2>Less imagining.<br />More making it happen.</h2><p>Different challenges. The same belief: understand the need, then build deliberately.</p></div><div className="projects"><article className="project"><Link href="/work/tikvah" aria-label="Explore the Tikvah case study"><div className="art tikvah tikvah-screen"><Image src="/projects/tikvah/home-desktop.png" alt="Tikvah’s public homepage, featuring its introduction and account entry point" width={2560} height={1800} sizes="(max-width: 600px) 88vw, 48vw" unoptimized /></div></Link><p className="asset-note">Live website · Desktop capture, October 2026.</p><div className="project-info"><div><h3>Tikvah</h3><p>An emotional-support platform, delivered from frontend to backend.</p></div><Link href="/work/tikvah" aria-label="Read Tikvah case study">↗</Link></div></article><article className="project"><Link href="/work/vib3pulse" aria-label="Explore Vib3Pulse"><div className="art vib3"><div className="art-label"><span>AeolusLabs product</span><span aria-hidden="true">↗</span></div><strong>Find<br />Your Vib3.</strong><div className="art-label">Events. Tickets. Community.</div><div className="circle" aria-hidden="true"></div></div></Link><p className="asset-note">Brand concept · Product interface screenshots to be added.</p><div className="project-info"><div><h3>Vib3Pulse</h3><p>Event discovery, ticketing and social planning in one platform.</p></div><Link href="/work/vib3pulse" aria-label="Read about Vib3Pulse">↗</Link></div></article></div></div></section>
-<section className="services wrap" id="capabilities"><div className="section-top"><span className="eyebrow">03 / What we bring to the table</span><Link className="text-link" href="/solutions">All solutions ↗</Link></div><h2 className="service-heading">The right tools.<br />For your kind of challenge.</h2><div className="service-row"><span>01</span><h3>Web & mobile experiences</h3><p>Business websites, customer portals and mobile applications that make the next step feel simple.</p><Link href="/solutions" aria-label="Explore web and mobile solutions">↗</Link></div><div className="service-row"><span>02</span><h3>Systems that work together</h3><p>Custom business software, APIs and integrations built around how your operations actually run.</p><Link href="/solutions" aria-label="Explore business systems">↗</Link></div><div className="service-row"><span>03</span><h3>AI with a practical purpose</h3><p>Useful AI integrations and custom agents that connect tools and handle tasks, with agreed human oversight.</p><Link href="/solutions" aria-label="Explore AI and automation">↗</Link></div></section>
-<section className="process wrap" id="approach"><div className="process-inner"><div className="process-intro"><span className="eyebrow">04 / From what if to what’s next</span><h2>Ambitious thinking.<br />A grounded approach.</h2><p>You don’t need all the answers before we start. We work through the unknowns together.</p></div><div className="steps"><div className="step"><small>01 / Understand</small><h3>Bring the messy version.</h3><p>The problem, the idea, the tools that aren’t working. We start by listening.</p></div><div className="step"><small>02 / Shape</small><h3>Find the useful path.</h3><p>Explore what’s feasible and agree on a clear scope and direction.</p></div><div className="step"><small>03 / Build</small><h3>Make it tangible.</h3><p>Design and develop the solution, keeping you involved as it takes shape.</p></div><div className="step"><small>04 / Improve</small><h3>Keep moving forward.</h3><p>Launch, learn from real use and plan the improvements that matter.</p></div></div></div></section>
-<section className="closing wrap"><div className="eyebrow"><span className="dot"></span>Your next chapter starts with a conversation</div><h2>You don’t need a finished brief.<br /><span>Start with “what if”.</span></h2><div className="closing-bottom"><p>A rough idea. A recurring headache. Something you’ve always wanted to build. We’re listening.</p><Link className="btn" href="/contact">Bring us your idea <span className="arrow" aria-hidden="true">↗</span></Link></div></section>
-<div className="wrap team-note"><span>Two software developers. A shared purpose: useful technology for African businesses.</span><Link href="/about">Meet AeolusLabs ↗</Link></div>
-</main><SiteFooter /></div>
+  return <PageShell>
+    <div className="intent-hero">
+      <div><Eyebrow>Software development / Nigeria</Eyebrow><h1>Make room<br />for better.</h1></div>
+      <div className="hero-support">
+        <p>Websites, applications and systems built around the way your business works.</p>
+        <p className="support-detail">We’re AeolusLabs. Two developers helping African businesses turn practical needs into useful software.</p>
+        <ButtonLink href="/contact">Tell us what you’re building</ButtonLink>
+      </div>
+    </div>
+
+    <section className="feature-story" aria-labelledby="feature-title">
+      <div className="feature-heading"><Eyebrow>Selected client work</Eyebrow><TextLink href="/work">All work</TextLink></div>
+      <div className="feature-layout">
+        <Link className="feature-image" href="/work/tikvah"><Image src="/projects/tikvah/home-desktop.png" width={2560} height={1800} sizes="(max-width: 700px) 88vw, 780px" alt="Tikvah’s public homepage, introducing its private support service" unoptimized priority /></Link>
+        <div className="feature-caption">
+          <div><Eyebrow>Tikvah</Eyebrow><h2 id="feature-title">A place for <br />human connection.</h2><p>A complete emotional-support platform, delivered from frontend to backend.</p></div>
+          <TextLink href="/work/tikvah">Explore the case study</TextLink>
+        </div>
+      </div>
+    </section>
+
+    <section className="expertise">
+      <div><Eyebrow>How we can help</Eyebrow><h2>Start with the need.<br />Then choose the tools.</h2><p>You don’t need a technical brief before we can have a useful conversation.</p></div>
+      <div className="expertise-list">{expertise.map(([title, text]) => <Link key={title} href="/solutions"><span><strong>{title}</strong><small>{text}</small></span><Arrow /></Link>)}</div>
+    </section>
+
+    <section className="working-note">
+      <div><Eyebrow>A considered approach</Eyebrow><h2>Understand. Build. Keep improving.</h2></div>
+      <p>We listen to how things work today, agree on a useful scope, and develop the solution with you involved.</p>
+    </section>
+
+    <ClosingLine title="What could work better?" action="Let’s talk" />
+  </PageShell>
 }

@@ -1,4 +1,41 @@
-import { TikvahFeature } from '@/components/tikvah-feature'
-import { PageShell, PageIntro, CtaBand, ButtonLink } from '@/components/site-header'
-export const metadata={title:'Our work',description:'Explore software built by AeolusLabs.'}
-export default function Work(){return <PageShell><PageIntro eyebrow="" title="Ideas brought to life through software." text="Client work and products of our own. Each begins with a real need and a practical question: how can software help?"/><TikvahFeature/><section className="split-section"><div><span className="product-tag">AeolusLabs-owned product</span><h2>Vib3Pulse</h2><p className="large-copy">Event discovery, ticketing and social planning in one place.</p><ButtonLink href="/work/vib3pulse">Explore the project</ButtonLink></div><div className="vib3-art"><span>Vib3Pulse</span><strong>Find<br/>Your Vib3.</strong><span>Events. Tickets. Community.</span></div></section><section className="statement-section"><h2>Built for real businesses.</h2><p className="large-copy">Alongside our own products, we build software for clients. Further client case studies will be shared as publication permissions are confirmed.</p></section><CtaBand/></PageShell>}
+import Image from 'next/image'
+import Link from 'next/link'
+import { PageShell } from '@/components/site-header'
+import { ClosingLine, Eyebrow, TextLink } from '@/components/page-parts'
+
+export const metadata = { title: 'Our work', description: 'Explore software built by AeolusLabs.' }
+
+export default function Work() {
+  return <PageShell>
+    <div className="page-opening">
+      <Eyebrow>Our work</Eyebrow>
+      <h1>Built around<br />real needs.</h1>
+      <p>Client platforms and products of our own. The idea, our contribution, and the experience it became.</p>
+    </div>
+
+    <article className="work-entry">
+      <Link className="work-image" href="/work/tikvah"><Image src="/projects/tikvah/home-desktop.png" width={2560} height={1800} sizes="(max-width: 700px) 88vw, 760px" alt="Tikvah’s public website" unoptimized /></Link>
+      <div className="work-brief">
+        <Eyebrow>Client project</Eyebrow>
+        <h2>Tikvah</h2>
+        <p>A private emotional-support platform organised around correspondence with a human team.</p>
+        <dl><div><dt>Our role</dt><dd>Frontend &amp; backend</dd></div><div><dt>Delivered</dt><dd>Complete web application</dd></div></dl>
+        <TextLink href="/work/tikvah">View the case study</TextLink>
+      </div>
+    </article>
+
+    <article className="work-entry">
+      <Link className="work-image work-vib3" href="/work/vib3pulse" aria-label="Vib3Pulse: brand artwork"><span>Vib3Pulse</span><strong>Find<br />Your Vib3.</strong><small>Events. Tickets. Community.</small></Link>
+      <div className="work-brief">
+        <Eyebrow>Our own product</Eyebrow>
+        <h2>Vib3Pulse</h2>
+        <p>Bringing event discovery, ticketing and social planning into one platform.</p>
+        <dl><div><dt>Type</dt><dd>Owned web product</dd></div><div><dt>Focus</dt><dd>Events &amp; community</dd></div></dl>
+        <TextLink href="/work/vib3pulse">Explore the project</TextLink>
+        <p className="sample-note">Brand artwork shown; interface imagery is still pending.</p>
+      </div>
+    </article>
+
+    <ClosingLine title="Have something in mind?" action="Bring us your idea" />
+  </PageShell>
+}

@@ -1,13 +1,8 @@
 import { Analytics } from '@vercel/analytics/next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import type { Metadata, Viewport } from 'next'
+import { siteUrl } from '@/lib/content'
 import './globals.css'
-
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-display',
-  display: 'swap',
-})
 
 const body = Inter({
   subsets: ['latin'],
@@ -15,45 +10,35 @@ const body = Inter({
   display: 'swap',
 })
 
+const title = 'AeolusLabs — Software built around your business'
+const description = 'AeolusLabs builds websites, applications, business systems and practical AI for businesses in Nigeria and across Africa.'
+
 export const metadata: Metadata = {
-  title: {
-    default: 'AeolusLabs — Real problems. Thoughtful solutions.',
-    template: '%s — AeolusLabs',
-  },
-  description: 'AeolusLabs builds practical websites, applications and digital systems around the problems that matter to African businesses.',
+  title: { default: title, template: '%s — AeolusLabs' },
+  description,
   generator: 'AeolusLabs',
-  metadataBase: new URL('https://aeoluslabsltd.com'),
-  openGraph: {
-    title: 'AeolusLabs — Real problems. Thoughtful solutions.',
-    description: 'Practical software and digital solutions for businesses in Nigeria and across Africa.',
-    type: 'website',
-    locale: 'en_NG',
-    siteName: 'AeolusLabs',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AeolusLabs — Real problems. Thoughtful solutions.',
-    description: 'Practical software and digital solutions for businesses in Nigeria and across Africa.',
-  },
+  metadataBase: new URL(siteUrl),
+  openGraph: { title, description, type: 'website', locale: 'en_NG', siteName: 'AeolusLabs' },
+  twitter: { card: 'summary_large_image', title, description },
   icons: { icon: '/aeolus-mark.svg', apple: '/aeolus-mark.svg' },
 }
 
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
+    { media: '(prefers-color-scheme: light)', color: '#f8f8f6' },
+    { media: '(prefers-color-scheme: dark)', color: '#141a20' },
   ],
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+// Applies the saved (or system) appearance before first paint so the page never flashes.
+const themeScript = `try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}`
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${display.variable} ${body.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
+      <body className={body.variable}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

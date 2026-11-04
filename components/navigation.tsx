@@ -1,11 +1,19 @@
 'use client'
+
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
-const links = [['Work','/work'],['Solutions','/solutions'],['Products','/products'],['About','/about'],["Let's talk",'/contact']]
+import { Arrow } from './page-parts'
+
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'Work', href: '/work' },
+  { label: 'Solutions', href: '/solutions' },
+  { label: 'About', href: '/about' },
+  { label: 'Let’s talk', href: '/contact', arrow: true },
+]
+
 export function Navigation() {
-  const [open,setOpen] = useState(false)
   const path = usePathname()
-  return <><button className="menu-toggle" aria-expanded={open} aria-controls="main-navigation" aria-label={open?'Close navigation':'Open navigation'} onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button><nav id="main-navigation" className={`desktop-nav ${open?'is-open':''}`} aria-label="Main navigation" onKeyDown={e=>{if(e.key==='Escape')setOpen(false)}}>{links.map(([label,href])=><Link key={href} href={href} aria-current={path===href?'page':undefined} className={href==='/contact'?'nav-cta':''} onClick={()=>setOpen(false)}>{label}</Link>)}</nav></>
+  const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`))
+  return <nav className="site-nav" aria-label="Main navigation">{links.map(({ label, href, arrow }) => <Link key={href} href={href} aria-current={isCurrent(href) ? 'page' : undefined}>{label}{arrow && <> <Arrow /></>}</Link>)}</nav>
 }
