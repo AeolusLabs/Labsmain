@@ -115,3 +115,11 @@ Verification (production build, Chromium): typecheck and build exit 0; all 10 ro
 Owner asked for icons that work on Android and iOS. Before: the site pointed Apple's touch icon at an SVG (iOS ignores SVG), the only PNG was an unused template placeholder with transparency, and there was no web manifest. Now (codex/minimal-redesign): app/apple-icon.png (180×180, opaque, as iOS requires), app/icon.png, app/icon.svg (adapts to light/dark tabs), app/favicon.ico (32 and 48), app/manifest.ts with 192, 512 and maskable 512 PNGs in public/icons, plus the iOS home-screen title. Artwork is the angular A recreated from the supplied reference, light on the dark neutral #141A20. Maskable icon keeps the mark inside the Android safe zone. Template placeholder images removed.
 
 Verification: typecheck and production build exit 0; head tags, manifest and all eight icon files respond 200 with the right types; PNGs are RGB with no alpha (RGBA only inside favicon.ico, which requires it). Visual sheet inspected with circle and rounded-square crops. Not done: installing on a real iPhone or Android phone.
+
+## Enquiry email wiring — 4 November 2026
+
+Owner added RESEND_API_KEY to the Vercel project (Production). The route now needs only that key: the sender defaults to AeolusLabs Enquiries <enquiries@aeoluslabsltd.com> (override with ENQUIRY_FROM_EMAIL), the visitor's address is the reply-to, and the subject names the sender. If the key is missing or Resend refuses the send, the visitor gets a prepared email with an honest message ("nothing has been sent or saved") and the cause is logged to the Vercel function logs; an enquiry is never lost. Added a best-effort limit of 5 enquiries per 15 minutes per visitor per server instance, a friendly 429 message, and single-line subjects.
+
+Public DNS check: Resend DKIM (resend._domainkey) and the send subdomain's SPF and return-path MX are published; incoming mail for info@ goes to Google. No DMARC record yet (optional).
+
+Local tests: no key, invalid key, rate limit, foreign origin and honeypot behave as intended. Not verified: a real message reaching info@aeoluslabsltd.com, which needs a deployment (and a redeploy after any change to environment variables), the domain showing as Verified in Resend, and a durable Vercel Firewall rate-limit rule.

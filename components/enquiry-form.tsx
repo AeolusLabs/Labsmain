@@ -10,6 +10,7 @@ export function EnquiryForm() {
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
   const [draft, setDraft] = useState('')
+  const [fallback, setFallback] = useState<'failed' | 'unconfigured'>('unconfigured')
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -20,6 +21,7 @@ export function EnquiryForm() {
       const result = await response.json()
       if (!response.ok) throw new Error(result.error || 'Your enquiry could not be sent. Please try again or email us directly.')
       setDraft(result.mailto || '')
+      setFallback(result.reason === 'delivery_failed' ? 'failed' : 'unconfigured')
       setStatus(result.mode === 'prepared' ? 'prepared' : 'sent')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Please try again.')
@@ -31,7 +33,11 @@ export function EnquiryForm() {
     const sent = status === 'sent'
     return <div className="form-success" role="status">
       <h2>{sent ? 'Your enquiry has been sent.' : 'Your enquiry is ready to email.'}</h2>
-      <p>{sent ? 'Thank you. We’ll reply using the email address you supplied.' : 'Email delivery is not connected in this local preview. Nothing has been sent or saved. Open the prepared email below, then send it from your email app.'}</p>
+      <p>{sent
+        ? 'Thank you. We’ll reply using the email address you supplied.'
+        : fallback === 'failed'
+          ? 'We couldn’t send this directly just now. Nothing has been sent or saved. Open the prepared email below, then send it from your email app.'
+          : 'Email delivery is not connected here yet. Nothing has been sent or saved. Open the prepared email below, then send it from your email app.'}</p>
       {!sent && <a className="button" href={draft}>Open prepared email <Arrow /></a>}
       <button type="button" className="text-link" onClick={() => setStatus('idle')}>Start another enquiry</button>
     </div>

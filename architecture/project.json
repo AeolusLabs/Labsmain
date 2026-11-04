@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "revision": 33,
+  "revision": 34,
   "project_id": "aeolus-labs-website-development",
   "name": "AeolusLabs website",
   "purpose": {
@@ -11,7 +11,7 @@
   "planning_home": "architecture",
   "existing_plan_files": [],
   "created_at": "2026-11-04T06:35:41+00:00",
-  "updated_at": "2026-11-04T07:11:23+00:00",
+  "updated_at": "2026-11-04T08:04:25+00:00",
   "tasks": [
     {
       "id": "T-001",
@@ -527,6 +527,12 @@
       "note": "2026-11-04: App icons added on codex/minimal-redesign: apple-icon.png 180 (opaque, iOS), icon.png/icon.svg/favicon.ico (tabs), manifest with 192, 512 and maskable 512 PNGs (Android), iOS home-screen title. Built from the supplied-reference logo recreation; swap in final brand artwork if supplied (T-004). Served files and head tags checked on a production build; not yet tested by installing on a real iPhone or Android phone (T-009). Old v0 placeholder images removed.",
       "source": "app/manifest.ts",
       "at": "2026-11-04T07:11:23+00:00"
+    },
+    {
+      "kind": "observed",
+      "note": "2026-11-04: T-003 wiring done on codex/minimal-redesign. Owner added RESEND_API_KEY in Vercel (Production only per screenshot). Code now needs only the key (sender defaults to enquiries@aeoluslabsltd.com, override with ENQUIRY_FROM_EMAIL); on missing key or Resend failure it returns a prepared mailto with an honest message and logs the cause; best-effort 5-per-15-min limit per IP per instance. Public DNS shows Resend DKIM and send-subdomain SPF/MX published and Google MX for info@. Tested locally: no key, invalid key (Resend 401 then fallback), rate limit (6th request 429), foreign origin 403, honeypot 400. NOT verified: a real email arriving in info@ (needs deploy + redeploy after env change), Resend dashboard shows domain Verified, Vercel Firewall rate-limit rule.",
+      "source": "app/api/enquiries/route.ts",
+      "at": "2026-11-04T08:04:25+00:00"
     }
   ],
   "active_session_id": null,

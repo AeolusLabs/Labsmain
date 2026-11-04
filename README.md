@@ -17,9 +17,11 @@ Open http://localhost:3000. Run `pnpm typecheck` and `pnpm build` for validation
 
 ## Enquiries
 
-Without email credentials, validated submissions return a prepared mailto link. The interface explicitly states that nothing was sent or saved. A working email application is needed to send that draft.
+Direct delivery uses Resend. Set `RESEND_API_KEY` in Vercel (Production, and Preview if wanted) or in `.env.local` for local testing, then redeploy or restart. `ENQUIRY_FROM_EMAIL` is optional and must be an address on a domain verified in Resend; it defaults to `AeolusLabs Enquiries <enquiries@aeoluslabsltd.com>`. Recipient is info@aeoluslabsltd.com, and the visitor's address is set as the reply-to. Email-only handling; no enquiry database. Provider acceptance does not guarantee inbox delivery.
 
-For direct delivery, copy `.env.example` to `.env.local`, provide `RESEND_API_KEY` and a verified `ENQUIRY_FROM_EMAIL`, and restart the server. Recipient is info@aeoluslabsltd.com. Email-only handling; no enquiry database. Provider acceptance does not guarantee inbox delivery. Before public deployment, configure durable abuse protection/rate limiting and verify delivery with the business mailbox.
+If the key is missing, or Resend rejects the send, validated submissions return a prepared mailto link instead, so an enquiry is never lost. The interface says plainly that nothing was sent or saved, and failures are written to the Vercel function logs (without enquiry content or secrets).
+
+Abuse protection: honeypot field, same-origin check, size limits, and a best-effort limit of 5 enquiries per 15 minutes per visitor per server instance. Serverless instances do not share memory, so for a durable limit add a Vercel Firewall rate-limit rule for `POST /api/enquiries`. Before launch, send a real test enquiry and confirm it arrives in the business mailbox.
 
 ## Content
 
