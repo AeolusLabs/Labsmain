@@ -1,35 +1,17 @@
 import { NextResponse } from 'next/server'
 import { email as recipient } from '@/lib/content'
+import { clientIp, createLimiter, sameOrigin } from '@/lib/rate-limit'
 
 const MAX_BODY = 20000
 // Sender must be on a domain verified in Resend. aeoluslabsltd.com has its Resend DNS records published.
 const DEFAULT_FROM = 'AeolusLabs Enquiries <enquiries@aeoluslabsltd.com>'
-
-// Best-effort limit per server instance. Serverless instances do not share memory, so this only blunts
-// simple floods. For a durable limit, add a Vercel Firewall rate-limit rule for POST /api/enquiries.
-const WINDOW_MS = 15 * 60 * 1000
-const MAX_PER_WINDOW = 5
-const hits = new Map<string, number[]>()
-
-function limited(ip: string) {
-  const now = Date.now()
-  const recent = (hits.get(ip) ?? []).filter(t => now - t < WINDOW_MS)
-  if (recent.length >= MAX_PER_WINDOW) { hits.set(ip, recent); return true }
-  hits.set(ip, [...recent, now])
-  if (hits.size > 500) for (const [key, times] of hits) if (times.every(t => now - t >= WINDOW_MS)) hits.delete(key)
-  return false
-}
+const limited = createLimiter(5, 15 * 60 * 1000)
 
 const fail = (error: string, status: number) => NextResponse.json({ error }, { status })
 const oneLine = (value: string) => value.replace(/[\r\n]+/g, ' ')
 
 export async function POST(request: Request) {
-  const origin = request.headers.get('origin')
-  const host = request.headers.get('host') || new URL(request.url).host
-  if (origin) {
-    try { if (new URL(origin).host !== host) return fail('Please submit the form from this website.', 403) }
-    catch { return fail('Invalid request origin.', 403) }
-  }
+  if (!sameOrigin(request)) return fail('Please submit the form from this website.', 403)
 
   if (Number(request.headers.get('content-length') || 0) > MAX_BODY) return fail('Your enquiry is too long.', 413)
   let data: Record<string, unknown>
@@ -47,11 +29,11 @@ export async function POST(request: Request) {
     return fail('Please provide your name, a valid email, at least 20 characters about your challenge, and consent to be contacted.', 400)
   }
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown'
-  if (limited(ip)) return fail('You have sent several enquiries recently. Please wait a little while, or email us directly.', 429)
+  if (limited(clientIp(request))) return fail('You have sent several enquiries recently. Please wait a little while, or email us directly.', 429)
 
+  const origin = data.source === 'assistant' ? 'Prepared with the AeolusLabs assistant and reviewed by the sender' : 'Written by the sender'
   const subject = `New project enquiry from ${oneLine(name)}`
-  const text = `Name: ${name}\nEmail: ${email}\nOrganisation: ${organization || 'Not provided'}\nNeed: ${need || 'Not provided'}\nReceived: ${new Date().toISOString()}\n\n${challenge}\n\n(Sent from the AeolusLabs website enquiry form. Reply to this email to answer the sender.)`
+  const text = `Name: ${name}\nEmail: ${email}\nOrganisation: ${organization || 'Not provided'}\nNeed: ${need || 'Not provided'}\nHow it was written: ${origin}\nReceived: ${new Date().toISOString()}\n\n${challenge}\n\n(Sent from the AeolusLabs website enquiry form. Reply to this email to answer the sender.)`
   const draft = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`
 
   const apiKey = process.env.RESEND_API_KEY

@@ -3,10 +3,12 @@
 import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { Arrow } from './page-parts'
+import { needOptions } from '@/lib/need-options'
 
 type Status = 'idle' | 'loading' | 'prepared' | 'sent' | 'error'
 
-export function EnquiryForm() {
+// `initialChallenge` and `initialNeed` pre-fill the form from a draft brief the visitor can still edit.
+export function EnquiryForm({ initialChallenge = '', initialNeed, fromAssistant = false }: { initialChallenge?: string; initialNeed?: string; fromAssistant?: boolean }) {
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
   const [draft, setDraft] = useState('')
@@ -50,16 +52,12 @@ export function EnquiryForm() {
     </div>
     <label>Business or organisation <span className="optional">Optional</span><input name="organization" autoComplete="organization" maxLength={150} placeholder="Who are you building for?" /></label>
     <label>What do you need?
-      <select name="need" defaultValue="I’m not sure yet">
-        <option>I’m not sure yet</option>
-        <option>Website or web application</option>
-        <option>Mobile application</option>
-        <option>Backend or integrations</option>
-        <option>AI solution or autonomous workflow</option>
-        <option>Maintenance and support</option>
+      <select name="need" defaultValue={initialNeed ?? needOptions[0]}>
+        {needOptions.map(option => <option key={option}>{option}</option>)}
       </select>
     </label>
-    <label>What would you like to work on?<textarea required name="challenge" minLength={20} maxLength={5000} rows={6} placeholder="The idea, the recurring problem, or what you wish worked better." /></label>
+    <label>What would you like to work on?<textarea required name="challenge" minLength={20} maxLength={5000} rows={fromAssistant ? 12 : 6} defaultValue={initialChallenge} placeholder="The idea, the recurring problem, or what you wish worked better." /></label>
+    {fromAssistant && <input type="hidden" name="source" value="assistant" />}
     <div className="honeypot" aria-hidden="true"><label>Leave this empty<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
     <label className="consent"><input required type="checkbox" name="consent" value="yes" /><span>I agree that AeolusLabs may use these details to respond to my enquiry. <Link href="/privacy">Read the privacy notice.</Link></span></label>
     {status === 'error' && <p className="form-error" role="alert">{message}</p>}
