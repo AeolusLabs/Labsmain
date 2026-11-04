@@ -1,0 +1,7 @@
+Audit after upgrade (2026-11-04): total 82 | advisories for package next: 0
+Remaining non-shadcn-path advisories (build-time tooling):
+- high nanoid nanoid: custom generators can loop indefinitely when size is zero
+- high browserslist Browserslist: Unbounded memory growth (no cache eviction) via distinct query res
+- high browserslist Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.
+- moderate baseline-browser-mapping baseline-browser-mapping process termination on invalid input causes denial of s
+- high source-map-js source-map-js allows event-loop denial of service through indexed source-map sec

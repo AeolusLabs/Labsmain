@@ -1,0 +1,516 @@
+{
+  "schema_version": "0.1",
+  "revision": 29,
+  "project_id": "aeolus-labs-website-development",
+  "name": "AeolusLabs website",
+  "purpose": {
+    "text": "Finish a local Next.js company website for AeolusLabs, aimed at small and growing African businesses (Nigeria first), then launch it on aeoluslabsltd.com.",
+    "confirmed": true,
+    "source": "PRODUCT.md and README.md"
+  },
+  "planning_home": "architecture",
+  "existing_plan_files": [],
+  "created_at": "2026-11-04T06:35:41+00:00",
+  "updated_at": "2026-11-04T06:38:10+00:00",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Fix the security lock: upgrade Next.js",
+      "purpose": "Next.js 16.4.0 had critical remote-code-execution flaws; patched in 16.4.1+.",
+      "owner": "claude",
+      "milestone_id": "M1",
+      "depends_on": [],
+      "status": "verified_complete",
+      "approval": {
+        "state": "approved",
+        "basis": "User said 'lets fix the lock' in chat on 2026-11-04 after the security finding was explained",
+        "at": "2026-11-04T06:36:23+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "package.json pins a Next.js version >= 16.4.1",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-001-package.json.txt"
+          ]
+        },
+        {
+          "id": "AC-02",
+          "check": "pnpm typecheck and pnpm build both exit 0",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-001-build-next-16.4.5.log"
+          ]
+        },
+        {
+          "id": "AC-03",
+          "check": "pnpm audit shows zero advisories for the next package",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-001-audit.txt"
+          ]
+        },
+        {
+          "id": "AC-04",
+          "check": "Built site's routes respond and the enquiry API still validates",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-001-smoke.txt"
+          ]
+        }
+      ],
+      "requirements_sha256": "28bf8b0b104d0fecab0ede45406c3bee5cf51e950fa9f6cb382a26d962575e60",
+      "verified_at": "2026-11-04T06:36:34+00:00"
+    },
+    {
+      "id": "T-002",
+      "title": "Choose ONE style for the whole site",
+      "purpose": "Homepage (navy/lime) and inner pages (older layout) do not match; minimalist prototypes are unapproved.",
+      "owner": "owner",
+      "milestone_id": "M2",
+      "depends_on": [],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Owner states which style wins (recorded in design-explorations.md and DESIGN.md)",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-003",
+      "title": "Make the contact form really send email, with spam limits",
+      "purpose": "Today the form only prepares a mailto draft; no rate limiting.",
+      "owner": "claude",
+      "milestone_id": "M1",
+      "depends_on": [],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Resend key and verified sender configured (secrets kept out of the repo)",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "A real test enquiry arrives at info@aeoluslabsltd.com",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Repeated rapid submissions from one source are limited",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-004",
+      "title": "Collect missing content from the owner",
+      "purpose": "Real assets are needed; nothing may be invented.",
+      "owner": "owner",
+      "milestone_id": "M2",
+      "depends_on": [],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Real Vib3Pulse screenshots supplied and added",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Founder portraits and short bios supplied and added",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Social-sharing (OG) image added",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-04",
+          "check": "Final logo supplied or current recreation confirmed",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-05",
+          "check": "Written client permission recorded before any other client is published",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-005",
+      "title": "Check Vib3Pulse feature claims",
+      "purpose": "Account-only features (QR tickets, wallet, Safety Buddy, SOS) are unverified.",
+      "owner": "claude",
+      "milestone_id": "M2",
+      "depends_on": [
+        "T-004"
+      ],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Each listed feature is confirmed in the product or removed/softened on the site",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-006",
+      "title": "Apply the chosen style to all pages",
+      "purpose": "One consistent look across Home, Work, Solutions, Products, About, Contact, Privacy.",
+      "owner": "claude",
+      "milestone_id": "M2",
+      "depends_on": [
+        "T-002"
+      ],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Every route uses the chosen style",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "No horizontal overflow at 390/768/1440 widths",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Keyboard navigation and visible focus work on every page",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-007",
+      "title": "Fix page titles, theme colour and canonical address",
+      "purpose": "Metadata still says 'Real problems. Thoughtful solutions', theme colours are white/black, and the live domain redirects to www.",
+      "owner": "claude",
+      "milestone_id": "M2",
+      "depends_on": [],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Titles and descriptions match the approved homepage message",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Theme colour matches the site",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Owner picks www or bare domain; metadataBase and sitemap match it",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-008",
+      "title": "Tidy leftovers",
+      "purpose": "Unused code and files, plus an unfixed text-encoding glitch.",
+      "owner": "claude",
+      "milestone_id": "M2",
+      "depends_on": [],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Unused components and public placeholder files removed",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "CLIENT-CASE-STUDIES-DRAFT.md saved as valid UTF-8",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "next-env.d.ts dev-only change not committed",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-04",
+          "check": "Typecheck and build still pass after cleanup",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-009",
+      "title": "Test it properly",
+      "purpose": "No device, speed or accessibility testing has been recorded on the final site.",
+      "owner": "claude",
+      "milestone_id": "M3",
+      "depends_on": [
+        "T-006",
+        "T-003",
+        "T-004"
+      ],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Lighthouse run recorded for Home and one inner page",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Checked on a real phone and a laptop",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "End-to-end enquiry test passes",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-04",
+          "check": "Screen-reader/keyboard spot check recorded",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-010",
+      "title": "Merge and go live",
+      "purpose": "main still has the old homepage; domain currently shows an older site.",
+      "owner": "owner",
+      "milestone_id": "M3",
+      "depends_on": [
+        "T-009"
+      ],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Branch reviewed and merged to main",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Vercel project and environment variables set",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "aeoluslabsltd.com serves the new site",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-04",
+          "check": "Post-launch check of every page and the form",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-011",
+      "title": "Optional: patch build-tool advisories",
+      "purpose": "nanoid, browserslist and source-map-js advisories remain in build tooling (not served to visitors).",
+      "owner": "claude",
+      "milestone_id": "M3",
+      "depends_on": [],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "pnpm overrides or updates applied, or risk accepted in writing",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    },
+    {
+      "id": "T-012",
+      "title": "Fix empty grey tile on Solutions page",
+      "purpose": "Seven services in a two-column grid leave one blank cell that shows as a grey block (seen in 2026-11-04 screenshot; cause: .feature-grid background shows through).",
+      "owner": "claude",
+      "milestone_id": "M2",
+      "depends_on": [],
+      "status": "proposed",
+      "approval": {
+        "state": "proposed",
+        "basis": "",
+        "at": null
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "No blank grey cell at 390, 768 and 1440 widths, whatever the service count",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Safe and working",
+      "outcome": "No known security holes in the site itself, and the contact form really delivers enquiries."
+    },
+    {
+      "id": "M2",
+      "title": "One look, real content",
+      "outcome": "One agreed design on every page, with real screenshots, founder details and metadata."
+    },
+    {
+      "id": "M3",
+      "title": "Tested and live",
+      "outcome": "Checked on real devices, merged to main and live on the owned domain."
+    }
+  ],
+  "discovery_notes": [],
+  "active_session_id": null,
+  "latest_handoff": {
+    "session_id": "20261104T063542Z-c74b57",
+    "at": "2026-11-04T06:38:10+00:00",
+    "summary": "Upgraded Next.js 16.4.0 to 16.4.5 (T-001 verified: typecheck, build, audit, smoke test). Created architecture/ checklist with 12 tasks. Visually compared homepage, minimalist prototype and Solutions page; recommended keeping the navy direction, calmed down.",
+    "next": "Owner decides T-002 (whole-site style) and T-007 (www vs bare domain); then set up email and rate limiting (T-003).",
+    "notes": "Changes are uncommitted. Remaining non-shadcn advisories are build tooling only (T-011). Local console error about /_vercel/insights is expected outside Vercel."
+  },
+  "dispatches": []
+}

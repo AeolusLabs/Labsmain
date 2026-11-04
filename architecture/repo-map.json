@@ -1,0 +1,368 @@
+{
+  "scan_mode": "initial",
+  "last_scan_at": "2026-11-04T06:35:42+00:00",
+  "truncated": false,
+  "file_count": 84,
+  "top_directories": [
+    ".playwright-mcp",
+    "app",
+    "components",
+    "lib",
+    "public"
+  ],
+  "manifests": [
+    "package.json"
+  ],
+  "readmes": [
+    "README.md",
+    "public/projects/tikvah/README.md"
+  ],
+  "tests": [],
+  "source_extensions": {
+    ".tsx": 21,
+    ".ts": 6,
+    ".css": 4,
+    ".html": 6
+  },
+  "recent_changed_files": [],
+  "changed_file_count": 0,
+  "git_head": "aeff68433fca74c0b6a2a8e6b5de15c6c32dc5e2",
+  "file_signatures": {
+    ".gitignore": {
+      "size": 442,
+      "mtime_ns": 1792137521408919700
+    },
+    "AGENTS.md": {
+      "size": 679,
+      "mtime_ns": 1792135360505879500
+    },
+    "CLIENT-CASE-STUDIES-DRAFT.md": {
+      "size": 2358,
+      "mtime_ns": 1792140567520712300
+    },
+    "DESIGN.md": {
+      "size": 3334,
+      "mtime_ns": 1793020898761684400
+    },
+    "PRODUCT.md": {
+      "size": 1618,
+      "mtime_ns": 1792140512945353900
+    },
+    "README.md": {
+      "size": 1991,
+      "mtime_ns": 1792140565781106000
+    },
+    "components.json": {
+      "size": 428,
+      "mtime_ns": 1792063974391210700
+    },
+    "design-explorations.md": {
+      "size": 16247,
+      "mtime_ns": 1793036571730835300
+    },
+    "local-home-desktop.png": {
+      "size": 368036,
+      "mtime_ns": 1792135492779519100
+    },
+    "local-home-mobile.png": {
+      "size": 267444,
+      "mtime_ns": 1792135492402597000
+    },
+    "next-env.d.ts": {
+      "size": 295,
+      "mtime_ns": 1793772326596259200
+    },
+    "next.config.mjs": {
+      "size": 92,
+      "mtime_ns": 1792135117886811100
+    },
+    "package.json": {
+      "size": 809,
+      "mtime_ns": 1793773954204625000
+    },
+    "pnpm-lock.yaml": {
+      "size": 112998,
+      "mtime_ns": 1793773953869870000
+    },
+    "pnpm-workspace.yaml": {
+      "size": 67,
+      "mtime_ns": 1792063974583034200
+    },
+    "postcss.config.mjs": {
+      "size": 144,
+      "mtime_ns": 1792063974596585000
+    },
+    "tsconfig.json": {
+      "size": 647,
+      "mtime_ns": 1792063974838469000
+    },
+    "tsconfig.tsbuildinfo": {
+      "size": 152403,
+      "mtime_ns": 1793773974724230800
+    },
+    ".playwright-mcp/console-2026-10-15T12-04-16-614Z.log": {
+      "size": 132,
+      "mtime_ns": 1792065860324710800
+    },
+    ".playwright-mcp/console-2026-10-15T12-04-31-535Z.log": {
+      "size": 132,
+      "mtime_ns": 1792065872291988800
+    },
+    ".playwright-mcp/console-2026-10-15T12-07-31-925Z.log": {
+      "size": 824,
+      "mtime_ns": 1792066056362434900
+    },
+    ".playwright-mcp/console-2026-10-16T07-22-50-140Z.log": {
+      "size": 25682,
+      "mtime_ns": 1792180772948404400
+    },
+    ".playwright-mcp/page-2026-10-15T12-04-11-081Z.yml": {
+      "size": 6270,
+      "mtime_ns": 1792065851088516500
+    },
+    ".playwright-mcp/page-2026-10-15T12-04-16-476Z.yml": {
+      "size": 7760,
+      "mtime_ns": 1792065856481043500
+    },
+    ".playwright-mcp/page-2026-10-15T12-04-20-123Z.yml": {
+      "size": 4365,
+      "mtime_ns": 1792065860127751700
+    },
+    ".playwright-mcp/page-2026-10-15T12-04-27-228Z.yml": {
+      "size": 8689,
+      "mtime_ns": 1792065867240145300
+    },
+    ".playwright-mcp/page-2026-10-15T12-04-31-238Z.yml": {
+      "size": 5637,
+      "mtime_ns": 1792065871249399200
+    },
+    ".playwright-mcp/page-2026-10-15T12-04-32-051Z.yml": {
+      "size": 4941,
+      "mtime_ns": 1792065872056847500
+    },
+    ".playwright-mcp/page-2026-10-15T12-07-36-476Z.yml": {
+      "size": 6173,
+      "mtime_ns": 1792066056480663500
+    },
+    ".playwright-mcp/page-2026-10-16T07-23-06-271Z.yml": {
+      "size": 5960,
+      "mtime_ns": 1792135386278738500
+    },
+    ".playwright-mcp/page-2026-10-16T07-24-57-958Z.png": {
+      "size": 368225,
+      "mtime_ns": 1792135497962767600
+    },
+    ".playwright-mcp/page-2026-10-16T07-25-26-417Z.png": {
+      "size": 265479,
+      "mtime_ns": 1792135526432165000
+    },
+    ".playwright-mcp/page-2026-10-16T08-49-10-252Z.png": {
+      "size": 181692,
+      "mtime_ns": 1792140550259463600
+    },
+    "app/globals.css": {
+      "size": 22218,
+      "mtime_ns": 1792953751527808100
+    },
+    "app/homepage.css": {
+      "size": 15425,
+      "mtime_ns": 1792953751530808000
+    },
+    "app/layout.tsx": {
+      "size": 1911,
+      "mtime_ns": 1792135117932046700
+    },
+    "app/not-found.tsx": {
+      "size": 308,
+      "mtime_ns": 1792135189032698700
+    },
+    "app/page.tsx": {
+      "size": 5878,
+      "mtime_ns": 1793020772782579900
+    },
+    "app/robots.ts": {
+      "size": 203,
+      "mtime_ns": 1792135189040894400
+    },
+    "app/sitemap.ts": {
+      "size": 264,
+      "mtime_ns": 1792140512898049000
+    },
+    "app/about/page.tsx": {
+      "size": 1727,
+      "mtime_ns": 1792953751523733900
+    },
+    "app/api/enquiries/route.ts": {
+      "size": 2522,
+      "mtime_ns": 1792135481848547400
+    },
+    "app/contact/page.tsx": {
+      "size": 842,
+      "mtime_ns": 1792135188999256000
+    },
+    "app/privacy/page.tsx": {
+      "size": 1792,
+      "mtime_ns": 1792135189031493100
+    },
+    "app/products/page.tsx": {
+      "size": 1093,
+      "mtime_ns": 1792135189028490200
+    },
+    "app/solutions/page.tsx": {
+      "size": 1784,
+      "mtime_ns": 1792135117955811000
+    },
+    "app/work/page.tsx": {
+      "size": 1203,
+      "mtime_ns": 1792140512895047600
+    },
+    "app/work/[slug]/page.tsx": {
+      "size": 2122,
+      "mtime_ns": 1792140512897050200
+    },
+    "components/brand.tsx": {
+      "size": 303,
+      "mtime_ns": 1792135098454206000
+    },
+    "components/enquiry-form.tsx": {
+      "size": 3161,
+      "mtime_ns": 1792135189002269500
+    },
+    "components/navigation.tsx": {
+      "size": 953,
+      "mtime_ns": 1792135098456206200
+    },
+    "components/possibility-studio.css": {
+      "size": 10396,
+      "mtime_ns": 1793020772781070000
+    },
+    "components/possibility-studio.tsx": {
+      "size": 5853,
+      "mtime_ns": 1793020821174672000
+    },
+    "components/project-image.tsx": {
+      "size": 1132,
+      "mtime_ns": 1792953751538330100
+    },
+    "components/site-header.tsx": {
+      "size": 3693,
+      "mtime_ns": 1792135522036869400
+    },
+    "components/site-shell.tsx": {
+      "size": 79,
+      "mtime_ns": 1792135098474534900
+    },
+    "components/tikvah-case-study.css": {
+      "size": 5930,
+      "mtime_ns": 1792953751540331300
+    },
+    "components/tikvah-case-study.tsx": {
+      "size": 5065,
+      "mtime_ns": 1792953751542331600
+    },
+    "components/tikvah-feature.tsx": {
+      "size": 899,
+      "mtime_ns": 1792953751544343300
+    },
+    "components/tikvah-screens.tsx": {
+      "size": 1434,
+      "mtime_ns": 1792953751558767800
+    },
+    "components/ui/button.tsx": {
+      "size": 3198,
+      "mtime_ns": 1792063974478049800
+    },
+    "lib/content.ts": {
+      "size": 1534,
+      "mtime_ns": 1792140512900152300
+    },
+    "lib/utils.ts": {
+      "size": 166,
+      "mtime_ns": 1792063974513734800
+    },
+    "public/aeolus-mark.svg": {
+      "size": 180,
+      "mtime_ns": 1792135098430749700
+    },
+    "public/apple-icon.png": {
+      "size": 2626,
+      "mtime_ns": 1792063974627186500
+    },
+    "public/homepage-concept-v1.html": {
+      "size": 22147,
+      "mtime_ns": 1792953751562780200
+    },
+    "public/homepage-concept.html": {
+      "size": 24501,
+      "mtime_ns": 1792953751564783000
+    },
+    "public/homepage-in-context.html": {
+      "size": 38036,
+      "mtime_ns": 1793019231252179300
+    },
+    "public/icon-dark-32x32.png": {
+      "size": 585,
+      "mtime_ns": 1792063974682910100
+    },
+    "public/icon-light-32x32.png": {
+      "size": 566,
+      "mtime_ns": 1792063974700465100
+    },
+    "public/icon.svg": {
+      "size": 1304,
+      "mtime_ns": 1792063974725071400
+    },
+    "public/minimal-composition.html": {
+      "size": 30443,
+      "mtime_ns": 1793037312179702000
+    },
+    "public/minimal-direction.html": {
+      "size": 21949,
+      "mtime_ns": 1793035959324522500
+    },
+    "public/placeholder-logo.png": {
+      "size": 568,
+      "mtime_ns": 1792063974750136000
+    },
+    "public/placeholder-logo.svg": {
+      "size": 3208,
+      "mtime_ns": 1792063974768204500
+    },
+    "public/placeholder-user.jpg": {
+      "size": 1635,
+      "mtime_ns": 1792063974785787600
+    },
+    "public/placeholder.jpg": {
+      "size": 1064,
+      "mtime_ns": 1792063974804866900
+    },
+    "public/placeholder.svg": {
+      "size": 3253,
+      "mtime_ns": 1792063974822922300
+    },
+    "public/possibilities-studio.html": {
+      "size": 15410,
+      "mtime_ns": 1793016768193506300
+    },
+    "public/projects/tikvah/README.md": {
+      "size": 532,
+      "mtime_ns": 1792953751567782800
+    },
+    "public/projects/tikvah/home-desktop.png": {
+      "size": 1580785,
+      "mtime_ns": 1792953751596043400
+    },
+    "public/projects/tikvah/home-desktop.webp": {
+      "size": 620066,
+      "mtime_ns": 1792953751619745900
+    },
+    "public/projects/tikvah/home-mobile.png": {
+      "size": 753146,
+      "mtime_ns": 1792953751643964000
+    },
+    "public/projects/tikvah/home-mobile.webp": {
+      "size": 197510,
+      "mtime_ns": 1792953751648977400
+    }
+  }
+}

@@ -1,0 +1,1 @@
+Smoke test of production build on port 3111, 2026-11-04: / /work /work/tikvah /work/vib3pulse /solutions /products /about /contact /privacy /sitemap.xml all 200; /nope 404; POST /api/enquiries valid -> mode prepared (mailto); invalid -> 400 error message. Typecheck exit 0. Build exit 0 on Next.js 16.4.5.
