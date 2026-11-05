@@ -19,11 +19,11 @@ export function SiteFooter() {
   </div></footer>
 }
 
-export function PageShell({ children }: { children: ReactNode }) {
+export function PageShell({ children, bare = false }: { children: ReactNode; bare?: boolean }) {
   return <>
     <a className="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader />
-    <main id="main-content" className="wrap page">{children}</main>
+    <main id="main-content" className={bare ? 'page page-bare' : 'wrap page'}>{children}</main>
     <SiteFooter />
   </>
 }

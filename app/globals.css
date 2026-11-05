@@ -45,32 +45,32 @@ h1, h2, h3 { margin: 0; }
 h2 { font-size: clamp(25px, 3vw, 39px); line-height: 1.2; font-weight: 450; letter-spacing: -.045em; }
 h3 { font-size: 22px; line-height: 1.3; font-weight: 500; letter-spacing: -.03em; }
 p { color: var(--muted); margin: 0 0 1em; }
-.eyebrow { display: block; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.eyebrow { display: block; font-size: 13px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
 
 /* Header, navigation, footer */
-.site-header { display: flex; align-items: center; justify-content: space-between; gap: 25px; padding: 29px 0; border-bottom: 1px solid var(--line); }
-.brand { display: flex; align-items: center; gap: 9px; font-size: 21px; font-weight: 600; letter-spacing: -.9px; }
+.site-header { display: flex; align-items: center; justify-content: space-between; gap: 25px; padding: 29px 0; }
+.brand { display: flex; align-items: center; gap: 9px; font-size: 20px; font-weight: 600; letter-spacing: -.9px; }
 .brand svg { width: 25px; height: 26px; }
 .brand b { font-weight: 400; }
 .site-nav { display: flex; gap: 26px; align-items: center; }
 .site-nav a { font-size: 13px; color: var(--muted); padding: 5px 0; }
 .site-nav a:hover { color: var(--ink); }
 .site-nav a[aria-current='page'] { color: var(--ink); box-shadow: 0 1px var(--ink); }
-.theme-toggle { font-size: 12px; padding: 6px 11px; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; }
+.theme-toggle { font-size: 13px; padding: 6px 11px; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; }
 .theme-toggle[aria-pressed='true'] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .header-tools { display: flex; align-items: center; gap: 20px; }
 
 .page { padding-bottom: 70px; }
-.site-footer { padding: 28px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.site-footer { padding: 28px 0; color: var(--muted); font-size: 13px; }
 .site-footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
 .site-footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
 .site-footer a:hover { color: var(--ink); }
 
 /* Controls */
-.button { display: inline-flex; align-items: center; gap: 30px; background: var(--ink); color: var(--bg); padding: 13px 20px; border: 0; border-radius: 4px; font-size: 13px; font-weight: 500; transition: opacity .18s; }
+.button { display: inline-flex; align-items: center; gap: 30px; background: var(--ink); color: var(--bg); padding: 14px 22px; border: 0; border-radius: 4px; font-size: 15px; font-weight: 500; transition: opacity .18s; }
 .button:hover { opacity: .8; }
 .button:disabled { opacity: .55; cursor: wait; }
-.text-link { position: relative; display: inline-block; font-size: 13px; padding-bottom: 3px; background: none; border: 0; padding-left: 0; padding-right: 0; color: var(--ink); }
+.text-link { position: relative; display: inline-block; font-size: 15px; padding-bottom: 3px; background: none; border: 0; padding-left: 0; padding-right: 0; color: var(--ink); }
 .text-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(.55); transform-origin: left; }
 .motion-arrow { display: inline-block; vertical-align: baseline; }
 
@@ -318,3 +318,104 @@ p { color: var(--muted); margin: 0 0 1em; }
   .page { padding-bottom: 45px; }
   .site-footer .wrap { flex-direction: column; align-items: start; }
 }
+
+/* Homepage motion (T-014 study, owner-approved timings). Reduced motion is handled by the block above. */
+:root {
+  --dur-fast: 280ms;
+  --dur-base: 640ms;
+  --dur-settle: 960ms;
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-settle: cubic-bezier(.16, 1, .3, 1);
+}
+.rise { animation: rise var(--dur-settle) var(--ease-settle) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.showcase { min-width: 0; }
+.switch { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 4px; padding: 3px; margin-bottom: 16px; }
+.switch .thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); background: var(--ink); border-radius: 3px; transition: transform 320ms var(--ease-settle); }
+.switch[data-value='mobile'] .thumb { transform: translateX(100%); }
+.switch button { position: relative; z-index: 1; background: none; border: 0; padding: 9px 18px; font-size: 15px; color: var(--ink); cursor: pointer; transition: color var(--dur-fast) var(--ease-out), transform 160ms var(--ease-out); }
+.switch button:active { transform: scale(.97); }
+.switch button[aria-selected='true'] { color: var(--bg); }
+.shot { position: relative; overflow: hidden; border-radius: 4px; background: #f6f4ed; min-height: 350px; }
+.shot-link { position: absolute; inset: 0; z-index: 1; }
+.shot-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: opacity 400ms var(--ease-out); }
+.shot-img.is-mobile { object-fit: contain; object-position: top center; }
+.shot-img[data-show='false'] { opacity: 0; pointer-events: none; }
+.shot-img[data-show='true'] { opacity: 1; }
+
+/* Services: the hovered or focused row makes room, as in the study. Transform only; hover only on devices that really hover. */
+.expertise-list a > span:first-child { transition: transform var(--dur-fast) var(--ease-out); }
+.expertise-list a:focus-visible > span:first-child { transform: translateX(14px); }
+@media (hover: hover) and (pointer: fine) {
+  .expertise-list a:hover > span:first-child { transform: translateX(14px); }
+}
+
+/* Press feedback */
+.button { transition: opacity .18s, transform 160ms var(--ease-out); }
+.button:active { transform: scale(.97); }
+
+/* Phone: thumb-sized switch buttons */
+@media (max-width: 700px) {
+  .switch button { min-height: 44px; padding: 0 22px; }
+}
+
+/* Reduced motion keeps a short fade for the view switch instead of an instant snap */
+@media (prefers-reduced-motion: reduce) {
+  .shot-img { transition: opacity 150ms linear !important; }
+}
+
+
+/* Homepage, second pass (design review, 4 November 2026).
+   Sentence-case labels instead of tracked capitals, space and a tone step instead of rules,
+   body text at 16px, a handful of sizes, and a closing line set at display size. */
+:root { --display: clamp(40px, 5.5vw, 78px); }
+.home h1, .home h2 { text-wrap: balance; }
+.home .intent-hero { padding: 96px 0 120px; }
+.home .hero-support > p:first-child { font-size: 20px; }
+.home .hero-support .support-detail { font-size: 16px; line-height: 1.6; max-width: 400px; }
+.home h2 { font-size: 30px; line-height: 1.2; }
+.plain-label { font-size: 15px; color: var(--muted); }
+
+.home .feature-story { padding: 0 0 120px; }
+.home .feature-heading { border-top: 0; padding: 0 0 22px; }
+.home .feature-layout > div:last-child { display: flex; flex-direction: column; }
+.home .feature-caption { flex: 1; padding: 0; }
+.home .feature-caption h2 { margin: 0 0 16px; max-width: 360px; }
+.home .feature-caption p { font-size: 16px; line-height: 1.6; max-width: 340px; }
+
+/* Services sit on a full-width tone step, not between rules */
+.page-bare { padding-bottom: 0; }
+.home .expertise { display: block; border-top: 0; padding: 96px 0; background: var(--soft); }
+.home .expertise-inner { display: grid; grid-template-columns: 1fr 1.15fr; gap: 10%; }
+.home .caption-links { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+.home .expertise h2 { margin: 0 0 22px; max-width: 420px; }
+.home .expertise > div > div > p, .home .expertise > div p { font-size: 16px; line-height: 1.6; max-width: 420px; }
+.home .expertise .lead-line { color: var(--ink); font-size: 20px; letter-spacing: -.02em; margin-top: 26px; }
+.home .expertise-list a { border-top: 0; padding: 22px 0; }
+.home .expertise-list strong { font-size: 20px; }
+.home .expertise-list small { font-size: 15px; }
+
+.home .closing-line { border-top: 0; padding: 120px 0 80px; margin-top: 0; align-items: end; }
+.home .closing-line h2 { font-size: var(--display); font-weight: 450; letter-spacing: -.06em; line-height: 1.07; max-width: 9ch; }
+
+/* The Tikvah picture shows the whole capture at the sizes where the columns stack */
+@media (max-width: 960px) {
+  .home .feature-layout { grid-template-columns: 1fr; gap: 24px; }
+  .home .expertise-inner { grid-template-columns: 1fr; gap: 28px; }
+  .home .shot[data-view='desktop'] { min-height: 0; aspect-ratio: 1440 / 1000; }
+  .home .shot[data-view='mobile'] { min-height: 0; height: 560px; }
+}
+@media (max-width: 700px) {
+  .home .intent-hero { padding: 45px 0 64px; }
+  .home h2 { font-size: 28px; }
+  .home .feature-story { padding-bottom: 72px; }
+  .home .expertise { padding: 64px 0; }
+  .home .closing-line { padding: 72px 0 56px; }
+  .home .closing-line h2 { font-size: var(--display); max-width: none; }
+  .home .shot[data-view='mobile'] { height: 520px; }
+}
+
+/* Scroll entrances: once, transform and opacity only */
+[data-reveal] { transition: opacity 640ms var(--ease-out), transform 640ms var(--ease-out); }
+[data-reveal='pending'] { opacity: 0; transform: translateY(20px); }

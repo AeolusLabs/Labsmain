@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "revision": 34,
+  "revision": 64,
   "project_id": "aeolus-labs-website-development",
   "name": "AeolusLabs website",
   "purpose": {
@@ -11,7 +11,7 @@
   "planning_home": "architecture",
   "existing_plan_files": [],
   "created_at": "2026-11-04T06:35:41+00:00",
-  "updated_at": "2026-11-04T08:04:25+00:00",
+  "updated_at": "2026-11-04T18:53:12+00:00",
   "tasks": [
     {
       "id": "T-001",
@@ -484,6 +484,298 @@
       ],
       "requirements_sha256": null,
       "verified_at": null
+    },
+    {
+      "id": "T-013",
+      "title": "Phase 0: Baseline and documentation discovery",
+      "purpose": "Measure current site and gather usable material before design work",
+      "owner": "web-design",
+      "milestone_id": "M4",
+      "depends_on": [],
+      "status": "verified_complete",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time",
+        "at": "2026-11-04T18:00:16+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Baseline captures at 390/768/1440 in light and dark exist under architecture/evidence",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-013-baseline.md",
+            "architecture/evidence/T-013-captures.txt"
+          ]
+        },
+        {
+          "id": "AC-02",
+          "check": "Asset inventory lists approved project captures and missing founder assets",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-013-baseline.md"
+          ]
+        },
+        {
+          "id": "AC-03",
+          "check": "Baseline page transfer and image weight recorded with lab-vs-real-user distinction",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-013-baseline.md"
+          ]
+        }
+      ],
+      "requirements_sha256": "b688b9d8ac4c9638ecf9e0e139a44601dbddb26481db628d50be2f4a3009ee95",
+      "verified_at": "2026-11-04T18:46:51+00:00"
+    },
+    {
+      "id": "T-014",
+      "title": "Phase 1: Visual and motion foundation",
+      "purpose": "One owner-reviewed visual and motion language for all later sections",
+      "owner": "web-design",
+      "milestone_id": "M4",
+      "depends_on": [
+        "T-013"
+      ],
+      "status": "ready_for_verification",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time",
+        "at": "2026-11-04T18:00:17+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Editable homepage study and phone/desktop examples are reviewed by the owner",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Motion contract with reduced-motion and responsive equivalents is documented",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/T-014-study.md",
+            "architecture/prototypes/motion-contract.md"
+          ]
+        },
+        {
+          "id": "AC-03",
+          "check": "Shared controls pass keyboard and reduced-motion checks",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": "5cda745f1e2bdfcae6cf5f9b7826ed3b334c11c16e3a88b8f973e7a75354b5a6",
+      "verified_at": null
+    },
+    {
+      "id": "T-015",
+      "title": "Phase 2: Signature homepage opening",
+      "purpose": "Make the first impression express Make room for better",
+      "owner": "web-experiences",
+      "milestone_id": "M4",
+      "depends_on": [
+        "T-014"
+      ],
+      "status": "blocked",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time",
+        "at": "2026-11-04T18:00:18+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Opening reviewed in the real homepage with no layout jump or obstructed action",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Phone and no-JS/reduced-motion states are usable",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Offer and contact action are available immediately, with no forced intro",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": "ae485bb77521dc562803c3373aaf52ad27200e03c4015224aa3e4161fda3879f",
+      "verified_at": null
+    },
+    {
+      "id": "T-016",
+      "title": "Phase 3: Real-work showcase and case-study story",
+      "purpose": "Back the creative presentation with actual delivered software",
+      "owner": "web-experiences",
+      "milestone_id": "M4",
+      "depends_on": [],
+      "status": "ready",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time",
+        "at": "2026-11-04T18:00:19+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Project views switch reliably under rapid input with keyboard and focus support",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Real images load correctly at 390/768/1440 from appropriately sized WebP assets",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Narrative uses only supported claims and approved imagery",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": "b69e118eaae974f1d4bbc745c4bd4c07ddeb693dd9e39a4eb8b53bad1ce0a021",
+      "verified_at": null
+    },
+    {
+      "id": "T-017",
+      "title": "Phase 4: One useful Labs experiment",
+      "purpose": "Let visitors experience original engineering craft directly",
+      "owner": "web-experiences",
+      "milestone_id": "M4",
+      "depends_on": [],
+      "status": "ready",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time",
+        "at": "2026-11-04T18:00:19+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "One experiment chosen in an editable prototype and labelled as a studio experiment",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Touch, keyboard, reset and reduced-motion behaviour work; no visitor data collected",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Measured payload meets the agreed budget",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": "a6b9e157b40d44291732eebcd68d946b74506384786ee83c918859e8a3e00f1f",
+      "verified_at": null
+    },
+    {
+      "id": "T-018",
+      "title": "Phase 5: Services, enquiry and studio presence",
+      "purpose": "Turn interest into a relevant conversation and show the people behind the work",
+      "owner": "web-design",
+      "milestone_id": "M4",
+      "depends_on": [],
+      "status": "ready",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time",
+        "at": "2026-11-04T18:00:20+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Service-to-contact prefill passes direct-load, unknown-value and back-navigation cases without overwriting input",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Form and assistant drafts stay intact through switching; delivery and fallback semantics preserved",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "About uses owner-supplied portraits with provenance, or the subtask is recorded as deferred",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": "0504cb5d850a29880f1d9c957d6e551095d26666cb55adfb6be0b44f9eee2829",
+      "verified_at": null
+    },
+    {
+      "id": "T-019",
+      "title": "Phase 6: Integrated verification and release readiness",
+      "purpose": "Keep the expressive site fast, accessible and dependable",
+      "owner": "project-architecture",
+      "milestone_id": "M4",
+      "depends_on": [
+        "T-015",
+        "T-016",
+        "T-017",
+        "T-018"
+      ],
+      "status": "blocked",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time",
+        "at": "2026-11-04T18:00:21+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "Integrated desktop/mobile/light/dark review and all-route keyboard/focus/reduced-motion tests have recorded evidence",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-02",
+          "check": "Typecheck and production build pass; chat configuration verified without exposing keys",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        },
+        {
+          "id": "AC-03",
+          "check": "Performance compared with Phase 0 and exceptions recorded honestly",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": []
+        }
+      ],
+      "requirements_sha256": "be8a4a3f1e2ccf8e44a8584fffeb7339d5386662d86c25d9f690c2816b41f901",
+      "verified_at": null
     }
   ],
   "milestones": [
@@ -501,6 +793,11 @@
       "id": "M3",
       "title": "Tested and live",
       "outcome": "Checked on real devices, merged to main and live on the owned domain."
+    },
+    {
+      "id": "M4",
+      "title": "Expressive, proven experience",
+      "outcome": "Visitors meet a distinctive, credible studio story that leads to a relevant enquiry"
     }
   ],
   "discovery_notes": [

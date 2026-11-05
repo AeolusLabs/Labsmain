@@ -32,3 +32,33 @@
 {"at": "2026-11-04T06:59:45+00:00", "action": "discovery_recorded", "detail": {"kind": "observed", "note": "2026-11-04: On codex/minimal-redesign the unused Tailwind/shadcn toolchain was removed; pnpm audit fell from 85 to 5 findings, all inside Next's own build tooling (partly addresses T-011). Solutions grey tile (T-012) and dead code (T-008) no longer exist on this branch. Navy branch still has all three.", "source": "package.json", "at": "2026-11-04T06:59:45+00:00"}}
 {"at": "2026-11-04T07:11:23+00:00", "action": "discovery_recorded", "detail": {"kind": "observed", "note": "2026-11-04: App icons added on codex/minimal-redesign: apple-icon.png 180 (opaque, iOS), icon.png/icon.svg/favicon.ico (tabs), manifest with 192, 512 and maskable 512 PNGs (Android), iOS home-screen title. Built from the supplied-reference logo recreation; swap in final brand artwork if supplied (T-004). Served files and head tags checked on a production build; not yet tested by installing on a real iPhone or Android phone (T-009). Old v0 placeholder images removed.", "source": "app/manifest.ts", "at": "2026-11-04T07:11:23+00:00"}}
 {"at": "2026-11-04T08:04:25+00:00", "action": "discovery_recorded", "detail": {"kind": "observed", "note": "2026-11-04: T-003 wiring done on codex/minimal-redesign. Owner added RESEND_API_KEY in Vercel (Production only per screenshot). Code now needs only the key (sender defaults to enquiries@aeoluslabsltd.com, override with ENQUIRY_FROM_EMAIL); on missing key or Resend failure it returns a prepared mailto with an honest message and logs the cause; best-effort 5-per-15-min limit per IP per instance. Public DNS shows Resend DKIM and send-subdomain SPF/MX published and Google MX for info@. Tested locally: no key, invalid key (Resend 401 then fallback), rate limit (6th request 429), foreign origin 403, honeypot 400. NOT verified: a real email arriving in info@ (needs deploy + redeploy after env change), Resend dashboard shows domain Verified, Vercel Firewall rate-limit rule.", "source": "app/api/enquiries/route.ts", "at": "2026-11-04T08:04:25+00:00"}}
+{"at": "2026-11-04T18:00:00+00:00", "action": "milestone_added", "detail": {"id": "M4", "title": "Expressive, proven experience"}}
+{"at": "2026-11-04T18:00:01+00:00", "action": "task_proposed", "detail": {"id": "T-013"}}
+{"at": "2026-11-04T18:00:02+00:00", "action": "task_proposed", "detail": {"id": "T-014"}}
+{"at": "2026-11-04T18:00:02+00:00", "action": "task_proposed", "detail": {"id": "T-015"}}
+{"at": "2026-11-04T18:00:03+00:00", "action": "task_proposed", "detail": {"id": "T-016"}}
+{"at": "2026-11-04T18:00:04+00:00", "action": "task_proposed", "detail": {"id": "T-017"}}
+{"at": "2026-11-04T18:00:05+00:00", "action": "task_proposed", "detail": {"id": "T-018"}}
+{"at": "2026-11-04T18:00:05+00:00", "action": "task_proposed", "detail": {"id": "T-019"}}
+{"at": "2026-11-04T18:00:16+00:00", "action": "task_approved", "detail": {"id": "T-013", "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time"}}
+{"at": "2026-11-04T18:00:17+00:00", "action": "task_approved", "detail": {"id": "T-014", "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time"}}
+{"at": "2026-11-04T18:00:18+00:00", "action": "task_approved", "detail": {"id": "T-015", "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time"}}
+{"at": "2026-11-04T18:00:19+00:00", "action": "task_approved", "detail": {"id": "T-016", "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time"}}
+{"at": "2026-11-04T18:00:19+00:00", "action": "task_approved", "detail": {"id": "T-017", "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time"}}
+{"at": "2026-11-04T18:00:20+00:00", "action": "task_approved", "detail": {"id": "T-018", "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time"}}
+{"at": "2026-11-04T18:00:21+00:00", "action": "task_approved", "detail": {"id": "T-019", "basis": "Owner asked on 2026-11-04 to turn the experience upgrade plan into a track list worked one group at a time"}}
+{"at": "2026-11-04T18:00:21+00:00", "action": "task_status_changed", "detail": {"id": "T-013", "status": "ready"}}
+{"at": "2026-11-04T18:46:34+00:00", "action": "task_status_changed", "detail": {"id": "T-013", "status": "in_progress"}}
+{"at": "2026-11-04T18:46:40+00:00", "action": "task_status_changed", "detail": {"id": "T-013", "status": "in_progress"}}
+{"at": "2026-11-04T18:46:47+00:00", "action": "criterion_recorded", "detail": {"task": "T-013", "criterion": "AC-01", "result": "pass", "evidence": ["architecture/evidence/T-013-baseline.md", "architecture/evidence/T-013-captures.txt"]}}
+{"at": "2026-11-04T18:46:48+00:00", "action": "criterion_recorded", "detail": {"task": "T-013", "criterion": "AC-02", "result": "pass", "evidence": ["architecture/evidence/T-013-baseline.md"]}}
+{"at": "2026-11-04T18:46:49+00:00", "action": "criterion_recorded", "detail": {"task": "T-013", "criterion": "AC-03", "result": "pass", "evidence": ["architecture/evidence/T-013-baseline.md"]}}
+{"at": "2026-11-04T18:46:50+00:00", "action": "task_status_changed", "detail": {"id": "T-013", "status": "ready_for_verification"}}
+{"at": "2026-11-04T18:46:51+00:00", "action": "verification_gate_passed", "detail": {"id": "T-013", "criteria": ["AC-01", "AC-02", "AC-03"]}}
+{"at": "2026-11-04T18:46:57+00:00", "action": "task_status_changed", "detail": {"id": "T-014", "status": "ready"}}
+{"at": "2026-11-04T18:51:33+00:00", "action": "task_status_changed", "detail": {"id": "T-014", "status": "in_progress"}}
+{"at": "2026-11-04T18:53:09+00:00", "action": "criterion_recorded", "detail": {"task": "T-014", "criterion": "AC-02", "result": "pass", "evidence": ["architecture/evidence/T-014-study.md", "architecture/prototypes/motion-contract.md"]}}
+{"at": "2026-11-04T18:53:10+00:00", "action": "criterion_recorded", "detail": {"task": "T-014", "criterion": "AC-01", "result": "unverified", "evidence": []}}
+{"at": "2026-11-04T18:53:10+00:00", "action": "criterion_recorded", "detail": {"task": "T-014", "criterion": "AC-03", "result": "unverified", "evidence": []}}
+{"at": "2026-11-04T18:53:11+00:00", "action": "task_status_changed", "detail": {"id": "T-014", "status": "in_progress"}}
+{"at": "2026-11-04T18:53:12+00:00", "action": "verification_rejected", "detail": {"id": "T-014", "reasons": ["AC-01: unverified, must be pass", "AC-01: missing evidence", "AC-03: unverified, must be pass", "AC-03: missing evidence"]}}
