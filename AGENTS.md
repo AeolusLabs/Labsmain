@@ -1,3 +1,7 @@
+# Project authority
+
+Read `DESIGN.md` before any project work. It is the single authority for product, visual design, behaviour, operations and current priorities. Update it when an owner decision changes. Other briefs, prototypes, plans, session notes and archived files are references or evidence only; do not use them to revive superseded directions. `architecture/project.json` tracks evidence and task execution only, subject to `DESIGN.md`. Runtime code implements the authority; discrepancies must be reported and resolved, not silently treated as new design decisions.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
