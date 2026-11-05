@@ -1,145 +1,252 @@
-# AeolusLabs — single project authority
+# AeolusLabs — single project and design authority
 
-Updated: 5 November 2026. Applies to all production routes, shared components, styles, content and deployment work.
+Updated: 5 November 2026. Status: owner-selected remodelling direction; production implementation pending.
 
 ## Overview
 
-This is the sole governing project document. The owner requested consolidation after conflicting briefs and design systems accumulated. Read and update this file before making project decisions. Superseded briefs, forwarding documents and archived copies have been deleted at the owner request. Session notes, evidence, prototypes and architecture/project.json record history or execution results; they cannot override this file. Explicit later owner instructions take precedence and must be incorporated here. Installed Next.js documentation governs API correctness.
+**Match the owner-supplied `AeolusLabs Website.html` across the whole website.** This replaces the former light neutral / Inter / small rectangular controls direction and its restrictions on expressive motion. Do not blend the systems. Current code is implementation to remodel, not competing design authority.
 
-The baseline is the minimal neutral site promoted to main on 4 November, with the existing Tikvah showcase and optional brief assistant. The earlier navy/cyan/blue/lime site is superseded. Minimal is selected, not an unchosen proposal. Current inspected checkout: main at b293cad, following a860a74. Code shows implementation, not automatic design approval or proof of correctness. Preserve useful behaviour while resolving discrepancies below; do not introduce another visual direction.
+This remains the only governing document for product, visual design, behaviour and operations. Do not recreate PRODUCT.md, another design brief, a motion contract or archive copies. AGENTS.md retains mandatory agent/API instructions. Tasks, prototypes and sessions are evidence only. Later owner decisions take precedence and must be reflected here.
 
-AeolusLabs is a company of two software developers in Nigeria, serving small and growing businesses, entrepreneurs and startups in Nigeria, across Africa and internationally. The site helps visitors understand the offer, inspect real work and start a relevant enquiry. Balance engineering credibility with creative flair through clear composition and inspectable work.
+### Reference provenance
 
-- Mission: Build practical software that bridges the gap between African businesses and the technology they need.
-- Vision: An Africa where businesses of every size can access technology that helps them operate efficiently, innovate, and grow.
-- Principles: Understand first, build deliberately, communicate openly, keep improving.
-- Brand tagline: Digitalize. Automate. Elevate. Current homepage headline: Make room for better. These have different roles; do not replace one with the other by accident.
-- Services: websites, web applications and business systems, mobile applications, backends and integrations, practical AI, custom AI agents and autonomous workflows with agreed human oversight, maintenance and support.
-- Founders: Allan Ajayi-Adjari and Bernard Nneboh, both software developers. Placeholder founder names are superseded. Portraits and individual biographies require supplied or approved material.
-- Canonical URL: https://www.aeoluslabsltd.com. Public email and enquiry recipient: info@aeoluslabsltd.com. WhatsApp and social links remain omitted.
-- Tikvah: approved client project, complete frontend and backend delivery. Use approved real public-site captures, identify scope accurately and link to https://www.tikvah.space/. Do not imply screenshots demonstrate private workflows or backend operations.
-- Vib3Pulse: company-owned product at https://vib3pulse-production.up.railway.app/. Its lime typographic artwork is artwork, not an application screenshot. Account-only capabilities are product-presented claims, not independently verified functions. Approved interface captures remain needed.
-- Other client names, private notes and screenshots remain unpublished pending permission. Omit the poetry app. Never invent metrics, testimonials, outcomes, portraits, guarantees or publication approvals.
-- Angular A logo: recreation of the selected supplied reference, not an original extracted vector. Replace only with approved final artwork. Keep existing favicon, app icons and manifest consistent.
+The attachment has fourteen boards: Home, Work, Tikvah case study, Solutions, Products, About and Contact at 1440px, then the same seven at 390px. Phone boards import their corresponding page: one responsive system. Outer viewer background, loading/unpacking UI, editor controls and fixed iframe heights are not website design.
+
+- Attachment: `file_f7f82278-456e-498e-b1bc-accceac84a52`, named `AeolusLabs Website.html`.
+- Original: `C:/Users/INDIVIDUAL/.t3/userdata/attachments/mcp-61d3584b-64db-45b2-869d-86510eed5f7f-692be835-5789-41bf-abed-7f316e6fbc10-html.html`.
+- SHA-256: `1fef6d6835121acb974feb5bd20f07560c9f4002ca85025cba50223c0c6e8b99`.
+- Inspection: unpacked all fourteen templates; inspected shared motion engine and embedded assets. Static Home composition rendered, but local font loading failed there, so fallback-font rendering is not typography approval. Interactive inspection was unavailable. Behaviour below is extracted from source, not claimed runtime-tested.
+
+Port the visual/interaction intent into the existing Next.js app with real routes and semantic controls. Do not ship the export bundler, DCLogic/custom tags, duplicated React runtime, board frames or placeholder form behaviour. The attachment supplies appearance; existing working application logic supplies real enquiry/chat behaviour.
+
+### Creative direction
+
+An expressive software studio shaped by air, space and responsive movement: deep ink surfaces, pale green-white text, fresh mint, monumental characterful type, layered real work and generous composition. Wind responds to the pointer, typography moves, images have depth, and purposeful pale sections interrupt the dark canvas. The offer and contact route remain clear.
+
+Seven identifying features must survive: dark/mint shell; Bricolage Grotesque with Instrument Sans; enormous two-line headlines; pill CTAs; layered desktop/phone Tikvah captures; pale expertise/experience sections; wind, kinetic type and responsive artwork. A dark recolour of the old minimal site is insufficient.
+
+### Product truth
+
+AeolusLabs is two software developers in Nigeria serving small/growing businesses, entrepreneurs and startups in Nigeria, across Africa and internationally. Help visitors understand the offer, inspect real work and start a relevant enquiry.
+
+- Founders: Allan Ajayi-Adjari and Bernard Nneboh, both software developers. Type-led introductions as in the reference; no invented portraits/biographies.
+- Mission: build practical software that bridges the gap between African businesses and the technology they need. Vision: an Africa where businesses of every size can access technology that helps them operate efficiently, innovate and grow.
+- Principles: Understand first. Build deliberately. Communicate openly. Keep improving.
+- Brand tagline: Digitalize. Automate. Elevate. Homepage headline: Make room for better. Different roles.
+- Services: websites, web/mobile applications, business systems, backends/APIs/integrations, practical AI, custom agents/workflows with agreed human oversight, maintenance/support.
+- Canonical: https://www.aeoluslabsltd.com. Public email/recipient: info@aeoluslabsltd.com. No unconfirmed WhatsApp/social links.
+- Tikvah: approved client project, complete frontend/backend delivery; https://www.tikvah.space/. Real public captures, accurate capture dates, private flows explicitly untested. Screenshots do not prove backend operation.
+- Vib3Pulse: company-owned; https://vib3pulse-production.up.railway.app/. Lime artwork is not a product screenshot. Interface imagery pending; account-only features remain product-presented claims until verified.
+- Other client names, private notes/screenshots remain unpublished pending permission. Omit poetry app. Never invent metrics, testimonials, results, guarantees or approvals.
+- Preserve the angular A mark. Current vector recreates supplied artwork; it is not extracted original artwork. Approved final artwork may replace it.
 
 ## Colors
 
-Use the existing semantic custom properties in app/globals.css throughout the site. That stylesheet is the runtime implementation of these values; do not introduce a parallel theme, framework palette or page-specific brand. Change the governing values here and their implementation together.
+**One dark-first palette on every route.** Pale sections are intentional sections, not a separate theme. The reference has no appearance toggle: remove the former system-following theme from the remodel's default shell. Do not invert pale sections/product artwork with OS appearance.
 
-| CSS property | Light | Dark | Role |
-| --- | --- | --- | --- |
-| --bg | #f8f8f6 | #141a20 | Page background |
-| --ink | #202220 | #f0f0eb | Primary text and filled controls |
-| --muted | #5f635f | #a6afb5 | Supporting text |
-| --line | #dedfda | #343e45 | Field borders and functional separators |
-| --surface | #ffffff | #1d262d | Fields and raised content |
-| --soft | #f0f1ed | #1a232a | Quiet section background |
-| --accent | #315859 | #abd1cf | Focus and running-text links |
-| --danger | #a8231b | #ff9a92 | Errors |
+Names below map extracted values to future semantic tokens; they do not claim current CSS already implements them.
 
-Vib3Pulse artwork may use #b9f761 with #18320c text within its own panel. Colours inside genuine project screenshots belong to those projects; they are not site tokens. Do not reintroduce electric-blue, lavender or lime page sections from older case-study experiments.
+| Token | Reference value | Role |
+| --- | --- | --- |
+| --bg | #0A1116 | Site/hero |
+| --ink | #EAF0EC | Main text |
+| --muted | #A9B8B3 | Supporting body |
+| --text-secondary | #C5D1CD | Nav/stronger support |
+| --text-quiet | #8FA19B | Tertiary captions |
+| --accent | #7BE8CB | Mint emphasis/CTA/wind |
+| --accent-ink | #06231C | Mint button text |
+| --surface | #101A21 | Fields/image-stage backing |
+| --line | rgba(234,240,236,.16) | Dark rules/borders |
+| --section-light | #EDF1ED | Expertise/experience |
+| --light-ink | #0A1116 | Text on pale |
+| --light-muted | #33423E | Body on pale |
+| --light-accent | #0F5A4A | Pale-section emphasis |
+| --light-line | rgba(10,17,22,.2) | Pale rules |
+| --row-highlight | rgba(15,90,74,.11) | Service highlight |
+| --product-lime | #B9F761 | Vib3Pulse only |
+| --product-ink | #18320C | Product type/art/button |
+| --product-button-text | #EAF6D6 | Product button text |
 
-Appearance follows the system until the visitor saves a light/dark choice. Apply it before first paint; retain the existing theme button and persistence. Verify both themes rather than assuming inverse colours pass contrast checks.
+Reference pale opacity variants: marquee rule .12, phone image border .22, fields .28, ghost CTA .35, ghost hover fill .06. Derive from #EAF0EC as component variants. Hover white #FFFFFF. Spotlight rgba(123,232,203,.16), fading to transparent at 62%.
+
+Export editor accent choices #9DB8FF/#FFC36B/#FF8E72 are not extra website palettes. Mint is selected throughout. Genuine screenshot colours belong to those projects. Error/success colours are not fully specified: preserve distinct accessible text/icon feedback and contrast-check semantic states during implementation, without adding brand accents.
 
 ## Typography
 
-One typeface: Inter through next/font/google in app/layout.tsx, using --font-body with Arial/sans-serif fallbacks. Do not add a display font, icon font or a second type system.
+**Display/brand: Bricolage Grotesque. Body/UI: Instrument Sans.** Replace the Inter-only rule. Use Next font loading where supported, swap/fallbacks and retained licences. Reference declares Bricolage variable 200–800 and Instrument Sans 400/500/600. Verify actual font weight/axis support; declarations alone are insufficient.
 
-- Display: clamp(40px, 5.5vw, 78px), weight 450, line-height 1.07, tracking -.06em. Existing phone page-specific heading sizes are responsive adjustments, not separate identities.
-- Homepage section headings: 30px desktop / 28px phone, line-height 1.2. Other page headings currently use clamp(25px, 3vw, 39px), weight 450, tracking -.045em; reconcile shared roles rather than adding overrides.
-- Third-level headings: 22px, weight 500, line-height 1.3, tracking -.03em.
-- Body: 16px / 1.6 is the consolidation target, matching the latest homepage copy. Global body still uses 15px / 1.7: this is recorded implementation drift, not another approved scale.
-- Lead copy: 20px. Buttons and text links: 15px. Supporting labels, navigation and footer: 13px. Form inputs: at least 16px to avoid phone zoom.
-- Sentence-case section labels follow the latest homepage direction. Legacy tracked uppercase .eyebrow labels remain to reconcile; do not copy them into new sections.
+| Role | Extracted size | Weight / leading / tracking |
+| --- | --- | --- |
+| Brand | 22px | Bricolage 600 / normal / -.02em |
+| Home h1 | clamp(60px,11.5vw,168px) | Bricolage 500 / .92 / -.045em |
+| Work h1 | clamp(56px,9.5vw,140px) | Bricolage 500 / .94 / -.045em |
+| Solutions/Products/Contact h1 | clamp(52px,8.6vw,128px) | Bricolage 500 / .94 / -.045em |
+| About h1 | clamp(52px,9vw,136px) | Bricolage 500 / .94 / -.045em |
+| Tikvah title | clamp(80px,17vw,250px) | Bricolage 500 / .90 / -.055em |
+| Major h2 | clamp(40px,5.6vw,80px) | Bricolage 500 / 1 / -.035em |
+| Pale-section h2 | clamp(40px,5vw,72px) | Bricolage 500 / 1 / -.035em |
+| Standard closing | clamp(48px,8vw,120px) | Bricolage 500 / tight |
+| Home closing | clamp(56px,10vw,152px) | Bricolage 500 / .95 / -.045em |
+| Home lead | clamp(20px,2.2vw,28px) | Instrument / 1.35 / -.01em |
+| Inner lead | clamp(19px,2vw,24px) | Instrument / readable |
+| Body | 17px | Instrument 400 / 1.55 |
+| CTA | 16px | Instrument 600; header 15px |
+| Navigation | 15px | Instrument |
+| Eyebrow | 14px | Uppercase / .14em tracking |
+| Footer | 14px | Instrument |
+| Hero hint | 13px | Uppercase / .08em tracking |
+| Inputs | 16px minimum | Instrument |
 
-Use size, weight, spacing and clear copy to establish hierarchy. Preserve factual copy while consolidating presentation.
+Use named shared roles and intentional page-title variants. Headline line masks use .14em bottom padding and matching negative margin to protect descenders. Allow natural wrapping inside line groups on phones, not scaled desktop artboards.
+
+Headline groups; bold means mint:
+
+- Home: “Make room” / “for **better.**”
+- Work: “Built around” / “**real** needs.”
+- Solutions: “The right software” / “starts with **your problem.**”
+- Products: “Our own ideas,” / “built into **software.**”
+- About: “Two developers.” / “A shared **purpose.**”
+- Contact: “Tell us what you” / “want to make **possible.**”
+- Tikvah: monumental “Tikvah”.
 
 ## Layout
 
-Use .wrap at min(1160px, 88%) with centred margins. Existing breakpoints are 960px for showcase stacking and 700px for phone layout. Validate 390, 768 and 1440px plus narrow-width overflow. Keep normal document scrolling.
+### Geometry and responsive rules
 
-The latest homepage establishes generous whitespace and quiet tonal sections. Its desktop section spacing is 96–120px; phone spacing is 64–72px, with existing smaller opening/footer adjustments. Inner pages can be denser when their task warrants it, but must use the same tokens, type roles, controls and shell. Functional borders remain appropriate for fields, facts and lists; do not mechanically alternate decorative rules around every section.
+Desktop 1440px: centred max-width 1280px shell with 40px inner horizontal padding; 1200px content, 120px visible outer gutters. Consistent border-box sizing. Full-width marquees/pale sections sit outside shell with aligned inner content. Replace old 1160px/88% wrapper.
 
-Production compositions:
+Header: padding 28px 40px, wrapping flex/space-between, gap 16px 32px. Logo 30×30px, wordmark 22px, gap 12px. Nav order Work/Solutions/Products/About then mint “Start a conversation”; gaps 8px 28px. Normal-flow header, not an invented sticky/floating menu.
 
-- Home: offer and contact action; real Tikvah desktop/mobile showcase; concise services; closing enquiry invitation.
-- Work: project image/artwork and delivery scope, with clear case-study links.
-- Case studies: facts, large inspectable capture, challenge, experience, delivery and supported result. Keep native image enlargement, Escape close, captions and source links.
-- Solutions: orientation and grouped capabilities, with direct contact navigation.
-- About: real founder names, company purpose and working principles; no fabricated portraits or biographies.
-- Contact: editable enquiry form and optional assistant beside direct email and next steps.
-- Products: existing Vib3Pulse content is implemented at /products; do not treat this as a missing placeholder or invent additional products.
-- Privacy and not-found: same shell and visual vocabulary. Privacy statements must match actual processing.
+Home hero: 88px 40px 120px padding, reference min-height 620px, 48px main gaps. Eyebrow, huge heading, supporting two-column grid and pointer hint. Supporting grid: auto-fit/minmax 360px preferred columns, gaps 32px 64px. Do not revert to a small headline beside a paragraph.
 
-No Labs experiment, capability simulator, new route or major hero redesign is authorized merely because an old plan proposed it. Existing study HTML and its theme/spacing/replay controls are prototype tools, not production requirements.
+Inner hero: usually 72px 40px 104px; Tikvah 56px 40px 88px; Contact 72px 40px 88px. Dark section separation generally 140px. Pale interiors 112px 40px. Two-column gaps typically 56px 80px. Standard closing 160px 40px 120px, Home 180px 40px 120px. Footer top rule, padding 32px 40px 40px, wrapping credit/nav with 16px 32px gaps. Encode shared spacing roles instead of repeating inline styles.
+
+Phone breakpoint in export: max-width 640px. Gutters 20px; visible wrapped nav gaps 4px 20px. Hero 36px top/64px bottom, no fixed minimum height. Subsequent sections generally 84px top; pale interiors roughly 72px vertical. Reproduce outcomes with scoped CSS instead of broad !important overrides.
+
+Auto-fit grids use preferred minima 300–380px capped at 100%; stack when needed. Footer wraps. Ensure long names, emails and headline words fit. Keep at least 44px targets and 16px fields. Preserve large type, image overlap and dark/pale rhythm at 390px. Interpolate naturally at 768px; no separate tablet identity.
+
+Fixed export board heights (phone 2300–6000px) are not route heights. Content determines height. Clip decoration/image masks locally, not meaningful page content. Native scrolling throughout.
+
+### Page compositions
+
+| Route | Required composition in order |
+| --- | --- |
+| / | Wind/spotlight hero; two opposing type marquees; large Tikvah desktop capture plus overlapping phone; pale expertise/three service rows; lime Vib3Pulse teaser; reactive “What could work better?” closing; footer. |
+| /work | Wind hero “Built around real needs”; layered Tikvah stage/role/delivery/case link; lime Vib3Pulse panel with ownership/type/focus and artwork disclaimer; “Have something in mind?” closing. |
+| /work/tikvah | Back link/category/huge title/subtitle/live link; four wrapping facts; desktop image/caption; dark challenge; pale experience with phone/three public-journey points; dark delivery rows/provenance; supported result; “Your idea could be next” closing. |
+| /solutions | Wind problem-led hero; pale orientation/CTA beside four large linked capability rows; dark four-principle process; “A clear scope comes first” closing. |
+| /products | Wind hero; large lime Vib3Pulse artwork/description/live link/disclaimer; “Have an idea of your own?” closing. |
+| /about | Wind hero; two type-led founders; “Why we started” narrative; four numbered principles; “Let’s understand your next step” closing. |
+| /contact | Wind invitation hero; form beside direct email/next steps; generous bottom breathing room; footer. Preserve consent/chat/validation/fallback omitted from the board. |
+
+Marquee first line: Websites • Applications • Systems • Integrations, filled pale. Second: AI • Automation • Maintenance • Support, outlined pale. Mint circular separators. Bricolage 500, clamp(56px,8vw,112px), line-height 1.1, tracking -.035em, outline 1.5px. Decorative band, not the only service content.
+
+Solutions rows: Websites & applications; Systems & integrations; AI & automation; Maintenance & support, each outcome-led eyebrow/scope/arrow. Home's shorter rows: Web & mobile, Business systems, AI & automation. Two levels of one taxonomy.
+
+No dedicated reference boards for /work/vib3pulse, Privacy or not-found: extend the same vocabulary and retain factual content/disclosures. Map export .dc.html links to actual routes. Do not invent unrelated page identities.
 
 ## Elevation & Depth
 
-Flat neutral surfaces, quiet tone changes and functional borders. Real project captures supply visual evidence. Do not introduce glass panels, decorative gradients, heavy shadows, invented device mockups or a competing card system. The native image dialog may use a backdrop for separation.
+Depth belongs to actual work and atmospheric layers, not decorative card grids.
+
+- Wind canvas behind content: aria-hidden, pointer-events:none, lower mask opaque through 72% then transparent. Spotlight is soft mint atmosphere.
+- Tikvah desktop: full natural ratio, 16px radius, pale border, #101A21 backing. Phone overlaps lower right, 20px radius, .22 pale border, `0 30px 60px rgba(0,0,0,.55)` shadow. Reserve approximately 72px below desktop for overlap; no caption/action obstruction.
+- Phone width clamp(110px,17vw,230px), right offset clamp(16px,4vw,56px). Real phone capture, not invented device chrome. Keep images inspectable and undistorted.
+- Perspective/depth layers belong to image stage; text stays outside moving planes. Static/reduced-motion state retains composed overlap.
+- Vib3Pulse lime panel has dark rings/equaliser as artwork, not a live interface or data claim.
 
 ## Shapes
 
-Small rectangular controls, generally 4px corners; fields and selection interiors may retain the existing 3px radius. No new pill-based navigation or decorative rounded container system. Maintain usable touch areas, targeting at least 44px for interactive controls; verify rather than inferring target size from text size.
+CTA pills: radius 999px, min-height 48px, padding-inline 24px, icon gap 10px. Header CTA 44px/20px/15px text. Primary mint/#06231C; secondary transparent/pale border. Primary hover brightness(1.1); ghost hover stronger border and .06 pale fill.
+
+Capture corners: desktop 16px, phone overlay 20px, standalone phone up to 22px. Product panels 20px. Fields 10px. Dots/rings circular. The former 3–4px rectangle mandate is superseded.
 
 ## Components
 
-Reuse the existing components instead of creating per-page substitutes:
+### Shared implementation
 
-- components/site-header.tsx: header, footer and PageShell; the bare shell supports the current homepage tonal sections.
-- components/navigation.tsx and components/theme-toggle.tsx: route indication and appearance choice.
-- components/page-parts.tsx: shared labels, arrows, button links, text links and closing invitation.
-- components/tikvah-canvas.tsx: real desktop/mobile selection; one selected view, stable stage, keyboard controls and rapid-switch behaviour.
-- components/project-image.tsx and components/tikvah-case-study.tsx: inspectable project evidence.
-- components/contact-panel.tsx, components/enquiry-form.tsx and components/brief-assistant.tsx: mode choice, reviewable draft and explicit visitor submission.
-- components/hero-entrance.tsx and components/reveal.tsx: existing motion implementation, subject to the constraints and gaps below.
+One token/component/style system. Refactor app/globals.css into owning sections and remove obsolete cascade layers instead of appending another pass. Existing component names can be reused/replaced by responsibility; old styling is not binding.
 
-### Interaction and accessibility
+- Adapt site-header/navigation: consistent Products link, aria-current, skip link; remove theme-toggle from default reference shell.
+- Adapt page-parts: pills/ghost/text links, labels/display roles and large closings.
+- Adapt TikvahCanvas/project-image/tikvah-case-study: layered imagery replaces homepage tab-switch as primary visual; preserve useful native enlargement, Escape and focus return.
+- Restyle ContactPanel/EnquiryForm/BriefAssistant without replacing real backend behaviour with export forms.
+- Replace old HeroEntrance/Reveal assumptions with the motion contract. Content is visible before enhancement.
 
-Keep semantic HTML, one h1 per page, skip link, visible focus, labels on every field, meaningful current/selected states, keyboard access and navigation visible on phones. Native dialogs close with Escape and return focus. Content and contact links remain available without animation. No-JS inspection must verify useful output, not just the presence of text in server HTML.
+### Motion contract
 
-Motion tokens currently implemented: --dur-fast 280ms, --dur-base 640ms, --dur-settle 960ms, --ease-out cubic-bezier(.2,.7,.2,1), --ease-settle cubic-bezier(.16,1,.3,1). Existing component timings include a 320ms selection thumb, 400ms image fade, 160ms press feedback and 180ms link feedback. These are controlled component exceptions, not additional motion systems.
+Motion is integral. Ambient loops, reveals, pointer effects and canvas artwork are allowed in named locations; old blanket bans are superseded. Match their character rather than substituting a few arrow nudges or adding unrelated spectacle.
 
-Motion communicates selection or feedback, uses transform/opacity, is interruptible and stops. Retain at most one brief opening emphasis; offer and contact action must be immediately usable. No autoplay loops, custom cursors, scroll interception, forced introductions, replay pipelines or simulated processing. Reduced motion must remove positional movement and entrances; the existing 150ms image fade is the sole documented reduced-motion transition exception. Do not add further scroll reveals while the current behaviour is unresolved.
+| Effect | Extracted reference | Production equivalent/fallback |
+| --- | --- | --- |
+| Wind | Canvas 2D coherent-noise mint trails; area-scaled 450–2600 particles, DPR capped at 2; pointer swirl radius ~210px, idle drift. Page heroes. | Capability-scaled density, suspend offscreen/hidden. Touch autonomous/static, no scroll interception. Reduced motion static texture; canvas failure leaves dark hero. |
+| Spotlight | 700px mint wash with damped pointer tracking. | Fine pointer only, behind content, fade on leave; off for touch/reduced motion. |
+| Headline | Masked rise from 118% Y/8deg; spring 105 stiffness/12.5 damping; .2s start, .12s line stagger. | One entrance per mount; offer/CTA usable immediately. Reduced motion/no JS final text. |
+| Reveal | Once at intersection threshold .12; 56px rise/opacity; spring 92/16, stagger. | Expose focused content immediately; fail open on observer/init failure. No moving form while typing. |
+| Image reveal | Bottom-to-top clip, scale 1.28 to 1; spring 38/13. | Reserve image geometry; reduced motion unclipped final image. |
+| Parallax/progress | Hero factor .16, feature .05; fixed 3px mint progress line. | Native scroll. Reduced motion removes parallax; progress may update immediately. |
+| Tilt | perspective(1500px), rotateX up to 5deg/rotateY 7deg; depth layers 10/46, phone float 9px. | Fine-pointer enhancement; stable legibility/clicks. Touch/reduced motion composed static layers. |
+| Magnet | Spring 220/15, radius 120px, displacement multiplier .38. | Restrained movement, stable hit area; never evade input. Off for touch/keyboard/reduced motion. |
+| Marquee | Opposing speeds 70/55px/s; scroll velocity boost; skew clamp 14deg. | Seamless track, no layout shift; static reduced-motion band, decorative duplicates aria-hidden; accessible pause for sustained motion. |
+| Service highlight | Gliding bar spring 240/26; row shift 16px, arrow enters. | Focus matches hover, clear when leaving list; reduced motion instant highlight without translation. |
+| Product pulse | Lower-right rings every 1.15s lasting 4.2s, pointer rings, 44 equaliser bars. | Artwork, no audio permission/live-data claim. Pause offscreen/hidden; static rings/bars in reduced motion. |
+| Closing lettering | Pointer/slow-wave weight variation roughly 300–740. | Accessible phrase “What could work better?”, decorative letters hidden from assistive tech; stable layout. Fixed reduced-motion weight. |
+
+Spring numbers belong to the export physics model, not portable durations. Calibrate another engine against the reference rather than assuming equal settings match. Simple feedback can use 150–250ms; do not retain old 280/640/960ms as a competing motion system.
+
+Centralize scheduling, clean listeners/observers/timers on route change, suspend hidden/offscreen work and settled springs, cap DPR, avoid per-particle DOM. React to preference changes live. Separate transform wrappers so reveal/parallax/tilt cannot overwrite each other. Do not port export polling/reinitialization scaffolding.
+
+Required adaptations beyond export: pause sustained motion, static reduced-motion output, keyboard service feedback, stable button targets, fail-open semantic content. A visible “Pause motion” control may govern ambient effects, not act as a theme chooser. Keep one h1, semantic HTML, visible focus, native scrolling and decorative layers out of hit testing/accessibility.
+
+### Contact and UI states
+
+Fields: width 100%, min-height 52px, padding 12px 16px, radius 10px, #101A21 fill, .28 pale border, #EAF0EC text, >=16px Instrument. Native controls, persistent labels/autocomplete, mint focus and vertical textarea resize.
+
+Reference fields: name/email/need/challenge. Needs: uncertainty, website/web app, mobile, backend/integrations, AI/workflow, maintenance/support. Reuse actual validated choices rather than forking the server taxonomy. Retain explicit consent/privacy even though the board omits them. Direct email and “A useful conversation” aside stacks below on phone.
+
+Verify idle/hover/focus/selected/disabled/pending, field/provider error, mailto fallback and success. Preserve entered data/drafts on recoverable errors, identify fields in text with aria-describedby, announce status. Chat shares dark surfaces/mint controls, with a clear return to form. Nothing moves while typing.
 
 ### Enquiries and assistant
 
-Enquiry delivery uses Resend. RESEND_API_KEY enables direct delivery. ENQUIRY_FROM_EMAIL optionally overrides AeolusLabs Enquiries <enquiries@aeoluslabsltd.com> and must use a verified sending domain. Recipient is info@aeoluslabsltd.com; visitor email is reply-to. There is no enquiry database. Missing credentials or rejected delivery produce an honest prepared-mailto fallback: nothing was sent or saved by the site. Do not claim inbox delivery from provider acceptance.
+Keep Resend delivery: RESEND_API_KEY enables sending; ENQUIRY_FROM_EMAIL optionally overrides `AeolusLabs Enquiries <enquiries@aeoluslabsltd.com>` and must use a verified domain. Recipient info@aeoluslabsltd.com; visitor is reply-to. No enquiry database. Missing/rejected delivery returns an honest prepared-mailto fallback: nothing sent or saved by the site. Provider acceptance does not prove inbox arrival.
 
-Preserve honeypot, same-origin and payload validation, plus the best-effort 5 enquiries per 15 minutes per visitor per server instance. Chat has a 40-request equivalent. These in-memory limits are not shared across serverless instances; durable hosting protection remains a launch check.
+Keep honeypot, same-origin/payload validation and best-effort per-visitor/per-instance limits: 5 enquiries and 40 chat requests per 15 minutes. In-memory limits are not shared across serverless instances; durable hosting protection remains a launch check.
 
-ANTHROPIC_API_KEY must exist before building because Contact is prerendered, and at runtime for /api/brief. Without it, retain the ordinary form. BRIEF_ASSISTANT_MODEL overrides the source default, currently claude-opus-5-5; confirm account availability rather than assuming it. Never expose secrets through NEXT_PUBLIC_ variables. Mock-provider configuration is for controlled local checks only.
+ANTHROPIC_API_KEY must exist before the prerendered Contact build and at runtime for /api/brief. Without it retain the form. BRIEF_ASSISTANT_MODEL overrides the source default (currently claude-opus-5-5); confirm account availability. Never expose credentials through NEXT_PUBLIC_. Mock provider configuration is local verification only.
 
-The assistant asks short project-intake questions and returns an editable draft. It never sends an enquiry automatically. The visitor reviews, changes and explicitly submits it. Preserve draft handoff, focus management and honest error states. Conversations are processed by Anthropic and are not persisted by the site. Do not request sensitive personal information or promise pricing, delivery dates or capabilities.
+Assistant output is a reviewable/editable draft, never automatic enquiry submission. Preserve focus handoff and explicit visitor send. Anthropic processes messages; the site does not persist conversations. No sensitive-data requests, invented facts, pricing or delivery promises.
 
-### Local setup and deployment
+### Setup and hosting
 
-Use Node.js 24 and pnpm 11.25.0. Run pnpm install --frozen-lockfile, pnpm dev, pnpm typecheck and pnpm build as appropriate. Stack: Next.js 16.4.5, React 19, TypeScript, plain CSS and the existing Anthropic SDK. There is no active Tailwind/shadcn design system. Read relevant node_modules/next/dist/docs/ guides before runtime changes; retain the generated Next instructions in AGENTS.md.
+Node.js 24, pnpm 11.25.0. Commands: pnpm install --frozen-lockfile, pnpm dev, pnpm typecheck, pnpm build. Stack: Next.js 16.4.5, React 19, TypeScript, plain CSS, existing Anthropic SDK. No active Tailwind/shadcn system. Read relevant installed node_modules/next/dist/docs/ before runtime changes; retain generated AGENTS.md rules. Choose the lightest implementation that faithfully reproduces the reference, not a framework for its own sake.
 
-Vercel hosts the site. Set required variables in the intended Production/Preview environment and rebuild after build-time configuration changes. Keep credentials out of files, output, commits and documentation. Production deployment requires authorization; this consolidation does not publish changes.
+Vercel hosts the site. Configure intended Production/Preview variables, rebuild after build-time changes, keep secrets out of source/output/commits/docs. This documentation request does not publish a remodel.
 
-Last verified hosting observation, 4 November: a860a74 deployed successfully; bare domain redirected 308 to www; eight checked public pages returned 200; Contact had assistantEnabled:false and /api/brief returned 503. Vercel CLI was logged out. These observations do not establish today's deployment state or the deployment of b293cad. Real provider operation and email inbox delivery remain unverified. Backup branch backup/main-before-minimal-2026-11-04 preserves the prior main; restore through a normal new commit, never by force-pushing main.
+Last hosting observation (4 November): a860a74 deployed successfully, bare domain redirected 308 to www, eight pages returned 200, Contact had assistantEnabled:false, /api/brief returned 503, CLI logged out. These do not establish today's settings/deployment. Live Anthropic and real inbox delivery remain unverified. Backup branch backup/main-before-minimal-2026-11-04 preserves prior main; restore through normal new commits, never force-push.
 
 ## Do's and Don'ts
 
-### Known conflicts and next work
+### Remodelling sequence and acceptance
 
-This document consolidates authority; it does not claim the existing website errors are repaired.
+This revision specifies the remodel, not its implementation. Existing code is expected to diverge until changed. No effect is production-verified merely because documented.
 
-1. app/globals.css contains base minimal rules, appended motion rules and a homepage second pass. Fold repeated selectors into their owning sections and shared roles. Reconcile body sizes, label casing, section spacing and controls across all routes against this file. Do not add another override block or theme.
-2. The earlier interaction research prohibited repeated scroll entrances, while b293cad introduces Reveal across the homepage. Treat their extent as unresolved; preserve readable static content, do not expand the pattern, and review whether each existing reveal is justified.
-3. Reduced-motion CSS currently appears before later data-reveal transitions, and the broad transition reset does not by itself remove transform-based hover/press states. Verify preference changes, keyboard and hover states; ensure the final implementation honours the reduced-motion rule above.
-4. Tikvah desktop/mobile switching, tab semantics, focus, no-JS behaviour and image load/weight require an integrated recheck. A prototype pass or server HTML check alone does not prove the production interaction works.
-5. Older project.json tasks, discovery notes and prototype evidence contain pre-promotion proposal language and partial checks. They remain historical execution records; reconcile individual task evidence before marking completion. Do not reopen the selected identity on that basis.
-6. Live Anthropic operation, actual email receipt, durable abuse limits, real-device icon installation, final social artwork and missing approved imagery remain open. Recheck hosting access and current deployments before changing settings.
+1. Establish palette, two-font loading, type roles, shell and pills. Replace old theme startup/metadata colours and stale selectors together; no old-theme flash.
+2. Implement motion with pause/preferences/lifecycle handling and complete Home: wind, marquees, layered real work, pale expertise, lime product, closing type. Compare with attachment at 1440 and 390.
+3. Remodel Work, Tikvah, Solutions, Products, About and Contact with shared vocabulary and specified compositions. Extend uncovered routes consistently.
+4. Verify enquiry/chat, consent, image enlargement, focus/navigation and errors without removing working functionality to match an incomplete mockup.
+5. Typecheck/build, then batch visual/function review at 390/768/1440. Check actual loaded fonts, line breaks, gutters, vertical rhythm, tokens, media depth, motion, links, overflow, keyboard, pause/reduced motion, no-JS usefulness and provider failure states. Fix observed defects and confirm once. Release only with authorization and verify live output.
 
-Work in that order: unify runtime styles and interaction behaviour, verify all routes, then address deployment configuration with authenticated access. Fix actual errors found during verification and record exact reproduction/results; do not infer that all reported errors share a cause.
+Acceptance requires reference fidelity and functional correctness across routes. A fallback-font screenshot, static recolour or Home-only implementation with old inner pages does not pass.
 
-### Verification gates
+Measure performance: appropriate WebP, reserved geometry, deferred below-fold media/effects, no duplicated export runtime/assets. The 8.4MB attachment is an export artifact, not a production budget. Earlier <=20KB compressed motion and <=1.5MB route-transfer goals remain provisional review targets, not measured passes or permission to silently remove the chosen experience. Record actual costs and agreed tradeoffs. No invented frame-rate/accessibility/provider success.
 
-For runtime consolidation, run typecheck and production build, then one batched desktop/phone, light/dark review with confirmation after fixes. Cover all production routes, no horizontal overflow, keyboard/focus, contrast, reduced motion, no-JS usefulness, theme persistence, rapid project switching, image dialog and form/chat state. Use controlled chat/enquiry tests without sending mail unless authorized. An enabled-chat build needs a configured key before build; simulated credentials prove no live access.
+- Match full-site dark/mint direction, expressive type, responsive composition and named effects.
+- Keep real evidence, owner-confirmed content, editable drafts and honest enquiry outcomes.
+- Maintain one token/component/style system and this single authority.
+- Do not revive light/Inter/rectangle styling, mix old navy/blue/lime experiments or rotate accents by route.
+- Do not treat board heights, editor options, export forms or .dc.html links as production behaviour.
+- Do not fabricate private screenshots, permissions, testimonials, outcomes, pricing or guarantees.
+- Do not let motion hide essentials, steal focus, obstruct scroll or evade input; provide pause/static equivalents.
+- Do not create another governing document/archive. Historical records remain subordinate evidence.
 
-Measure performance before claiming it: no new motion dependencies or initial 3D/video; provisional motion-code budget <=20KB compressed and route transfer goal <=1.5MB remain targets, not measured passes. Use existing suitably sized WebP captures and avoid loading unused alternate imagery unnecessarily.
-
-For documentation-only consolidation, verify local links, token accuracy against CSS, preservation of the Next instruction block, valid JSON and removal of superseded governing documents. A documentation pass does not require or imply fresh runtime, accessibility or live-provider verification.
-
-Superseded documents and their archived copies are removed. Tracked originals remain recoverable through Git history. Session/evidence files record what happened at their stated date. Update this authority when a decision changes, and record evidence separately without creating another governing brief or design system.
+Documentation checks for this revision: extracted values, seven page pairs, retained operational safeguards and superseded old mandates. Build/browser/provider verification belongs to subsequent implementation.
