@@ -1,6 +1,6 @@
 # AeolusLabs — single project and design authority
 
-Updated: 5 November 2026. Status: owner-selected remodelling direction; production implementation pending.
+Updated: 5 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending.
 
 ## Overview
 
@@ -44,7 +44,7 @@ AeolusLabs is two software developers in Nigeria serving small/growing businesse
 
 **One dark-first palette on every route.** Pale sections are intentional sections, not a separate theme. The reference has no appearance toggle: remove the former system-following theme from the remodel's default shell. Do not invert pale sections/product artwork with OS appearance.
 
-Names below map extracted values to future semantic tokens; they do not claim current CSS already implements them.
+These semantic aliases are implemented from design-system/tokens.json. Each alias resolves to its --color-* token; pale sections rebind context aliases rather than defining another palette.
 
 | Token | Reference value | Role |
 | --- | --- | --- |
@@ -162,6 +162,44 @@ CTA pills: radius 999px, min-height 48px, padding-inline 24px, icon gap 10px. He
 Capture corners: desktop 16px, phone overlay 20px, standalone phone up to 22px. Product panels 20px. Fields 10px. Dots/rings circular. The former 3–4px rectangle mandate is superseded.
 
 ## Components
+
+### Executable architecture and ownership
+
+DESIGN.md governs decisions. **design-system/tokens.json is the sole editable runtime token source.** The JSON implements this authority; it is not a second brief. Update both together when an owner decision changes a normative value.
+
+| Location | Owns |
+| --- | --- |
+| design-system/tokens.json | Colour, space scale, type roles, leading, tracking, weights, radius, sizes, borders, shadows, opacity, motion, breakpoints, stacking, grid proportions and semantic aliases. |
+| scripts/design-system.mjs | Validates token references/cycles and CSS consumers; expands named breakpoints and emits deterministic CSS. No added styling dependency. |
+| scripts/reference-audit.mjs | Unpacks all reference boards and checks extracted typography, colours, spacing, sizes, grid, border and shadow decisions against the same tokens; reports missing mappings. |
+| styles/base.css | Reset, global text, links, selection and focus. |
+| styles/layout.css | Shared shell, header/footer, opening/closing layout and gutters. |
+| styles/components.css | Buttons, fields, form/chat controls, image viewer and showcase controls. |
+| styles/pages.css | Route compositions and the contextual pale surface. |
+| styles/responsive.css | Responsive layout adaptations using named breakpoints. |
+| styles/motion.css | Motion primitives and final reduced-motion policy. |
+| styles/system.css | Generated artifact, never edited manually. Ordered CSS layers: tokens → base → layout → components → pages → responsive → motion. |
+| app/globals.css | Single global entry importing the generated stylesheet. Imported once by root layout. |
+| design-system/resolve.ts | Typed alias resolution for non-CSS consumers. Pixel sizing follows semantic aliases rather than hardcoded primitive keys. |
+| design-system/media.ts | Image sizing hints derived from the same shell, breakpoints and grid tokens. Intrinsic asset dimensions remain with assets. |
+| app/layout.tsx / app/manifest.ts | Next font loading and browser metadata; browser colours read tokens.json, not copied hex values. |
+| components / app / lib | Shared UI and behaviour / route composition / domain and server logic. Do not move backend validation or provider clients into design code. |
+
+The reference audit now maps 195 extracted visual/dimensional decisions across all fourteen boards to this same source. The inventory includes founder/service/principle/product type roles, all reference leading/tracking variants, paragraph measures, section/header/footer/hero rhythm, column minima, phone-overlay placement, component padding, border opacity variants, shadows, masks and gradients. Wind, spring, tilt, magnet, marquee, pulse and variable-letter tuning have named groups for future consumers. They are reserved implementation values, not claims that those effects have shipped.
+
+Use semantic layout roles such as --layout-section-gap, --layout-hero-top and --layout-column-gap for repeated composition; use the primitive space scale within a component. The audit intentionally excludes board-viewer dimensions/runtime, intrinsic asset sizes, structural zero/auto/percentages, algorithm constants and one-off artwork coordinates. Those do not become hundreds of arbitrary tokens. Its mapping coverage proves value availability, not full property-by-property use or visual fidelity in the current app.
+
+Run pnpm tokens:audit to inspect reference coverage independently. pnpm tokens:check runs both generation validation and reference coverage; generation alone never hides a missing reference mapping. Font variables are registered on html so root-level font aliases resolve before descendant styles.
+
+Token groups have specific jobs: primitives describe reusable values, semantic aliases describe intent, component rules consume them. Use var(--space-6), var(--type-body), var(--radius-field), var(--size-control) and var(--motion-feedback) instead of local replacements. Use the .surface-light scope for pale content: it rebinds --bg/--ink/--muted/--accent/--line locally. It does not mutate global theme state.
+
+Use existing PageShell, Eyebrow, TextLink, ButtonLink and ClosingLine across routes. ButtonLink supports primary/ghost variants. Reuse real repeated patterns; do not create a universal component with dozens of layout flags. Grid proportions remain named layout tokens, not arbitrary widths on every route. Dynamic content/state, intrinsic image ratios and accessibility hiding geometry are not design-scale tokens.
+
+Breakpoints are phone=640 and stack=960 in JSON. Author @media (--phone) and @media (--stack); the generator expands them to standard CSS media queries. CSS custom properties cannot directly define media-query conditions. Do not hand-copy breakpoint numbers into styles or image sizes.
+
+Workflow: edit tokens or its owning style file → pnpm tokens:generate → pnpm tokens:check → pnpm typecheck / pnpm build. Dev generates on startup. Typecheck/build reject stale generated CSS, unknown token references, reference cycles, raw colours, typography/radius literals in author styles, raw width breakpoints and undefined CSS variables. Runtime font variables and a per-instance reveal-delay variable are explicit external inputs. Generated output stays committed so ordinary builds are reproducible.
+
+Shared colours, fonts, type/space roles, controls, shell, metadata and existing motion now consume this foundation. No-JS content remains server rendered. This architecture pass does not claim the attachment's wind, marquees, layered media, pulse artwork or every page composition has been implemented. Those follow the reference contract below; do not mistake the transitional layouts for a new direction.
 
 ### Shared implementation
 

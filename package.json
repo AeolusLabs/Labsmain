@@ -4,10 +4,13 @@
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "pnpm tokens:generate && next dev",
+    "build": "pnpm tokens:check && next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "pnpm tokens:check && tsc --noEmit",
+    "tokens:generate": "node scripts/design-system.mjs",
+    "tokens:check": "node scripts/design-system.mjs --check && node scripts/reference-audit.mjs",
+    "tokens:audit": "node scripts/reference-audit.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.4.0",

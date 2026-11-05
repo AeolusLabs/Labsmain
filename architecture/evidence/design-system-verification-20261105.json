@@ -1,0 +1,33 @@
+{
+  "recorded_at": "2026-11-05T13:18:44.111236+00:00",
+  "scope": "Shared token and style architecture, not full reference remodel",
+  "checks": {
+    "tokens_check": "PASS: 361 tokens, six style owners, current generated CSS, 14-board/195-decision coverage audit",
+    "typecheck": "PASS after complete reference token audit",
+    "build": "PASS after complete reference token audit; 20 generated pages",
+    "negative_contract_fixtures": "PASS: missing reference, cycle, stale output, undefined CSS variable and raw colour each rejected in disposable fixture",
+    "http_routes": "PASS: /, /work, /work/tikvah, /work/vib3pulse, /solutions, /products, /about, /contact, /privacy all HTTP 200 with one h1 and shared theme colour",
+    "responsive_browser_dom": "PASS: nine routes at 390/768/1440; no horizontal overflow, 20px phone/40px other gutters, Bricolage heading font",
+    "runtime_styles": "PASS: loaded Latin Instrument Sans and Bricolage faces; mint buttons rgb(123,232,203), support text rgb(169,184,179), both Tikvah captures loaded",
+    "controls": "PASS: mobile view selection, single selected tab, native image dialog open/close, Products nav present, old theme toggle absent",
+    "form_dimensions": "PASS: 16px field font, 52px field height, 10px radius",
+    "no_js_smoke": "PASS: sandbox without scripts contains homepage headline and contact link",
+    "api_smoke": "PASS: empty enquiry JSON returns validation 400; brief without configured key returns unavailable 503; no mail sent",
+    "manifest": "PASS: theme/background #0A1116 match token source",
+    "design_detector": "PASS: detector returned [] for changed authored UI/style targets",
+    "screenshots": "UNVERIFIED: T3 screenshot timed out twice. Static preview inspected but host theme injection and resource failures prevent treating it as visual-fidelity evidence.",
+    "reduced_motion": "Implementation consolidated in final motion layer; live preference emulation not tested",
+    "live_providers": "UNVERIFIED; no credentials or outbound submission used"
+  },
+  "next": "Implement full reference compositions and expressive effects using this foundation; complete interactive visual and reduced-motion verification before release.",
+  "reference_audit": {
+    "boards": 14,
+    "mapped_decisions": 195,
+    "missing": 0,
+    "token_count": 361,
+    "coverage_file": "architecture/evidence/reference-token-coverage-20261105.json",
+    "negative_fixtures": "Missing founder type and detail spacing correctly fail audit",
+    "resolver": "TypeScript compiled with application interop settings; alias and pixel validation passed",
+    "scope": "Availability of audited values, not complete application/reference fidelity"
+  }
+}

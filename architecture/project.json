@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "revision": 65,
+  "revision": 67,
   "project_id": "aeolus-labs-website-development",
   "name": "AeolusLabs website",
   "purpose": {
@@ -11,7 +11,7 @@
   "planning_home": "architecture",
   "existing_plan_files": [],
   "created_at": "2026-11-04T06:35:41+00:00",
-  "updated_at": "2026-11-05",
+  "updated_at": "2026-11-05T14:29:39.887244+00:00",
   "tasks": [
     {
       "id": "T-001",
@@ -776,6 +776,59 @@
       ],
       "requirements_sha256": "be8a4a3f1e2ccf8e44a8584fffeb7339d5386662d86c25d9f690c2816b41f901",
       "verified_at": null
+    },
+    {
+      "id": "T-020",
+      "title": "Consolidate executable design tokens and shared style architecture",
+      "purpose": "Implement the owner-requested reusable foundation for the selected HTML reference. Full page remodel remains separate.",
+      "owner": "codex",
+      "depends_on": [],
+      "status": "ready_for_verification",
+      "approval": {
+        "state": "approved",
+        "basis": "Owner requested general shared tokens, logical dimensions and proper app architecture on 5 November 2026.",
+        "at": "2026-11-05T13:18:44.111236+00:00"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "AC-01",
+          "check": "One runtime token source generates layered CSS with invalid-reference and stale-output guards",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/design-system-verification-20261105.json"
+          ]
+        },
+        {
+          "id": "AC-02",
+          "check": "Shared styles, fonts, metadata and media sizing consume the token foundation; typecheck/build pass",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/design-system-verification-20261105.json"
+          ]
+        },
+        {
+          "id": "AC-03",
+          "check": "Nine routes pass responsive browser DOM and safe interaction smoke checks at 390/768/1440",
+          "mandatory": true,
+          "result": "pass",
+          "evidence": [
+            "architecture/evidence/design-system-verification-20261105.json"
+          ]
+        },
+        {
+          "id": "AC-04",
+          "check": "Interactive visual and live reduced-motion review completed",
+          "mandatory": true,
+          "result": "unverified",
+          "evidence": [
+            "architecture/evidence/design-system-verification-20261105.json"
+          ]
+        }
+      ],
+      "requirements_sha256": null,
+      "verified_at": null
     }
   ],
   "milestones": [
@@ -834,11 +887,11 @@
   ],
   "active_session_id": null,
   "latest_handoff": {
-    "session_id": "20261105-authority-consolidation",
-    "at": "2026-11-05",
-    "summary": "DESIGN.md is the single authority. Owner requested deletion of superseded briefs, forwarding files and archive copies; these are now removed. Runtime fixes remain open.",
-    "next": "Resolve the documented CSS and motion inconsistencies against DESIGN.md, then run the integrated verification gates.",
-    "notes": "Task results and prior evidence retained without promoting completion. Hosting observations date from 4 November and require rechecking."
+    "session_id": "20261105-design-token-foundation",
+    "at": "2026-11-05T13:18:44.111236+00:00",
+    "summary": "Extended single token source against all fourteen HTML boards: 195 audited style/dimension decisions mapped, no missing values; named motion/effect groups and typed resolver added. Build/typecheck and token contract pass. Full reference remodel remains pending.",
+    "next": "Implement reference compositions/effects using the audited token source; retain open visual/reduced-motion verification.",
+    "notes": "No deployment or outbound provider test. DESIGN.md remains the authority; this record is execution evidence only."
   },
   "dispatches": [],
   "authority_file": "DESIGN.md",

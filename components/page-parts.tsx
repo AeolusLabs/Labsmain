@@ -14,8 +14,8 @@ export function TextLink({ href, children, external = false }: { href: string; c
   return <Link className="text-link" href={href} {...props}>{children} <Arrow /></Link>
 }
 
-export function ButtonLink({ href, children }: { href: string; children: ReactNode }) {
-  return <Link className="button" href={href}>{children} <Arrow /></Link>
+export function ButtonLink({ href, children, variant = 'primary' }: { href: string; children: ReactNode; variant?: 'primary' | 'ghost' }) {
+  return <Link className={variant === 'ghost' ? 'button button--ghost' : 'button'} href={href}>{children} <Arrow /></Link>
 }
 
 export function ClosingLine({ title, action, href = '/contact' }: { title: string; action: string; href?: string }) {

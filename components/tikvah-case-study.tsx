@@ -1,3 +1,4 @@
+import { imageSizes } from '@/design-system/media'
 import { PageShell } from '@/components/site-header'
 import { ProjectImage } from '@/components/project-image'
 import { ButtonLink, ClosingLine, Eyebrow, TextLink } from '@/components/page-parts'
@@ -30,7 +31,7 @@ export function TikvahCaseStudy() {
     </dl>
 
     <figure className="case-figure">
-      <ProjectImage src="/projects/tikvah/home-desktop.png" alt="Tikvah’s desktop homepage, with its introduction, plant illustration and account entry point" width={2560} height={1800} sizes="(max-width: 1200px) 88vw, 1160px" />
+      <ProjectImage src="/projects/tikvah/home-desktop.png" alt="Tikvah’s desktop homepage, with its introduction, plant illustration and account entry point" width={2560} height={1800} sizes={imageSizes.full} />
       <figcaption><span>The first impression</span><span>Actual website. Select the image to enlarge it.</span></figcaption>
     </figure>
 
@@ -48,8 +49,8 @@ export function TikvahCaseStudy() {
       <div>
         <p>The public journey introduces the service, explains the next step and gives visitors a place to begin.</p>
         <ol className="journey">{journey.map(([title, text], i) => <li key={title}><span>0{i + 1}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
-        <figure className="case-figure case-mobile" style={{ marginTop: 40 }}>
-          <ProjectImage src="/projects/tikvah/home-mobile.png" alt="Tikvah’s homepage on a mobile screen" width={780} height={1688} sizes="(max-width: 700px) 70vw, 330px" />
+        <figure className="case-figure case-mobile">
+          <ProjectImage src="/projects/tikvah/home-mobile.png" alt="Tikvah’s homepage on a mobile screen" width={780} height={1688} sizes={imageSizes.phone} />
           <figcaption><span>The mobile experience</span></figcaption>
         </figure>
       </div>

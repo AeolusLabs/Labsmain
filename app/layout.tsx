@@ -1,12 +1,19 @@
 import { Analytics } from '@vercel/analytics/next'
-import { Inter } from 'next/font/google'
+import { Bricolage_Grotesque, Instrument_Sans } from 'next/font/google'
 import type { Metadata, Viewport } from 'next'
 import { siteUrl } from '@/lib/content'
+import tokens from '@/design-system/tokens.json'
 import './globals.css'
 
-const body = Inter({
+const body = Instrument_Sans({
   subsets: ['latin'],
   variable: '--font-body',
+  display: 'swap',
+})
+
+const display = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-display',
   display: 'swap',
 })
 
@@ -26,21 +33,14 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f8f8f6' },
-    { media: '(prefers-color-scheme: dark)', color: '#141a20' },
-  ],
+  colorScheme: 'dark',
+  themeColor: tokens.color.bg,
 }
-
-// Applies the saved (or system) appearance before first paint so the page never flashes.
-const themeScript = `try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}`
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body className={body.variable}>
+    <html lang="en" className={`${body.variable} ${display.variable}`}>
+      <body>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

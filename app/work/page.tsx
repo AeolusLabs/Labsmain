@@ -1,3 +1,4 @@
+import { imageSizes } from '@/design-system/media'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PageShell } from '@/components/site-header'
@@ -14,7 +15,7 @@ export default function Work() {
     </div>
 
     <article className="work-entry">
-      <Link className="work-image" href="/work/tikvah"><Image src="/projects/tikvah/home-desktop.png" width={2560} height={1800} sizes="(max-width: 700px) 88vw, 760px" alt="Tikvah’s public website" unoptimized /></Link>
+      <Link className="work-image" href="/work/tikvah"><Image src="/projects/tikvah/home-desktop.png" width={2560} height={1800} sizes={imageSizes.work} alt="Tikvah’s public website" unoptimized /></Link>
       <div className="work-brief">
         <Eyebrow>Client project</Eyebrow>
         <h2>Tikvah</h2>

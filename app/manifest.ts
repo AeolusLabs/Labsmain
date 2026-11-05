@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import tokens from '@/design-system/tokens.json'
 
 // Used by Android (Chrome install and home-screen shortcuts) and other browsers that read a web manifest.
 export default function manifest(): MetadataRoute.Manifest {
@@ -9,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     scope: '/',
     display: 'standalone',
-    background_color: '#f8f8f6',
-    theme_color: '#f8f8f6',
+    background_color: tokens.color.bg,
+    theme_color: tokens.color.bg,
     icons: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },

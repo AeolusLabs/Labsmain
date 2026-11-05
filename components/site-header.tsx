@@ -2,12 +2,11 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { Brand } from './brand'
 import { Navigation } from './navigation'
-import { ThemeToggle } from './theme-toggle'
 
 export function SiteHeader() {
   return <header className="site-header wrap">
     <Link href="/" className="brand" aria-label="AeolusLabs home"><Brand /></Link>
-    <div className="header-tools"><Navigation /><ThemeToggle /></div>
+    <div className="header-tools"><Navigation /></div>
   </header>
 }
 

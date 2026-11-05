@@ -1,0 +1,14 @@
+/* Motion owns this concern; values come from design-system/tokens.json. */
+.rise { animation: rise var(--motion-entrance) var(--motion-settle) both; }
+.expertise-list a > span:first-child { transition: transform var(--motion-feedback) var(--motion-ease); }
+.button:active { transform: scale(var(--motion-press-scale)); }
+[data-reveal] { transition: opacity var(--motion-reveal) var(--motion-ease), transform var(--motion-reveal) var(--motion-ease); transition-delay: var(--reveal-delay, 0ms); }
+[data-reveal='pending'] { opacity: 0; transform: translateY(var(--motion-reveal-distance)); }
+@keyframes rise { from { opacity: 0; transform: translateY(var(--motion-entrance-distance)); } to { opacity: 1; transform: none; } }
+
+/* Final motion policy applies after every component/page/responsive rule. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  [data-reveal], [data-reveal='pending'] { opacity: 1; transform: none; }
+  .button:active, .switch button:active, .expertise-list a > span:first-child { transform: none; }
+}
