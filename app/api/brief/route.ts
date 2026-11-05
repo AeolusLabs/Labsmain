@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
 import { DEFAULT_MODEL, MAX_USER_TURNS, finishBriefTool, parseConversation, systemPrompt } from '@/lib/brief-assistant'
+import { OpenRouterError, askOpenRouter, assistantProvider, type Turn } from '@/lib/brief-provider'
 import { needOptions, type Need } from '@/lib/need-options'
 import { clientIp, createLimiter, sameOrigin } from '@/lib/rate-limit'
 
@@ -14,7 +15,7 @@ const UNAVAILABLE = 'The assistant is unavailable right now. You can use the for
 
 // Visitor chat is untrusted input, and nothing the model returns has side effects: the reply and the draft
 // brief are only shown to the visitor, who edits and sends the brief themselves through the normal form.
-// The client is pinned to Anthropic's own address and the site's key so that settings on a developer
+// The Anthropic client is pinned to Anthropic's own address and the site's key so that settings on a developer
 // machine (ANTHROPIC_BASE_URL, ANTHROPIC_AUTH_TOKEN, profiles) can never redirect visitor chats elsewhere.
 function createClient(apiKey: string) {
   return new Anthropic({
@@ -28,8 +29,10 @@ function createClient(apiKey: string) {
   })
 }
 
-async function ask(client: Anthropic, messages: { role: 'user' | 'assistant'; content: string }[], wrapUp: boolean, emphasise: boolean) {
-  return client.messages.create({
+type ChatMessage = { role: 'user' | 'assistant'; content: string }
+
+async function askAnthropic(apiKey: string, messages: ChatMessage[], wrapUp: boolean, emphasise: boolean): Promise<Turn> {
+  const response = await createClient(apiKey).messages.create({
     model: process.env.BRIEF_ASSISTANT_MODEL || DEFAULT_MODEL,
     max_tokens: 4000,
     system: systemPrompt(wrapUp, emphasise),
@@ -38,25 +41,27 @@ async function ask(client: Anthropic, messages: { role: 'user' | 'assistant'; co
     output_config: { effort: 'low' },
     messages,
   })
+  const tool = response.content.find((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use' && b.name === 'finish_brief')
+  return {
+    refused: response.stop_reason === 'refusal',
+    text: response.content.flatMap(b => (b.type === 'text' ? [b.text] : [])).join('\n').trim().slice(0, 1500),
+    toolInput: tool?.input ?? null,
+  }
 }
 
 type Brief = { message: string; need: Need; brief: string }
 
-function readBrief(content: Anthropic.ContentBlock[]): Brief | null {
-  const block = content.find((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use' && b.name === 'finish_brief')
-  if (!block || !block.input || typeof block.input !== 'object') return null
-  const { message, need, brief } = block.input as Record<string, unknown>
+function readBrief(input: unknown): Brief | null {
+  if (!input || typeof input !== 'object') return null
+  const { message, need, brief } = input as Record<string, unknown>
   if (typeof message !== 'string' || typeof brief !== 'string' || !brief.trim()) return null
   const matched = needOptions.find(option => option === need) ?? needOptions[0]
   return { message: message.trim().slice(0, 500), need: matched, brief: brief.trim().slice(0, 2500) }
 }
 
-const readText = (content: Anthropic.ContentBlock[]) =>
-  content.flatMap(b => (b.type === 'text' ? [b.text] : [])).join('\n').trim().slice(0, 1500)
-
 export async function POST(request: Request) {
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) return fail(UNAVAILABLE, 503)
+  const provider = assistantProvider()
+  if (!provider) return fail(UNAVAILABLE, 503)
   if (!sameOrigin(request)) return fail('Please use this website to talk to the assistant.', 403)
   if (Number(request.headers.get('content-length') || 0) > MAX_BODY) return fail('That message is too long.', 413)
 
@@ -74,30 +79,33 @@ export async function POST(request: Request) {
 
   const userTurns = messages.filter(m => m.role === 'user').length
   const wrapUp = body.finish === true || userTurns >= MAX_USER_TURNS
-  const client = createClient(apiKey)
+  const ask = (emphasise: boolean) => provider === 'openrouter'
+    ? askOpenRouter(process.env.OPENROUTER_API_KEY!, messages, wrapUp, emphasise)
+    : askAnthropic(process.env.ANTHROPIC_API_KEY!, messages, wrapUp, emphasise)
 
   try {
-    let response = await ask(client, messages, wrapUp, false)
+    let response = await ask(false)
     // Forced tool use is not available on the newest models, so wrapping up is requested in the prompt.
     // If the model still answers in text, ask once more, then give up politely.
-    if (wrapUp && !readBrief(response.content) && response.stop_reason !== 'refusal') response = await ask(client, messages, true, true)
+    if (wrapUp && !readBrief(response.toolInput) && !response.refused) response = await ask(true)
 
-    if (response.stop_reason === 'refusal') {
+    if (response.refused) {
       return NextResponse.json({ type: 'reply', reply: 'I can’t help with that here. Please describe your project in the form instead and the team will read it.' })
     }
-    const brief = readBrief(response.content)
+    const brief = readBrief(response.toolInput)
     if (brief) return NextResponse.json({ type: 'brief', ...brief })
     if (wrapUp) return fail('I couldn’t put the summary together. Please try again, or use the form instead.', 502)
 
-    const reply = readText(response.content)
+    const reply = response.text
     if (!reply) return fail(UNAVAILABLE, 502)
     return NextResponse.json({ type: 'reply', reply })
   } catch (error) {
     // Logged for the Vercel function logs. Never includes anything the visitor wrote.
-    if (error instanceof Anthropic.AuthenticationError) console.error('Brief assistant: the Anthropic API key was rejected. Check ANTHROPIC_API_KEY.')
+    if (error instanceof OpenRouterError) console.error(`Brief assistant: OpenRouter returned ${error.status}: ${error.message}`)
+    else if (error instanceof Anthropic.AuthenticationError) console.error('Brief assistant: the Anthropic API key was rejected. Check ANTHROPIC_API_KEY.')
     else if (error instanceof Anthropic.RateLimitError) console.error('Brief assistant: Anthropic rate limit reached.')
     else if (error instanceof Anthropic.APIError) console.error(`Brief assistant: Anthropic returned ${error.status}: ${String(error.message).slice(0, 200)}`)
     else console.error('Brief assistant failed:', error instanceof Error ? error.message : 'unknown error')
-    return fail(UNAVAILABLE, error instanceof Anthropic.RateLimitError ? 503 : 502)
+    return fail(UNAVAILABLE, (error instanceof Anthropic.RateLimitError || (error instanceof OpenRouterError && error.status === 429)) ? 503 : 502)
   }
 }

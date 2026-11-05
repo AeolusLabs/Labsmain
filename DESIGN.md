@@ -250,7 +250,7 @@ Keep Resend delivery: RESEND_API_KEY enables sending; ENQUIRY_FROM_EMAIL optiona
 
 Keep honeypot, same-origin/payload validation and best-effort per-visitor/per-instance limits: 5 enquiries and 40 chat requests per 15 minutes. In-memory limits are not shared across serverless instances; durable hosting protection remains a launch check.
 
-ANTHROPIC_API_KEY must exist before the prerendered Contact build and at runtime for /api/brief. Without it retain the form. BRIEF_ASSISTANT_MODEL overrides the source default (currently claude-opus-5-5); confirm account availability. Never expose credentials through NEXT_PUBLIC_. Mock provider configuration is local verification only.
+ANTHROPIC_API_KEY or OPENROUTER_API_KEY must exist before the prerendered Contact build and at runtime for /api/brief (Anthropic wins if both are set; BRIEF_ASSISTANT_PROVIDER overrides; OPENROUTER_MODEL sets the OpenRouter slug, default anthropic/claude-sonnet-4.5, tool calling required). Without a key retain the form. BRIEF_ASSISTANT_MODEL overrides the source default (currently claude-opus-5-5); confirm account availability. Never expose credentials through NEXT_PUBLIC_. Mock provider configuration is local verification only.
 
 Assistant output is a reviewable/editable draft, never automatic enquiry submission. Preserve focus handoff and explicit visitor send. Anthropic processes messages; the site does not persist conversations. No sensitive-data requests, invented facts, pricing or delivery promises.
 
