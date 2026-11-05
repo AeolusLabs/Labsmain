@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 
-/** Small client boundary; Home content remains server rendered and usable without it. */
+/** Small client boundary for the wind, reveals and motion toggle; page content remains server rendered and usable without it. Used by Home and every remodelled page. */
 export function HomeExperience({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null)
   const [paused, setPaused] = useState(false)
@@ -22,7 +22,7 @@ export function HomeExperience({ children }: { children: ReactNode }) {
     const el = root.current
     if (!el) return
     const atmosphere = el.querySelector<HTMLElement>('.home-atmosphere')
-    const hero = el.querySelector<HTMLElement>('.home-hero')
+    const hero = el.querySelector<HTMLElement>('.home-hero, .page-hero')
     const header = el.querySelector<HTMLElement>('header')
     const size = () => {
       if (atmosphere && hero) atmosphere.style.height = `${hero.getBoundingClientRect().bottom - el.getBoundingClientRect().top}px`
@@ -55,3 +55,5 @@ export function HomeExperience({ children }: { children: ReactNode }) {
     {ready && <button className="home-motion-toggle" type="button" aria-pressed={paused || reduced} disabled={reduced} onClick={() => setPaused(value => !value)}>{reduced ? 'Reduced motion' : paused ? 'Resume motion' : 'Pause motion'}</button>}
   </div>
 }
+
+export { HomeExperience as StudioExperience }
