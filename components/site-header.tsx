@@ -10,11 +10,11 @@ export function SiteHeader() {
   </header>
 }
 
-export function SiteFooter() {
+export function SiteFooter({ variant = 'default' }: { variant?: 'default' | 'studio' }) {
   return <footer className="site-footer"><div className="wrap">
-    <span>AeolusLabs · Digitalize. Automate. Elevate.</span>
-    <nav aria-label="Footer navigation"><Link href="/work">Work</Link><Link href="/products">Products</Link><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link></nav>
-    <span>© {new Date().getFullYear()} AeolusLabs</span>
+    <span>{variant === 'studio' ? `© ${new Date().getFullYear()} AeolusLabs. Software built in Nigeria.` : 'AeolusLabs · Digitalize. Automate. Elevate.'}</span>
+    <nav aria-label="Footer navigation"><Link href="/work">Work</Link>{variant === 'studio' && <Link href="/solutions">Solutions</Link>}<Link href="/products">Products</Link>{variant === 'studio' && <Link href="/about">About</Link>}<Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link></nav>
+    {variant !== 'studio' && <span>© {new Date().getFullYear()} AeolusLabs</span>}
   </div></footer>
 }
 

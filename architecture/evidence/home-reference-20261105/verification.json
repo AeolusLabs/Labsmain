@@ -1,0 +1,104 @@
+{
+  "checks": [
+    {
+      "name": "one semantic h1",
+      "pass": true
+    },
+    {
+      "name": "all reference sections",
+      "pass": true
+    },
+    {
+      "name": "desktop no overflow",
+      "pass": true
+    },
+    {
+      "name": "intended fonts loaded",
+      "pass": true,
+      "detail": {
+        "body": "\"Instrument Sans\", \"Instrument Sans Fallback\", \"Instrument Sans\", system-ui, sans-serif",
+        "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Bricolage Grotesque\", sans-serif",
+        "accent": "rgb(123, 232, 203)"
+      }
+    },
+    {
+      "name": "wind canvas changes while active",
+      "pass": true
+    },
+    {
+      "name": "pause stops animation scheduler",
+      "pass": true
+    },
+    {
+      "name": "pause exposes static state",
+      "pass": true
+    },
+    {
+      "name": "resume restarts scheduler",
+      "pass": true
+    },
+    {
+      "name": "service highlight responds to focus",
+      "pass": true
+    },
+    {
+      "name": "desktop capture enlarges",
+      "pass": true
+    },
+    {
+      "name": "Escape closes viewer",
+      "pass": true
+    },
+    {
+      "name": "dialog returns focus",
+      "pass": true
+    },
+    {
+      "name": "tablet no overflow",
+      "pass": true
+    },
+    {
+      "name": "phone no overflow",
+      "pass": true
+    },
+    {
+      "name": "system reduced motion respected",
+      "pass": true
+    },
+    {
+      "name": "reduced motion headline settled",
+      "pass": true
+    },
+    {
+      "name": "phone capture enlarges",
+      "pass": true
+    },
+    {
+      "name": "no-JS headline visible",
+      "pass": true
+    },
+    {
+      "name": "no-JS contact usable",
+      "pass": true
+    },
+    {
+      "name": "no-JS product present",
+      "pass": true
+    },
+    {
+      "name": "no runtime or motion setup errors",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "desktop-hero-active.png",
+    "desktop-full-paused.png",
+    "phone-full-reduced.png"
+  ],
+  "measurements": {
+    "initialResourceBytes": 1084666,
+    "motionEngineGzipBytes": 7835
+  }
+}

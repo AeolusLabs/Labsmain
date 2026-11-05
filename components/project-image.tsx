@@ -3,11 +3,11 @@
 import Image from 'next/image'
 import { useRef } from 'react'
 
-export function ProjectImage({ src, alt, width, height, sizes }: { src: string; alt: string; width: number; height: number; sizes: string }) {
+export function ProjectImage({ src, alt, width, height, sizes, animate = false, triggerOnly = false }: { src: string; alt: string; width: number; height: number; sizes: string; animate?: boolean; triggerOnly?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null)
   return <>
     <button type="button" className="project-image-open" aria-label={`Enlarge: ${alt}`} onClick={() => dialog.current?.showModal()}>
-      <Image src={src} alt={alt} width={width} height={height} sizes={sizes} unoptimized />
+      {!triggerOnly && <Image src={src} alt={alt} width={width} height={height} sizes={sizes} data-clip-img={animate ? '' : undefined} unoptimized />}
       <span>View full size ↗</span>
     </button>
     <dialog ref={dialog} className="project-image-dialog" onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}>

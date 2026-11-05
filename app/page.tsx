@@ -1,57 +1,75 @@
 import Link from 'next/link'
-import { PageShell } from '@/components/site-header'
+import Image from 'next/image'
+import { SiteHeader, SiteFooter } from '@/components/site-header'
 import { Arrow, ButtonLink, TextLink } from '@/components/page-parts'
-import { TikvahCanvas } from '@/components/tikvah-canvas'
-import { HeroEntrance } from '@/components/hero-entrance'
-import { Reveal } from '@/components/reveal'
+import { HomeExperience } from '@/components/home-experience'
+import { ProjectImage } from '@/components/project-image'
+import { imageSizes } from '@/design-system/media'
 import tokens from '@/design-system/tokens.json'
+import { email } from '@/lib/content'
 
 const expertise = [
   ['Web & mobile', 'Websites, customer portals and applications.'],
   ['Business systems', 'Custom tools, APIs and integrations.'],
   ['AI & automation', 'Less repetitive work, with human oversight.'],
 ]
+const marqueeRows = [
+  ['Websites', 'Applications', 'Systems', 'Integrations'],
+  ['AI', 'Automation', 'Maintenance', 'Support'],
+]
 
 export default function Home() {
-  return <PageShell bare>
-    <div className="home">
-      <div className="wrap intent-hero">
-        <HeroEntrance><h1>Make room<br />for better.</h1></HeroEntrance>
-        <div className="hero-support">
-          <p>Websites, applications and systems built around the way your business works.</p>
-          <p className="support-detail">We’re AeolusLabs, two software developers in Nigeria helping African businesses turn practical needs into useful software.</p>
-          <ButtonLink href="/contact">Tell us what you’re building</ButtonLink>
+  return <HomeExperience>
+    <a className="skip-link" href="#main-content">Skip to content</a>
+    <div className="home-atmosphere" aria-hidden="true"><canvas data-wind="" /><div data-spot="" /></div>
+    <SiteHeader />
+    <main id="main-content">
+      <section className="home-hero wrap" aria-labelledby="home-title">
+        <div className="home-hero-content" data-par={tokens.motion['parallax-hero']}>
+          <p className="eyebrow" data-reveal="">Software studio / Nigeria</p>
+          <h1 id="home-title"><span className="home-line-mask"><span data-hw="">Make room</span></span><span className="home-line-mask"><span data-hw="">for <em>better.</em></span></span></h1>
+          <div className="home-hero-support">
+            <p className="home-lead" data-reveal="">Websites, applications and systems built around the way your business works.</p>
+            <div className="home-hero-detail">
+              <p>We’re AeolusLabs, two software developers in Nigeria helping African businesses turn practical needs into useful software.</p>
+              <div className="home-actions"><span data-magnet=""><ButtonLink href="/contact">Tell us what you’re building</ButtonLink></span><span data-magnet=""><ButtonLink href="/work" variant="ghost">See our work</ButtonLink></span></div>
+            </div>
+          </div>
+          <p className="home-wind-hint" data-reveal="">The wind responds. Move your cursor through it.</p>
         </div>
+      </section>
+
+      <div className="home-marquees" aria-hidden="true">
+        {marqueeRows.map((words, row) => <div className={row ? 'home-marquee home-marquee-outline' : 'home-marquee'} data-marquee="" data-dir={row ? 1 : -1} data-speed={row ? tokens.marquee['secondary-speed'] : tokens.marquee['primary-speed']} key={row}>
+          <div className="home-marquee-track">{[0, 1].map(copy => <span key={copy}>{words.map(word => <span key={word}>{word}<i /></span>)}</span>)}</div>
+        </div>)}
       </div>
 
-      <section className="wrap feature-story" aria-labelledby="feature-title">
-        <div className="feature-heading"><span className="plain-label">Selected client work</span></div>
-        <div className="feature-layout">
-          <TikvahCanvas />
-          <Reveal delay={tokens.motion['stagger-feature']}>
-            <div className="feature-caption">
-              <div><h2 id="feature-title">Tikvah, a place for human connection.</h2><p>A complete emotional-support platform, delivered from frontend to backend.</p></div>
-              <div className="caption-links"><TextLink href="/work/tikvah">Explore the case study</TextLink><TextLink href="/work">All work</TextLink></div>
-            </div>
-          </Reveal>
-        </div>
+      <section className="home-work wrap" aria-labelledby="feature-title">
+        <div className="home-work-heading"><div data-reveal=""><p className="eyebrow">Selected client work</p><h2 id="feature-title">Tikvah, a place for human connection.</h2></div><p data-reveal="">A complete emotional-support platform, delivered from frontend to backend.</p></div>
+        <div data-par={tokens.motion['parallax-feature']}><div className="home-project-stage">
+          <div className="home-project-visual" data-tilt="">
+            <div data-depth={tokens.tilt['layer-back']}><div className="home-desktop-capture" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-desktop.webp" alt="Tikvah’s desktop homepage, with its introduction, plant illustration and account entry point" width={2560} height={1800} sizes={imageSizes.full} unoptimized /></div></div>
+            <div className="home-phone-capture" data-depth={tokens.tilt['layer-front']} data-float=""><div data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-mobile.webp" alt="Tikvah’s homepage on a mobile screen" width={780} height={1688} sizes={tokens.size['phone-overlay']} unoptimized /></div></div>
+          </div>
+          <div className="home-desktop-hitarea"><ProjectImage src="/projects/tikvah/home-desktop.webp" alt="Tikvah’s desktop homepage, with its introduction, plant illustration and account entry point" width={2560} height={1800} sizes={imageSizes.full} triggerOnly /></div>
+          <div className="home-phone-hitarea"><ProjectImage src="/projects/tikvah/home-mobile.webp" alt="Tikvah’s homepage on a mobile screen" width={780} height={1688} sizes={tokens.size['phone-overlay']} triggerOnly /></div>
+        </div></div>
+        <div className="home-work-caption" data-reveal=""><p>Actual website captures. Scope: frontend and backend.</p><div className="home-actions"><TextLink href="/work/tikvah">Explore the case study</TextLink><TextLink href="/work">All work</TextLink></div></div>
       </section>
 
-      <section className="expertise" aria-labelledby="help-title"><div className="wrap expertise-inner">
-        <div>
-          <Reveal><h2 id="help-title">Start with the need. Then choose the tools.</h2></Reveal>
-          <Reveal delay={tokens.motion.stagger}><p>You don’t need a technical brief before we can have a useful conversation. We listen to how things work today, agree on a useful scope, and develop the solution with you involved.</p></Reveal>
-          <Reveal delay={tokens.motion.stagger * 2}><p className="lead-line">Understand. Build. Keep improving.</p></Reveal>
-        </div>
-        <div className="expertise-list">{expertise.map(([title, text], i) => <Reveal key={title} delay={i * tokens.motion.stagger}>
-          <Link href="/solutions"><span><strong>{title}</strong><small>{text}</small></span><Arrow /></Link>
-        </Reveal>)}</div>
+      <section className="home-services surface-light" aria-labelledby="help-title"><div className="wrap home-services-inner">
+        <div className="home-services-copy" data-reveal=""><p className="eyebrow">What we do</p><h2 id="help-title">Start with the need. Then choose the tools.</h2><p>You don’t need a technical brief before we can have a useful conversation. We listen to how things work today, agree on a useful scope, and develop the solution with you involved.</p><p className="home-principle">Understand. Build. Keep improving.</p></div>
+        <div className="home-service-list" data-hl=""><div className="home-service-highlight" data-hl-bar="" aria-hidden="true" />{expertise.map(([title, text]) => <Link className="home-service-row" data-hl-row="" data-reveal="" href="/solutions" key={title}><div data-hl-inner=""><h3>{title}</h3><p>{text}</p></div><span data-hl-arrow="" aria-hidden="true"><Arrow /></span></Link>)}</div>
       </div></section>
 
-      <section className="wrap closing-line" aria-labelledby="close-title">
-        <Reveal><h2 id="close-title">What could work better?</h2></Reveal>
-        <Reveal delay={tokens.motion['stagger-feature']}><ButtonLink href="/contact">Let’s talk</ButtonLink></Reveal>
+      <section className="home-product wrap" aria-label="Our own product"><Link className="home-product-panel" href="/products" data-reveal=""><canvas data-pulse="" aria-hidden="true" /><div className="home-product-inner"><div><p className="eyebrow">Our own product</p><h2>Vib3Pulse.</h2><p className="home-product-tagline">Events. Tickets. Community.</p></div><span className="home-product-cta">See our products <Arrow /></span></div></Link></section>
+
+      <section className="home-closing wrap" aria-labelledby="close-title">
+        <h2 id="close-title" data-wl="" aria-label="What could work better?">{[['What', 'could'], ['work', 'better?']].map((line, i) => <span className="home-closing-line" aria-hidden="true" key={i}>{line.map(word => <span className={word === 'better?' ? 'home-word home-emphasis' : 'home-word'} key={word}>{[...word].map((letter, k) => <span data-l="" key={k}>{letter}</span>)}</span>)}</span>)}</h2>
+        <div className="home-actions" data-reveal=""><span data-magnet=""><ButtonLink href="/contact">Let’s talk</ButtonLink></span><a className="text-link" href={`mailto:${email}`}>{email}</a></div>
       </section>
-    </div>
-  </PageShell>
+    </main>
+    <SiteFooter variant="studio" />
+  </HomeExperience>
 }
