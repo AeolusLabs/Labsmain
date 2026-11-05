@@ -13,7 +13,7 @@ This remains the only governing document for product, visual design, behaviour a
 The attachment has fourteen boards: Home, Work, Tikvah case study, Solutions, Products, About and Contact at 1440px, then the same seven at 390px. Phone boards import their corresponding page: one responsive system. Outer viewer background, loading/unpacking UI, editor controls and fixed iframe heights are not website design.
 
 - Attachment: `file_f7f82278-456e-498e-b1bc-accceac84a52`, named `AeolusLabs Website.html`.
-- Original: `C:/Users/INDIVIDUAL/.t3/userdata/attachments/mcp-61d3584b-64db-45b2-869d-86510eed5f7f-692be835-5789-41bf-abed-7f316e6fbc10-html.html`.
+- Repository reference: [architecture/AeolusLabs Website.html](<architecture/AeolusLabs Website.html>). This is the owner-supplied visual reference; DESIGN.md remains the single written authority.
 - SHA-256: `1fef6d6835121acb974feb5bd20f07560c9f4002ca85025cba50223c0c6e8b99`.
 - Inspection: unpacked all fourteen templates; inspected shared motion engine and embedded assets. Static Home composition rendered, but local font loading failed there, so fallback-font rendering is not typography approval. Interactive inspection was unavailable. Behaviour below is extracted from source, not claimed runtime-tested.
 
