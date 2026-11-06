@@ -4,7 +4,7 @@ import { tokenPixels } from './resolve'
 // Asset dimensions stay with assets; rendered image sizes follow the shell.
 const phoneGutters = tokenPixels('size.gutter-phone') * 2
 const desktopGutters = tokenPixels('size.gutter') * 2
-const content = tokenPixels('size.container') - desktopGutters
+const content = tokenPixels('size.content')
 const fluid = `(max-width: ${tokens.breakpoint.phone}px) calc(100vw - ${phoneGutters}px)`
 const shell = `(max-width: ${tokens.size.container}) calc(100vw - ${desktopGutters}px)`
 const firstColumn = (grid: string) => {

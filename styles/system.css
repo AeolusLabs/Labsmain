@@ -138,7 +138,8 @@
   --radius-panel: 20px;
   --radius-phone: 22px;
   --radius-pill: 999px;
-  --size-container: 1280px;
+  --size-container: 1360px;
+  --size-content: 1280px;
   --size-gutter: var(--space-10);
   --size-gutter-phone: var(--space-5);
   --size-control: var(--space-12);

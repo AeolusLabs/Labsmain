@@ -113,7 +113,7 @@ Headline groups; bold means mint:
 
 ### Geometry and responsive rules
 
-Desktop 1440px: centred max-width 1280px shell with 40px inner horizontal padding; 1200px content, 120px visible outer gutters. Consistent border-box sizing. Full-width marquees/pale sections sit outside shell with aligned inner content. Replace old 1160px/88% wrapper.
+Desktop 1440px: centred max-width 1360px border-box shell with 40px inner horizontal padding; 1280px content, 80px visible outer gutters. This matches the reference's content-box max-width 1280px plus padding. Owner approved matching this width across the site on 6 November 2026. Full-width marquees/pale sections sit outside shell with aligned inner content. Replace old 1160px/88% wrapper.
 
 Header: padding 28px 40px, wrapping flex/space-between, gap 16px 32px. Logo 30×30px, wordmark 22px, gap 12px. Nav order Work/Solutions/Products/About then mint “Start a conversation”; gaps 8px 28px. Normal-flow header, not an invented sticky/floating menu.
 
