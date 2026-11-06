@@ -5,7 +5,8 @@ import path from 'node:path'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const read = (name) => readFile(path.join(root, name), 'utf8')
-const html = await read('architecture/AeolusLabs Website.html')
+// The owner reference may sit in either architecture/ or architecture/html prototype/.
+const html = await read('architecture/AeolusLabs Website.html').catch(() => read('architecture/html prototype/AeolusLabs Website.html'))
 const tokens = JSON.parse(await read('design-system/tokens.json'))
 const embedded = (text, type) => {
   const marker = `<script type="__bundler/${type}">`
