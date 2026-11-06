@@ -25,6 +25,16 @@ export default function Solutions() {
       <p className="page-hero-lead page-hero-lead--wide" data-reveal="" data-delay="500">Whether you’re building something new or improving what’s already there, we start by understanding what needs to change.</p>
     </section>
 
+    <section className="solutions-map wrap" aria-labelledby="map-title">
+      <div className="solutions-map-head">
+        <div data-reveal=""><p className="eyebrow">Systems &amp; integrations</p><h2 id="map-title">Connect the tools your team already uses.</h2></div>
+        <p className="solutions-map-note" data-reveal="" data-delay="150">Shape software around your processes. Move your cursor through the system to see what connects to what.</p>
+      </div>
+      <div className="solutions-map-stage" data-reveal="" data-delay="100">
+        <canvas data-network="" role="img" aria-label="Diagram: websites, mobile apps, customer portals, APIs, databases, AI workflows and business tools all connect through your business." />
+      </div>
+    </section>
+
     <section className="solutions-capabilities surface-light" aria-labelledby="begin-title"><div className="wrap solutions-capabilities-inner">
       <div className="solutions-intro" data-reveal="">
         <h2 id="begin-title">Where do you want to begin?</h2>

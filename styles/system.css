@@ -57,6 +57,7 @@
   --space-26: 104px;
   --space-28: 112px;
   --space-30: 120px;
+  --space-32: 128px;
   --space-35: 140px;
   --space-40: 160px;
   --space-45: 180px;
@@ -100,6 +101,7 @@
   --type-product-tagline: 2.75rem;
   --type-project-title: clamp(3rem,6vw,5.5rem);
   --type-brief-label: 0.75rem;
+  --type-map-title: clamp(2.5rem,5.2vw,4.75rem);
   --leading-body: 1.55;
   --leading-tight: 1;
   --leading-display: .94;
@@ -177,6 +179,8 @@
   --size-dialog-width: 94vw;
   --size-progress: 3px;
   --size-motion-control-offset: 20px;
+  --size-map-heading: 720px;
+  --size-map-stage: clamp(440px,46vw,620px);
   --border-width: 1px;
   --border-focus: 2px;
   --border-marquee-stroke: 1.5px;
@@ -279,6 +283,7 @@
   --measure-result: 48ch;
   --measure-long: 80ch;
   --measure-detail: 38ch;
+  --measure-map-note: 34ch;
   --layout-section-gap: var(--space-35);
   --layout-section-phone: var(--space-21);
   --layout-section-light: var(--space-28);
@@ -370,6 +375,47 @@
   --pulse-pointer-alpha: 0.4;
   --pulse-static-alpha: 0.18;
   --pulse-bar-alpha: 0.88;
+  --network-hover-radius: 44;
+  --network-home-spring: 7;
+  --network-drift: 14;
+  --network-drift-speed-x: 0.6;
+  --network-drift-speed-y: 0.5;
+  --network-phase-step: 1.7;
+  --network-push-radius: 150;
+  --network-push-strength: 900;
+  --network-velocity-damping: 0.0009;
+  --network-node-follow: 10;
+  --network-dim-follow: 8;
+  --network-node-dim: 0.28;
+  --network-edge-dim: 0.35;
+  --network-edge-alpha: 0.16;
+  --network-edge-alpha-gain: 0.7;
+  --network-packets-idle: 9;
+  --network-packets-hot: 16;
+  --network-spawn-rate: 5;
+  --network-hot-bias: 0.7;
+  --network-packet-duration-min: 1.4;
+  --network-packet-duration-range: 1.6;
+  --network-hot-speed-gain: 1.4;
+  --network-trail: 5;
+  --network-trail-step: 0.018;
+  --network-packet-radius: 2.8;
+  --network-trail-shrink: 0.35;
+  --network-trail-fade: 0.18;
+  --network-packet-alpha: 0.95;
+  --network-node-stroke: 1.5;
+  --network-node-stroke-alpha: 0.6;
+  --network-node-stroke-gain: 0.4;
+  --network-glow-radius: 5;
+  --network-glow-alpha: 0.35;
+  --network-hub-dot: 3.5;
+  --network-hub-alpha: 0.9;
+  --network-label-gap: 12;
+  --network-label-size: 15;
+  --network-label-weight: 500;
+  --network-label-flip: 0.72;
+  --network-accent-refresh: 64;
+  --network-compact-width: 520;
   --letterfield-weight-min: 300;
   --letterfield-weight-max: 740;
   --letterfield-weight-rest: 420;
@@ -840,19 +886,28 @@ a { color: inherit; text-decoration: none; }
 /* Solutions: capability rows (reuse the Home highlight list) and four-step process */
 .page-hero-title--solutions { font-size: var(--type-display); }
 .page-hero-lead--wide { max-width: var(--measure-result); }
+.solutions-map { padding-top: var(--space-6); padding-bottom: var(--space-32); }
+.solutions-map-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--space-5) var(--space-10); margin-bottom: var(--space-9); }
+.solutions-map-head > div { display: flex; flex-direction: column; gap: var(--space-4); max-width: var(--size-map-heading); }
+.solutions-map-head .eyebrow { margin: 0; }
+.solutions-map-head h2 { font-size: var(--type-map-title); line-height: var(--leading-tight); letter-spacing: var(--tracking-section); }
+.solutions-map-note { margin: 0; max-width: var(--measure-map-note); color: var(--muted); }
+.solutions-map-stage { position: relative; height: var(--size-map-stage); overflow: hidden; border: var(--border-width) solid var(--line); border-radius: var(--radius-panel); background: var(--color-surface-deep); }
+.solutions-map-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .solutions-capabilities-inner { padding-block: var(--layout-section-light); display: grid; grid-template-columns: var(--grid-content); gap: var(--space-14) var(--layout-column-gap); align-items: start; }
 .solutions-intro { display: flex; flex-direction: column; gap: var(--space-6); align-items: flex-start; }
 .solutions-intro h2 { font-size: var(--type-section-light); line-height: var(--leading-tight); letter-spacing: var(--tracking-section); }
 .solutions-intro p { margin: 0; max-width: var(--measure-body); }
 .solutions-intro .text-link { color: var(--accent); font-weight: var(--weight-strong); }
 .solutions-row > div { display: flex; flex-direction: column; gap: var(--space-control); padding-right: var(--space-12); }
-.solutions-row h3 { font-size: var(--type-capability); letter-spacing: var(--tracking-subheading); margin: 0; }
+.solutions-row h3 { font-size: var(--type-capability); line-height: var(--leading-body); letter-spacing: var(--tracking-subheading); margin: 0; }
 .solutions-row p { margin: 0; color: var(--muted); font-size: var(--type-body); }
 .solutions-row .solutions-row-scope { font-size: var(--type-nav); }
 .solutions-row-label { font-size: var(--type-xs); letter-spacing: var(--tracking-product-label); text-transform: uppercase; color: var(--accent); font-weight: var(--weight-strong); }
 .studio-how .case-delivered-heading { margin-bottom: var(--space-14); }
 .case-delivery-grid--four { grid-template-columns: var(--grid-principles); }
 .case-delivery-grid--four li:last-child { padding-right: 0; }
+.case-delivery-grid--four h3 { line-height: var(--leading-body); }
 
 /* Contact: the form beside a live brief, the direct email and what happens next */
 .page-hero--contact { padding-bottom: var(--layout-contact-bottom); }
@@ -899,6 +954,7 @@ a { color: inherit; text-decoration: none; }
   .page-hero--case { padding-block: var(--space-9) var(--layout-hero-phone-bottom); }
   .studio-work, .studio-product-section, .case-statement, .case-delivered { padding-top: var(--layout-section-phone); }
   .solutions-capabilities-inner { padding-block: var(--layout-section-light-phone); }
+  .solutions-map { padding-top: var(--layout-section-phone); }
   .case-impression { padding-top: var(--space-10); }
   .case-experience { margin-top: var(--layout-section-phone); }
   .case-experience-inner { padding-block: var(--layout-section-light-phone); }

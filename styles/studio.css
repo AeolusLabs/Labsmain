@@ -106,19 +106,28 @@
 /* Solutions: capability rows (reuse the Home highlight list) and four-step process */
 .page-hero-title--solutions { font-size: var(--type-display); }
 .page-hero-lead--wide { max-width: var(--measure-result); }
+.solutions-map { padding-top: var(--space-6); padding-bottom: var(--space-32); }
+.solutions-map-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--space-5) var(--space-10); margin-bottom: var(--space-9); }
+.solutions-map-head > div { display: flex; flex-direction: column; gap: var(--space-4); max-width: var(--size-map-heading); }
+.solutions-map-head .eyebrow { margin: 0; }
+.solutions-map-head h2 { font-size: var(--type-map-title); line-height: var(--leading-tight); letter-spacing: var(--tracking-section); }
+.solutions-map-note { margin: 0; max-width: var(--measure-map-note); color: var(--muted); }
+.solutions-map-stage { position: relative; height: var(--size-map-stage); overflow: hidden; border: var(--border-width) solid var(--line); border-radius: var(--radius-panel); background: var(--color-surface-deep); }
+.solutions-map-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .solutions-capabilities-inner { padding-block: var(--layout-section-light); display: grid; grid-template-columns: var(--grid-content); gap: var(--space-14) var(--layout-column-gap); align-items: start; }
 .solutions-intro { display: flex; flex-direction: column; gap: var(--space-6); align-items: flex-start; }
 .solutions-intro h2 { font-size: var(--type-section-light); line-height: var(--leading-tight); letter-spacing: var(--tracking-section); }
 .solutions-intro p { margin: 0; max-width: var(--measure-body); }
 .solutions-intro .text-link { color: var(--accent); font-weight: var(--weight-strong); }
 .solutions-row > div { display: flex; flex-direction: column; gap: var(--space-control); padding-right: var(--space-12); }
-.solutions-row h3 { font-size: var(--type-capability); letter-spacing: var(--tracking-subheading); margin: 0; }
+.solutions-row h3 { font-size: var(--type-capability); line-height: var(--leading-body); letter-spacing: var(--tracking-subheading); margin: 0; }
 .solutions-row p { margin: 0; color: var(--muted); font-size: var(--type-body); }
 .solutions-row .solutions-row-scope { font-size: var(--type-nav); }
 .solutions-row-label { font-size: var(--type-xs); letter-spacing: var(--tracking-product-label); text-transform: uppercase; color: var(--accent); font-weight: var(--weight-strong); }
 .studio-how .case-delivered-heading { margin-bottom: var(--space-14); }
 .case-delivery-grid--four { grid-template-columns: var(--grid-principles); }
 .case-delivery-grid--four li:last-child { padding-right: 0; }
+.case-delivery-grid--four h3 { line-height: var(--leading-body); }
 
 /* Contact: the form beside a live brief, the direct email and what happens next */
 .page-hero--contact { padding-bottom: var(--layout-contact-bottom); }
@@ -165,6 +174,7 @@
   .page-hero--case { padding-block: var(--space-9) var(--layout-hero-phone-bottom); }
   .studio-work, .studio-product-section, .case-statement, .case-delivered { padding-top: var(--layout-section-phone); }
   .solutions-capabilities-inner { padding-block: var(--layout-section-light-phone); }
+  .solutions-map { padding-top: var(--layout-section-phone); }
   .case-impression { padding-top: var(--space-10); }
   .case-experience { margin-top: var(--layout-section-phone); }
   .case-experience-inner { padding-block: var(--layout-section-light-phone); }
