@@ -47,11 +47,6 @@
 .about-story p { font-size: var(--type-body); max-width: var(--size-prose); }
 .about-principles p { margin: 0 0 var(--space-4); font-size: var(--type-sm); }
 .about-principles strong { font-weight: var(--weight-heading); color: var(--ink); }
-.intent-contact { display: grid; grid-template-columns: var(--grid-contact); gap: 9%; border-top: var(--border-width) solid var(--line); padding-top: var(--space-9); align-items: start; }
-.contact-context > div + div { margin-top: var(--space-11); border-top: var(--border-width) solid var(--line); padding-top: var(--space-6); }
-.contact-context a { display: block; font-size: var(--type-body); overflow-wrap: anywhere; margin-top: var(--space-4); color: var(--accent); }
-.contact-context h2 { font-size: var(--type-subheading); margin: var(--space-4) 0; }
-.contact-context p { font-size: var(--type-sm); }
 .case-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 var(--space-6); margin: 0 0 var(--space-14); border-top: var(--border-width) solid var(--line); }
 .case-facts > div { padding-block: var(--space-3); }
 .case-facts dt { font-size: var(--type-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--muted); }

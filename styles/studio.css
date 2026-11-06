@@ -120,7 +120,47 @@
 .case-delivery-grid--four { grid-template-columns: var(--grid-principles); }
 .case-delivery-grid--four li:last-child { padding-right: 0; }
 
+/* Contact: the form beside a live brief, the direct email and what happens next */
+.page-hero--contact { padding-bottom: var(--layout-contact-bottom); }
+.page-hero-title--contact { font-size: var(--type-display); }
+.studio-contact { padding-top: var(--space-12); padding-bottom: var(--space-40); display: grid; grid-template-columns: var(--grid-contact-reference); gap: var(--space-16) var(--space-20); align-items: start; }
+.studio-contact .form label:not(.consent) { font-size: var(--type-sm); letter-spacing: var(--tracking-detail); color: var(--text-secondary); }
+.form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-6); }
+.form-actions [data-magnet] { display: inline-flex; }
+.form-hint { font-size: var(--type-sm); color: var(--text-quiet); }
+.studio-contact-aside { display: flex; flex-direction: column; gap: var(--space-12); }
+.studio-contact-aside .eyebrow { margin: 0 0 var(--space-3); color: var(--accent); }
+.studio-contact-email { font-family: var(--font-display-system); font-size: var(--type-direct-email); letter-spacing: var(--tracking-subheading); overflow-wrap: anywhere; border-bottom: var(--border-width) solid currentColor; padding-bottom: var(--space-half); }
+.studio-contact-email:hover { opacity: var(--opacity-text-hover); }
+.studio-contact-next { display: flex; flex-direction: column; gap: var(--space-4); padding-top: var(--space-8); border-top: var(--border-width) solid var(--color-line-emphasis); }
+.studio-contact-next .eyebrow { margin: 0; }
+.studio-contact-next h2 { font-size: var(--type-context-title); line-height: var(--leading-context); letter-spacing: var(--tracking-heading); }
+.studio-contact-next p:not(.eyebrow) { margin: 0; color: var(--text-secondary); max-width: var(--measure-body); }
+
+/* Live brief card: decorative echo of the form */
+.brief-card { display: flex; flex-direction: column; gap: var(--space-6); padding: var(--space-7); border: var(--border-width) solid var(--line); border-radius: var(--radius-panel); background: var(--color-surface-deep); }
+.brief-card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.brief-card-head p { margin: 0; }
+.brief-card-title { margin-bottom: var(--space-1); font-size: var(--type-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--accent); }
+.brief-card-note { font-size: var(--type-sm); color: var(--muted); }
+.brief-ring { position: relative; flex: none; width: var(--size-brief-ring); height: var(--size-brief-ring); }
+.brief-ring svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
+.brief-ring circle { fill: none; stroke-width: 4; }
+.brief-ring-track { stroke: var(--line); }
+.brief-ring-value { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset var(--motion-selection) var(--motion-ease); }
+.brief-ring span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: var(--type-sm); font-weight: var(--weight-strong); }
+.brief-row { display: grid; grid-template-columns: var(--grid-brief-row); gap: var(--space-1) var(--space-detail); align-items: start; }
+.brief-dot { box-sizing: border-box; width: var(--size-brief-dot); height: var(--size-brief-dot); margin-top: var(--space-brief-dot-offset); border: calc(var(--border-width) * 1.5) solid var(--accent); border-radius: 50%; transition: background-color var(--motion-selection) var(--motion-ease); }
+.brief-dot[data-filled='true'] { background: var(--accent); }
+.brief-label { font-size: var(--type-brief-label); letter-spacing: var(--tracking-meta); text-transform: uppercase; color: var(--muted); }
+.brief-value { max-height: 9em; overflow: hidden; overflow-wrap: anywhere; font-size: var(--type-body); color: var(--text-placeholder); }
+.brief-value[data-filled='true'] { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) {
+  .brief-ring-value, .brief-dot { transition: none; }
+}
+
 @media (--phone) {
+  .studio-contact { padding-top: var(--space-10); padding-bottom: var(--space-18); }
   .page-hero { padding-block: var(--layout-hero-phone-top) var(--layout-hero-phone-bottom); gap: var(--space-8); }
   .page-hero--case { padding-block: var(--space-9) var(--layout-hero-phone-bottom); }
   .studio-work, .studio-product-section, .case-statement, .case-delivered { padding-top: var(--layout-section-phone); }

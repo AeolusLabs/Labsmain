@@ -52,11 +52,7 @@ a:hover > .motion-arrow { transform: translate(var(--motion-arrow-offset), calc(
 .people-line h2 { margin-top: var(--space-4); }
 .about-story, .about-principles, .case-split { grid-template-columns: 1fr; gap: var(--space-5); padding-block: var(--space-7); }
 .about-story h2, .case-split h2 { margin-top: var(--space-3); }
-.contact-opening { padding-block: var(--space-10) var(--space-7); }
-.intent-contact { grid-template-columns: 1fr; gap: var(--space-10); }
 .field-pair { grid-template-columns: 1fr; gap: var(--space-6); }
-.contact-context { border-top: var(--border-width) solid var(--line); padding-top: var(--space-6); }
-.contact-context > div + div { margin-top: var(--space-6); }
 .case-facts { grid-template-columns: 1fr 1fr; margin-bottom: var(--space-10); }
 .case-figure { margin-bottom: var(--space-10); }
 .case-figure figcaption { flex-direction: column; gap: var(--space-1); }
@@ -75,7 +71,7 @@ a:hover > .motion-arrow { transform: translate(var(--motion-arrow-offset), calc(
 .site-header { gap: var(--space-4); align-items: flex-start; }
 .site-nav { gap: var(--space-1) var(--space-5); }
 .header-tools { width: 100%; }
-.intent-hero, .page-opening, .about-opening, .contact-opening { padding-block: var(--space-9) var(--space-16); }
+.intent-hero, .page-opening, .about-opening { padding-block: var(--space-9) var(--space-16); }
 .hero-support { grid-template-columns: minmax(0,1fr); }
 .hero-support > p:first-child, .hero-support > .button { grid-row: auto; grid-column: auto; }
 }

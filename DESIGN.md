@@ -242,6 +242,10 @@ Fields: width 100%, min-height 52px, padding 12px 16px, radius 10px, #101A21 fil
 
 Reference fields: name/email/need/challenge. Needs: uncertainty, website/web app, mobile, backend/integrations, AI/workflow, maintenance/support. Reuse actual validated choices rather than forking the server taxonomy. Retain explicit consent/privacy even though the board omits them. Direct email and “A useful conversation” aside stacks below on phone.
 
+Live brief card (from the Contact reference): a decorative, aria-hidden echo of the form beside it, with a 64px progress ring and From / Reply to / Need / Brief rows on the deep surface (#0D161C, 20px radius, 28px padding). Empty rows use #8A9C96 placeholders. A row counts as filled when name and brief are non-empty, the email looks like an address, and Need has been chosen or drafted (the default "not sure yet" does not count). The card reports nothing the form does not already hold, and resets with "Start another enquiry". The primary button keeps the honest label “Continue with enquiry” rather than the board’s “Send your enquiry”, because delivery can fall back to a prepared email.
+
+Display type loads Bricolage Grotesque with its optical-size axis (opsz 12..96) to match the reference’s Google Fonts request; without it large headlines render too wide and wrap.
+
 Verify idle/hover/focus/selected/disabled/pending, field/provider error, mailto fallback and success. Preserve entered data/drafts on recoverable errors, identify fields in text with aria-describedby, announce status. Chat shares dark surfaces/mint controls, with a clear return to form. Nothing moves while typing.
 
 ### Enquiries and assistant

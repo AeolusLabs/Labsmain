@@ -13,6 +13,8 @@ const body = Instrument_Sans({
 
 const display = Bricolage_Grotesque({
   subsets: ['latin'],
+  // The reference loads opsz 12..96, so large headlines use the tighter optical cut automatically.
+  axes: ['opsz'],
   variable: '--font-display',
   display: 'swap',
 })
