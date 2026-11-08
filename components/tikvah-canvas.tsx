@@ -27,8 +27,8 @@ export function TikvahCanvas() {
     </div>
     <div className="shot" data-view={view} id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-${view}`}>
       <Link className="shot-link" href="/work/tikvah" aria-hidden="true" tabIndex={-1} />
-      <Image className="shot-img" src="/projects/tikvah/home-desktop.webp" width={2560} height={1800} sizes={imageSizes.feature} alt="Tikvah’s public homepage, introducing its private support service" data-show={view === 'desktop'} aria-hidden={view !== 'desktop'} unoptimized priority />
-      <Image className="shot-img is-mobile" src="/projects/tikvah/home-mobile.webp" width={780} height={1688} sizes={imageSizes.feature} alt="Tikvah’s public homepage on a phone, introducing its private support service" data-show={view === 'mobile'} aria-hidden={view !== 'mobile'} unoptimized />
+      <Image className="shot-img" src="/projects/tikvah/home-desktop.webp" width={2560} height={1800} sizes={imageSizes.feature} alt="Tikvah’s public homepage, introducing its private support service" data-show={view === 'desktop'} aria-hidden={view !== 'desktop'} priority />
+      <Image className="shot-img is-mobile" src="/projects/tikvah/home-mobile.webp" width={780} height={1688} sizes={imageSizes.feature} alt="Tikvah’s public homepage on a phone, introducing its private support service" data-show={view === 'mobile'} aria-hidden={view !== 'mobile'} />
     </div>
   </div>
 }

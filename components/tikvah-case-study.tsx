@@ -45,7 +45,7 @@ export function TikvahCaseStudy() {
     <section className="case-impression wrap" aria-label="The first impression">
       <div data-par={tokens.motion['parallax-feature']}>
         <div className="home-project-stage">
-          <div className="home-desktop-capture" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-desktop.webp" alt={desktopAlt} width={2560} height={1800} sizes={imageSizes.full} unoptimized /></div>
+          <div className="home-desktop-capture" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-desktop.webp" alt={desktopAlt} width={2560} height={1800} sizes={imageSizes.full} /></div>
           <div className="case-impression-hitarea"><ProjectImage src="/projects/tikvah/home-desktop.webp" alt={desktopAlt} width={2560} height={1800} sizes={imageSizes.full} triggerOnly /></div>
         </div>
       </div>
@@ -70,7 +70,7 @@ export function TikvahCaseStudy() {
         </div>
         <div className="case-phone home-project-stage">
           <div className="case-phone-visual" data-tilt="">
-            <div data-depth={tokens.tilt['layer-case']} data-float=""><div className="case-phone-frame" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-mobile.webp" alt={phoneAlt} width={780} height={1688} sizes={tokens.size['phone-case']} unoptimized /></div></div>
+            <div data-depth={tokens.tilt['layer-case']} data-float=""><div className="case-phone-frame" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-mobile.webp" alt={phoneAlt} width={780} height={1688} sizes={tokens.size['phone-case']} /></div></div>
           </div>
           <div className="case-phone-hitarea"><ProjectImage src="/projects/tikvah/home-mobile.webp" alt={phoneAlt} width={780} height={1688} sizes={tokens.size['phone-case']} triggerOnly /></div>
         </div>

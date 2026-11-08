@@ -7,7 +7,7 @@ export function ProjectImage({ src, alt, width, height, sizes, animate = false, 
   const dialog = useRef<HTMLDialogElement>(null)
   return <>
     <button type="button" className="project-image-open" aria-label={`Enlarge: ${alt}`} onClick={() => dialog.current?.showModal()}>
-      {!triggerOnly && <Image src={src} alt={alt} width={width} height={height} sizes={sizes} data-clip-img={animate ? '' : undefined} unoptimized />}
+      {!triggerOnly && <Image src={src} alt={alt} width={width} height={height} sizes={sizes} data-clip-img={animate ? '' : undefined} />}
       <span>View full size ↗</span>
     </button>
     <dialog ref={dialog} className="project-image-dialog" onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}>

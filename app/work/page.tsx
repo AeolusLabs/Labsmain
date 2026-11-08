@@ -19,8 +19,8 @@ export default function Work() {
       <div data-par={tokens.motion['parallax-feature']}>
         <div className="studio-stage">
           <div className="studio-stage-visual" data-tilt="">
-            <div data-depth={tokens.tilt['layer-back']}><div className="home-desktop-capture" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-desktop.webp" alt="Tikvah’s public website" width={2560} height={1800} sizes={imageSizes.full} unoptimized /></div></div>
-            <div className="studio-stage-phone" data-depth={tokens.tilt['layer-front']} data-float=""><div className="home-phone-capture-frame" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-mobile.webp" alt="Tikvah’s homepage on a mobile screen" width={780} height={1688} sizes={tokens.size['phone-overlay-work']} unoptimized /></div></div>
+            <div data-depth={tokens.tilt['layer-back']}><div className="home-desktop-capture" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-desktop.webp" alt="Tikvah’s public website" width={2560} height={1800} sizes={imageSizes.full} /></div></div>
+            <div className="studio-stage-phone" data-depth={tokens.tilt['layer-front']} data-float=""><div className="home-phone-capture-frame" data-clip=""><Image data-clip-img="" src="/projects/tikvah/home-mobile.webp" alt="Tikvah’s homepage on a mobile screen" width={780} height={1688} sizes={tokens.size['phone-overlay-work']} /></div></div>
           </div>
           <Link className="studio-stage-link" href="/work/tikvah" aria-label="Read the Tikvah case study" />
         </div>

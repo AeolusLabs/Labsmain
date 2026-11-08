@@ -4,6 +4,10 @@
 .button:disabled { opacity: var(--opacity-disabled); cursor: wait; }
 .text-link { position: relative; display: inline-block; font-size: var(--type-body); padding-bottom: var(--space-1); background: none; border: 0; padding-left: 0; padding-right: 0; color: var(--ink); }
 .text-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: var(--border-width); background: currentColor; transform: scaleX(.55); transform-origin: left; }
+/* Visual size stays; the pointer/touch hit area grows to the target size. */
+.text-link::before, .site-footer a::before, .brand::before { content: ''; position: absolute; inset: calc(-1 * var(--space-2)) calc(-1 * var(--space-1)); }
+.site-footer a, .brand { position: relative; }
+.site-footer a::before { inset: calc(-1 * var(--space-3)) calc(-1 * var(--space-1)); }
 .motion-arrow { display: inline-block; vertical-align: baseline; }
 .form { display: grid; gap: var(--space-6); }
 .form label { font-size: var(--type-xs); display: grid; gap: var(--space-2); }
