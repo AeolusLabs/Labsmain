@@ -3,14 +3,14 @@ import { PageShell } from '@/components/site-header'
 import { ClosingLine, Eyebrow, TextLink } from '@/components/page-parts'
 import { productUrl } from '@/lib/content'
 
-export const metadata = { title: 'Our products', description: 'Vib3Pulse, a product built and owned by AeolusLabs.' }
+export const metadata = { title: 'Our products', description: 'Explore products developed and owned by AeolusLabs, starting with Vib3Pulse.' }
 
 export default function Products() {
   return <PageShell>
     <div className="page-opening">
       <Eyebrow>Our products</Eyebrow>
-      <h1>Our own ideas,<br />built into software.</h1>
-      <p>Alongside client services, we develop and own products that address problems we see around us.</p>
+      <h1>Our ideas,<br />built into products.</h1>
+      <p>We build products of our own alongside our work for businesses. Each starts with a need we want to explore.</p>
     </div>
 
     <article className="work-entry">
@@ -24,6 +24,6 @@ export default function Products() {
       </div>
     </article>
 
-    <ClosingLine title="Have an idea of your own?" action="Tell us about it" />
+    <ClosingLine title="Ready to build your product?" action="Discuss your idea" />
   </PageShell>
 }

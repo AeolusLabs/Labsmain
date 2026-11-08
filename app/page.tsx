@@ -9,13 +9,13 @@ import tokens from '@/design-system/tokens.json'
 import { email } from '@/lib/content'
 
 const expertise = [
-  ['Web & mobile', 'Websites, customer portals and applications.'],
-  ['Business systems', 'Custom tools, APIs and integrations.'],
-  ['AI & automation', 'Less repetitive work, with human oversight.'],
+  ['AI-powered products', 'Web and mobile products with AI built around a business need.'],
+  ['Automation systems', 'Connected workflows that reduce repetitive manual steps.'],
+  ['Integrations & support', 'Connect your tools and keep the system working.'],
 ]
 const marqueeRows = [
-  ['Websites', 'Applications', 'Systems', 'Integrations'],
-  ['AI', 'Automation', 'Maintenance', 'Support'],
+  ['AI products', 'Automation', 'Systems', 'Integrations'],
+  ['Web', 'Mobile', 'Maintenance', 'Support'],
 ]
 
 export default function Home() {
@@ -26,13 +26,13 @@ export default function Home() {
     <main id="main-content">
       <section className="home-hero wrap" aria-labelledby="home-title">
         <div className="home-hero-content" data-par={tokens.motion['parallax-hero']}>
-          <p className="eyebrow" data-reveal="">Software studio / Nigeria</p>
-          <h1 id="home-title"><span className="home-line-mask"><span data-hw="">Make room</span></span><span className="home-line-mask"><span data-hw="">for <em>better.</em></span></span></h1>
+          <p className="eyebrow" data-reveal="">AI products &amp; automation / Nigeria</p>
+          <h1 id="home-title"><span className="home-line-mask"><span data-hw="">AI-powered products.</span></span><span className="home-line-mask"><span data-hw="">Business <em>automation.</em></span></span></h1>
           <div className="home-hero-support">
-            <p className="home-lead" data-reveal="">Websites, applications and systems built around the way your business works.</p>
+            <p className="home-lead" data-reveal="">We build AI-powered products and automation systems for businesses.</p>
             <div className="home-hero-detail">
-              <p>We’re AeolusLabs, two software developers in Nigeria helping African businesses turn practical needs into useful software.</p>
-              <div className="home-actions"><span data-magnet=""><ButtonLink href="/contact">Tell us what you’re building</ButtonLink></span><span data-magnet=""><ButtonLink href="/work" variant="ghost">See our work</ButtonLink></span></div>
+              <p>We’re AeolusLabs, a collective bringing technology and business development together. Based in Nigeria, we work with businesses across Africa and beyond.</p>
+              <div className="home-actions"><span data-magnet=""><ButtonLink href="/contact">Build or automate with us</ButtonLink></span><span data-magnet=""><ButtonLink href="/work" variant="ghost">See our work</ButtonLink></span></div>
             </div>
           </div>
           <p className="home-wind-hint" data-reveal="">The wind responds. Move your cursor through it.</p>
@@ -59,15 +59,15 @@ export default function Home() {
       </section>
 
       <section className="home-services surface-light" aria-labelledby="help-title"><div className="wrap home-services-inner">
-        <div className="home-services-copy" data-reveal=""><p className="eyebrow">What we do</p><h2 id="help-title">Start with the need. Then choose the tools.</h2><p>You don’t need a technical brief before we can have a useful conversation. We listen to how things work today, agree on a useful scope, and develop the solution with you involved.</p><p className="home-principle">Understand. Build. Keep improving.</p></div>
+        <div className="home-services-copy" data-reveal=""><p className="eyebrow">What we do</p><h2 id="help-title">Build the product. Connect the work.</h2><p>Bring us the product you want to create or the process you want to improve. We’ll work through the need, agree a scope and build with you involved. AI and automation come with agreed human oversight.</p><p className="home-principle">Understand the business. Build what helps.</p></div>
         <div className="home-service-list" data-hl=""><div className="home-service-highlight" data-hl-bar="" aria-hidden="true" />{expertise.map(([title, text]) => <Link className="home-service-row" data-hl-row="" data-reveal="" href="/solutions" key={title}><div data-hl-inner=""><h3>{title}</h3><p>{text}</p></div><span data-hl-arrow="" aria-hidden="true"><Arrow /></span></Link>)}</div>
       </div></section>
 
       <section className="home-product wrap" aria-label="Our own product"><Link className="home-product-panel" href="/products" data-reveal=""><canvas data-pulse="" aria-hidden="true" /><div className="home-product-inner"><div><p className="eyebrow">Our own product</p><h2>Vib3Pulse.</h2><p className="home-product-tagline">Events. Tickets. Community.</p></div><span className="home-product-cta">See our products <Arrow /></span></div></Link></section>
 
       <section className="home-closing wrap" aria-labelledby="close-title">
-        <h2 id="close-title" data-wl="" aria-label="What could work better?">{[['What', 'could'], ['work', 'better?']].map((line, i) => <span className="home-closing-line" aria-hidden="true" key={i}>{line.map(word => <span className={word === 'better?' ? 'home-word home-emphasis' : 'home-word'} key={word}>{[...word].map((letter, k) => <span data-l="" key={k}>{letter}</span>)}</span>)}</span>)}</h2>
-        <div className="home-actions" data-reveal=""><span data-magnet=""><ButtonLink href="/contact">Let’s talk</ButtonLink></span><a className="text-link" href={`mailto:${email}`}>{email}</a></div>
+        <h2 id="close-title" data-wl="" aria-label="What would you automate?">{[['What', 'would'], ['you', 'automate?']].map((line, i) => <span className="home-closing-line" aria-hidden="true" key={i}>{line.map(word => <span className={word === 'automate?' ? 'home-word home-emphasis' : 'home-word'} key={word}>{[...word].map((letter, k) => <span data-l="" key={k}>{letter}</span>)}</span>)}</span>)}</h2>
+        <div className="home-actions" data-reveal=""><span data-magnet=""><ButtonLink href="/contact">Discuss your next step</ButtonLink></span><a className="text-link" href={`mailto:${email}`}>{email}</a></div>
       </section>
     </main>
     <SiteFooter variant="studio" />

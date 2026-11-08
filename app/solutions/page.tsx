@@ -2,12 +2,12 @@ import Link from 'next/link'
 import { Arrow } from '@/components/page-parts'
 import { HeroLines, StudioClosing, StudioPage } from '@/components/studio-parts'
 
-export const metadata = { title: 'Solutions', description: 'Practical websites, applications, systems and AI for real business problems.' }
+export const metadata = { title: 'Solutions', description: 'AI-powered products, automation systems and integrations built around your business.' }
 
 const capabilities = [
-  { label: 'Build your digital presence', title: 'Websites & applications', text: 'Help people understand your business, use your services or engage with your product.', items: ['Business websites', 'Web applications & customer portals', 'Mobile applications'] },
-  { label: 'Bring your operations together', title: 'Systems & integrations', text: 'Shape software around your processes and connect the tools your team already uses.', items: ['Custom business systems', 'Backend development & APIs', 'Databases & integrations'] },
-  { label: 'Create space for better work', title: 'AI & automation', text: 'Organise information, prepare responses and support repeatable tasks, with agreed human oversight.', items: ['Practical AI integrations', 'Custom agents & workflows', 'Connections between business tools'] },
+  { label: 'Turn an idea into a product', title: 'AI-powered products', text: 'Build AI into a product that serves a clear business need, with agreed human oversight.', items: ['Web & mobile products', 'AI integrations', 'Customer & team tools'] },
+  { label: 'Move work between steps', title: 'Automation systems', text: 'Connect repeatable tasks into workflows, with clear checkpoints and human oversight where agreed.', items: ['Business workflows', 'Custom agents', 'Internal systems'] },
+  { label: 'Connect what you already use', title: 'Integrations', text: 'Bring your tools and data together so the product or workflow fits your operations.', items: ['Backend development & APIs', 'Databases', 'Business tool integrations'] },
   { label: 'Keep your software useful', title: 'Maintenance & support', text: 'Ongoing care, technical support and improvements as your needs evolve.', items: [] as string[] },
 ]
 const principles = [
@@ -21,14 +21,14 @@ export default function Solutions() {
   return <StudioPage>
     <section className="page-hero wrap" aria-labelledby="solutions-title">
       <p className="eyebrow" data-reveal="">Capabilities</p>
-      <h1 id="solutions-title" className="page-hero-title page-hero-title--solutions"><HeroLines lines={['The right software', <>starts with <em>your problem.</em></>]} /></h1>
-      <p className="page-hero-lead page-hero-lead--wide" data-reveal="" data-delay="500">Whether you’re building something new or improving what’s already there, we start by understanding what needs to change.</p>
+      <h1 id="solutions-title" className="page-hero-title page-hero-title--solutions"><HeroLines lines={['Build your product.', <>Automate your <em>processes.</em></>]} /></h1>
+      <p className="page-hero-lead page-hero-lead--wide" data-reveal="" data-delay="500">AI-powered products and automation systems, shaped around what your business needs to do. We start with your goals, processes and constraints.</p>
     </section>
 
     <section className="solutions-map wrap" aria-labelledby="map-title">
       <div className="solutions-map-head">
         <div data-reveal=""><p className="eyebrow">Systems &amp; integrations</p><h2 id="map-title">Connect the tools your team already uses.</h2></div>
-        <p className="solutions-map-note" data-reveal="" data-delay="150">Shape software around your processes. Move your cursor through the system to see what connects to what.</p>
+        <p className="solutions-map-note" data-reveal="" data-delay="150">Automation depends on the connections between your tools, data and people. Explore how the parts fit together.</p>
       </div>
       <div className="solutions-map-stage" data-reveal="" data-delay="100">
         <canvas data-network="" role="img" aria-label="Diagram: websites, mobile apps, customer portals, APIs, databases, AI workflows and business tools all connect through your business." />
@@ -37,8 +37,8 @@ export default function Solutions() {
 
     <section className="solutions-capabilities surface-light" aria-labelledby="begin-title"><div className="wrap solutions-capabilities-inner">
       <div className="solutions-intro" data-reveal="">
-        <h2 id="begin-title">Where do you want to begin?</h2>
-        <p>Explore the scope below, or tell us what isn’t working. We’ll help you find a sensible starting point.</p>
+        <h2 id="begin-title">What needs to change?</h2>
+        <p>Tell us about the product you have in mind or the work your team repeats. We’ll help define a practical starting point.</p>
         <Link className="text-link" href="/contact">Talk it through</Link>
       </div>
       <div className="home-service-list" data-hl="">
@@ -60,6 +60,6 @@ export default function Solutions() {
       <ol className="case-delivery-grid case-delivery-grid--four">{principles.map(([title, text], index) => <li key={title} data-reveal="" data-delay={index * 110}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
     </section>
 
-    <StudioClosing title={<>A clear scope<br />comes <em>first.</em></>} action="Discuss your project" />
+    <StudioClosing title={<>Start with your<br /><em>business need.</em></>} action="Discuss what to build or automate" />
   </StudioPage>
 }

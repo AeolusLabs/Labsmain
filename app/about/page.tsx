@@ -1,7 +1,7 @@
 import { PageShell } from '@/components/site-header'
 import { ClosingLine, Eyebrow } from '@/components/page-parts'
 
-export const metadata = { title: 'About', description: 'The founders, mission and principles behind AeolusLabs.' }
+export const metadata = { title: 'About', description: 'Meet the collective behind AeolusLabs: AI-powered products and automation systems for businesses.' }
 
 const founders = [['Allan', 'Ajayi-Adjari'], ['Bernard', 'Nneboh']]
 const principles = [
@@ -14,18 +14,18 @@ const principles = [
 export default function About() {
   return <PageShell>
     <div className="about-opening">
-      <div><Eyebrow>About AeolusLabs</Eyebrow><h1>Two developers.<br />A shared purpose.</h1></div>
-      <p>We build useful software for African businesses. Our starting point is the people, processes and problems behind the idea.</p>
+      <div><Eyebrow>About AeolusLabs</Eyebrow><h1>Different perspectives.<br />A shared purpose.</h1></div>
+      <p>We’re a collective combining technology and business development to build AI-powered products and automation systems for businesses in Nigeria, across Africa and beyond.</p>
     </div>
 
-    <div className="people-line">{founders.map(([first, last]) => <article key={last}><Eyebrow>Co-founder / Software developer</Eyebrow><h2>{first}<br />{last}</h2></article>)}</div>
+    <div className="people-line">{founders.map(([first, last]) => <article key={last}><Eyebrow>Co-founder</Eyebrow><h2>{first}<br />{last}</h2></article>)}</div>
 
     <div className="about-story">
-      <Eyebrow>Why we started</Eyebrow>
+      <Eyebrow>What defines us</Eyebrow>
       <div>
-        <h2>We noticed gaps.<br />Then started building.</h2>
-        <p>We began by solving problems we encountered ourselves. That experience became a company built around helping other businesses find useful ways forward.</p>
-        <p>Our mission is to build practical software that bridges the gap between African businesses and the technology they need. We’re working towards an Africa where businesses of every size can access technology that helps them operate efficiently, innovate and grow.</p>
+        <h2>Technology meets<br />business thinking.</h2>
+        <p>A useful product needs a clear business purpose. An automation system needs to fit the people and processes using it. We bring these perspectives together, from understanding the need to shaping what gets built.</p>
+        <p>Our mission is to help African businesses put practical AI and automation to work. We’re working towards an Africa where businesses of every size can access technology that helps them operate efficiently, innovate and grow.</p>
       </div>
     </div>
 
@@ -34,6 +34,6 @@ export default function About() {
       <div>{principles.map(([lead, rest]) => <p key={lead}><strong>{lead}</strong> {rest}</p>)}</div>
     </div>
 
-    <ClosingLine title="Let’s understand your next step." action="Start a conversation" />
+    <ClosingLine title="What could you build or automate?" action="Start a conversation" />
   </PageShell>
 }

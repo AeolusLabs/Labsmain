@@ -1,6 +1,6 @@
 # AeolusLabs — single project and design authority
 
-Updated: 5 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending.
+Updated: 8 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending.
 
 ## Overview
 
@@ -27,13 +27,13 @@ Seven identifying features must survive: dark/mint shell; Bricolage Grotesque wi
 
 ### Product truth
 
-AeolusLabs is two software developers in Nigeria serving small/growing businesses, entrepreneurs and startups in Nigeria, across Africa and internationally. Help visitors understand the offer, inspect real work and start a relevant enquiry.
+AeolusLabs is a collective bringing together expertise across technology and business development. We build AI-powered products and automation systems for businesses. Based in Nigeria, we serve businesses, entrepreneurs and startups across Africa and internationally. Owner approved this positioning and the collective description on 8 November 2026, replacing the two-developer company framing. Do not invent team size, members, specialist credentials or AI capabilities for existing projects. Help visitors understand the offer, inspect real work and start a relevant enquiry. Approved copy takes precedence over reference-board wording; visual composition remains governed by the reference.
 
-- Founders: Allan Ajayi-Adjari and Bernard Nneboh, both software developers. Type-led introductions as in the reference; no invented portraits/biographies.
-- Mission: build practical software that bridges the gap between African businesses and the technology they need. Vision: an Africa where businesses of every size can access technology that helps them operate efficiently, innovate and grow.
+- Founders: Allan Ajayi-Adjari and Bernard Nneboh. Introduce them as co-founders; do not define the collective as two software developers. Type-led introductions as in the reference; no invented portraits/biographies.
+- Mission: help African businesses access practical AI and automation that fit how they work. Vision: an Africa where businesses of every size can access technology that helps them operate efficiently, innovate and grow.
 - Principles: Understand first. Build deliberately. Communicate openly. Keep improving.
-- Brand tagline: Digitalize. Automate. Elevate. Homepage headline: Make room for better. Different roles.
-- Services: websites, web/mobile applications, business systems, backends/APIs/integrations, practical AI, custom agents/workflows with agreed human oversight, maintenance/support.
+- Brand tagline: Digitalize. Automate. Elevate. Homepage headline: AI-powered products. Business automation. Different roles.
+- Services, in order: AI-powered products (applications and custom agents), automation systems and workflows with agreed human oversight, integrations, ongoing support. Websites, web/mobile applications, backends and APIs remain supporting capabilities rather than the company definition.
 - Canonical: https://www.aeoluslabsltd.com. Public email/recipient: info@aeoluslabsltd.com. No unconfirmed WhatsApp/social links.
 - Tikvah: approved client project, complete frontend/backend delivery; https://www.tikvah.space/. Real public captures, accurate capture dates, private flows explicitly untested. Screenshots do not prove backend operation.
 - Vib3Pulse: company-owned; https://vib3pulse-production.up.railway.app/. Lime artwork is not a product screenshot. Interface imagery pending; account-only features remain product-presented claims until verified.
@@ -78,7 +78,7 @@ Export editor accent choices #9DB8FF/#FFC36B/#FF8E72 are not extra website palet
 | Role | Extracted size | Weight / leading / tracking |
 | --- | --- | --- |
 | Brand | 22px | Bricolage 600 / normal / -.02em |
-| Home h1 | clamp(60px,11.5vw,168px) | Bricolage 500 / .92 / -.045em |
+| Home h1 | clamp(60px,8.6vw,128px) | Bricolage 500 / .92 / -.045em |
 | Work h1 | clamp(56px,9.5vw,140px) | Bricolage 500 / .94 / -.045em |
 | Solutions/Products/Contact h1 | clamp(52px,8.6vw,128px) | Bricolage 500 / .94 / -.045em |
 | About h1 | clamp(52px,9vw,136px) | Bricolage 500 / .94 / -.045em |
@@ -99,14 +99,16 @@ Export editor accent choices #9DB8FF/#FFC36B/#FF8E72 are not extra website palet
 
 Use named shared roles and intentional page-title variants. Headline line masks use .14em bottom padding and matching negative margin to protect descenders. Allow natural wrapping inside line groups on phones, not scaled desktop artboards.
 
+The longer approved Home positioning uses `type.home-positioning` (60px minimum, 8.6vw, 128px maximum) to retain two desktop lines; `type.home` retains the source-board size for reference auditing. Phone line groups wrap naturally.
+
 Headline groups; bold means mint:
 
-- Home: “Make room” / “for **better.**”
-- Work: “Built around” / “**real** needs.”
-- Solutions: “The right software” / “starts with **your problem.**”
-- Products: “Our own ideas,” / “built into **software.**”
-- About: “Two developers.” / “A shared **purpose.**”
-- Contact: “Tell us what you” / “want to make **possible.**”
+- Home: “AI-powered products.” / “**Business automation.**”
+- Work: “See what” / “we’ve **built.**”
+- Solutions: “Build your product.” / “**Automate your processes.**”
+- Products: “Our ideas,” / “built into **products.**”
+- About: “Different perspectives.” / “A shared **purpose.**”
+- Contact: “What would you” / “build or **automate?**”
 - Tikvah: monumental “Tikvah”.
 
 ## Layout
@@ -131,17 +133,17 @@ Fixed export board heights (phone 2300–6000px) are not route heights. Content 
 
 | Route | Required composition in order |
 | --- | --- |
-| / | Wind/spotlight hero; two opposing type marquees; large Tikvah desktop capture plus overlapping phone; pale expertise/three service rows; lime Vib3Pulse teaser; reactive “What could work better?” closing; footer. |
-| /work | Wind hero “Built around real needs”; layered Tikvah stage/role/delivery/case link; lime Vib3Pulse panel with ownership/type/focus and artwork disclaimer; “Have something in mind?” closing. |
+| / | Wind/spotlight hero; two opposing type marquees; large Tikvah desktop capture plus overlapping phone; pale expertise/three service rows; lime Vib3Pulse teaser; reactive “What would you automate?” closing; footer. |
+| /work | Wind hero “See what we’ve built”; layered Tikvah stage/role/delivery/case link; lime Vib3Pulse panel with ownership/type/focus and artwork disclaimer; “Your next product. Your next workflow.” closing. |
 | /work/tikvah | Back link/category/huge title/subtitle/live link; four wrapping facts; desktop image/caption; dark challenge; pale experience with phone/three public-journey points; dark delivery rows/provenance; supported result; “Your idea could be next” closing. |
 | /solutions | Wind problem-led hero; pale orientation/CTA beside four large linked capability rows; dark four-principle process; “A clear scope comes first” closing. |
-| /products | Wind hero; large lime Vib3Pulse artwork/description/live link/disclaimer; “Have an idea of your own?” closing. |
-| /about | Wind hero; two type-led founders; “Why we started” narrative; four numbered principles; “Let’s understand your next step” closing. |
+| /products | Wind hero; large lime Vib3Pulse artwork/description/live link/disclaimer; “Ready to build your product?” closing. |
+| /about | Wind hero; type-led co-founders; “What defines us” narrative; four numbered principles; “What could you build or automate?” closing. |
 | /contact | Wind invitation hero; form beside direct email/next steps; generous bottom breathing room; footer. Preserve consent/chat/validation/fallback omitted from the board. |
 
-Marquee first line: Websites • Applications • Systems • Integrations, filled pale. Second: AI • Automation • Maintenance • Support, outlined pale. Mint circular separators. Bricolage 500, clamp(56px,8vw,112px), line-height 1.1, tracking -.035em, outline 1.5px. Decorative band, not the only service content.
+Marquee first line: AI products • Automation • Systems • Integrations, filled pale. Second: Web • Mobile • Maintenance • Support, outlined pale. Mint circular separators. Bricolage 500, clamp(56px,8vw,112px), line-height 1.1, tracking -.035em, outline 1.5px. Decorative band, not the only service content.
 
-Solutions rows: Websites & applications; Systems & integrations; AI & automation; Maintenance & support, each outcome-led eyebrow/scope/arrow. Home's shorter rows: Web & mobile, Business systems, AI & automation. Two levels of one taxonomy.
+Solutions rows: AI-powered products; Automation systems; Integrations; Maintenance & support, each outcome-led eyebrow/scope/arrow. Home's shorter rows: AI-powered products, Automation systems, Integrations & support. Two levels of one taxonomy.
 
 No dedicated reference boards for /work/vib3pulse, Privacy or not-found: extend the same vocabulary and retain factual content/disclosures. Map export .dc.html links to actual routes. Do not invent unrelated page identities.
 
@@ -228,7 +230,7 @@ Motion is integral. Ambient loops, reveals, pointer effects and canvas artwork a
 | Marquee | Opposing speeds 70/55px/s; scroll velocity boost; skew clamp 14deg. | Seamless track, no layout shift; static reduced-motion band, decorative duplicates aria-hidden; accessible pause for sustained motion. |
 | Service highlight | Gliding bar spring 240/26; row shift 16px, arrow enters. | Focus matches hover, clear when leaving list; reduced motion instant highlight without translation. |
 | Product pulse | Lower-right rings every 1.15s lasting 4.2s, pointer rings, 44 equaliser bars. | Artwork, no audio permission/live-data claim. Pause offscreen/hidden; static rings/bars in reduced motion. |
-| Closing lettering | Pointer/slow-wave weight variation roughly 300–740. | Accessible phrase “What could work better?”, decorative letters hidden from assistive tech; stable layout. Fixed reduced-motion weight. |
+| Closing lettering | Pointer/slow-wave weight variation roughly 300–740. | Accessible phrase “What would you automate?”, decorative letters hidden from assistive tech; stable layout. Fixed reduced-motion weight. |
 
 Spring numbers belong to the export physics model, not portable durations. Calibrate another engine against the reference rather than assuming equal settings match. Simple feedback can use 150–250ms; do not retain old 280/640/960ms as a competing motion system.
 
@@ -240,7 +242,7 @@ Required adaptations beyond export: pause sustained motion, static reduced-motio
 
 Fields: width 100%, min-height 52px, padding 12px 16px, radius 10px, #101A21 fill, .28 pale border, #EAF0EC text, >=16px Instrument. Native controls, persistent labels/autocomplete, mint focus and vertical textarea resize.
 
-Reference fields: name/email/need/challenge. Needs: uncertainty, website/web app, mobile, backend/integrations, AI/workflow, maintenance/support. Reuse actual validated choices rather than forking the server taxonomy. Retain explicit consent/privacy even though the board omits them. Direct email and “A useful conversation” aside stacks below on phone.
+Reference fields: name/email/need/challenge. Needs: uncertainty, AI-powered product, automation system/workflow, backend/integrations, website/application, maintenance/support. Reuse actual validated choices rather than forking the server taxonomy. Retain explicit consent/privacy even though the board omits them. Direct email and “A useful conversation” aside stacks below on phone.
 
 System map (Solutions reference): between the hero and the pale capabilities band, a 620px (clamp 440–620) deep-surface stage holds a canvas of eight labelled nodes joined by links with travelling packets. Nodes drift about home positions and step away from the pointer; the nearest node within 44px lights itself, its neighbours and their links, and dims the rest. All physics constants live in tokens `network.*`; the canvas has a text description (`role="img"`), pauses with the motion toggle, and draws one static frame under reduced motion. On a stage narrower than `network.compact-width` the right-hand labels drop beneath their nodes, because beside them they collide with the hub’s label (the board has the same collision at phone width). Capability-row and “how we work” headings inherit the body line-height (1.55) as on the board, not the tighter heading leading.
 

@@ -7,7 +7,7 @@ type Message = { role: 'user' | 'assistant'; content: string }
 export type Draft = { brief: string; need: string }
 
 const greeting = 'Hello. I’m an AI assistant, not a person. Tell me roughly what you’re trying to sort out, in your own words, and I’ll ask a few questions to turn it into a clear brief for the AeolusLabs team. Nothing is sent until you choose to send it.'
-const starters = ['Our bookings and records are a mess', 'I have an idea for an app', 'I need a better website', 'I want to automate repetitive work']
+const starters = ['I have an idea for an AI product', 'I want to automate repetitive work', 'Our business tools need to connect', 'I need help choosing where AI fits']
 
 export function BriefAssistant({ onDraft }: { onDraft: (draft: Draft) => void }) {
   const [messages, setMessages] = useState<Message[]>([])

@@ -78,6 +78,7 @@
   --type-section-light: clamp(2.5rem,5vw,4.5rem);
   --type-display: clamp(3.25rem,8.6vw,8rem);
   --type-home: clamp(3.75rem,11.5vw,10.5rem);
+  --type-home-positioning: clamp(3.75rem,8.6vw,8rem);
   --type-work: clamp(3.5rem,9.5vw,8.75rem);
   --type-about: clamp(3.25rem,9vw,8.5rem);
   --type-case: clamp(5rem,17vw,15.625rem);
@@ -686,7 +687,7 @@ a { color: inherit; text-decoration: none; }
 .home-hero { padding-block: var(--layout-hero-top) var(--layout-hero-bottom); min-height: var(--size-hero-min); }
 .home-hero-content { display: flex; flex-direction: column; gap: var(--space-12); }
 .home-experience .eyebrow { margin: 0; }
-.home-hero h1 { margin: 0; font-size: var(--type-home); font-weight: var(--weight-heading); line-height: var(--leading-home); letter-spacing: var(--tracking-display); }
+.home-hero h1 { margin: 0; font-size: var(--type-home-positioning); font-weight: var(--weight-heading); line-height: var(--leading-home); letter-spacing: var(--tracking-display); }
 .home-hero em { font-style: normal; color: var(--accent); }
 .home-line-mask { display: block; overflow: hidden; padding-bottom: var(--layout-headline-mask); margin-bottom: calc(-1 * var(--layout-headline-mask)); }
 .home-line-mask > span { display: block; }

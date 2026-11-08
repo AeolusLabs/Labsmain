@@ -5,14 +5,14 @@ import { ButtonLink } from '@/components/page-parts'
 import { imageSizes } from '@/design-system/media'
 import tokens from '@/design-system/tokens.json'
 
-export const metadata = { title: 'Our work', description: 'Explore software built by AeolusLabs.' }
+export const metadata = { title: 'Our work', description: 'Explore client work and products built by AeolusLabs, including Tikvah and Vib3Pulse.' }
 
 export default function Work() {
   return <StudioPage>
     <section className="page-hero wrap" aria-labelledby="work-title">
       <p className="eyebrow" data-reveal="">Our work</p>
-      <h1 id="work-title" className="page-hero-title page-hero-title--work"><HeroLines lines={['Built around', <><em>real</em> needs.</>]} /></h1>
-      <p className="page-hero-lead" data-reveal="" data-delay="500">Client platforms and products of our own. The idea, our contribution, and the experience it became.</p>
+      <h1 id="work-title" className="page-hero-title page-hero-title--work"><HeroLines lines={['See what', <>we’ve <em>built.</em></>]} /></h1>
+      <p className="page-hero-lead" data-reveal="" data-delay="500">A closer look at our client work and products: what each does, what we delivered and what you can explore.</p>
     </section>
 
     <section className="studio-work wrap" aria-labelledby="tikvah-title">
@@ -57,6 +57,6 @@ export default function Work() {
       </Link>
     </section>
 
-    <StudioClosing title={<>Have something<br />in <em>mind?</em></>} action="Bring us your idea" />
+    <StudioClosing title={<>Your next product.<br />Your next <em>workflow.</em></>} action="Discuss what to build or automate" />
   </StudioPage>
 }

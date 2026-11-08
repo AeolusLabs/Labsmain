@@ -19,8 +19,8 @@ const display = Bricolage_Grotesque({
   display: 'swap',
 })
 
-const title = 'AeolusLabs — Software built around your business'
-const description = 'AeolusLabs builds websites, applications, business systems and practical AI for businesses in Nigeria and across Africa.'
+const title = 'AeolusLabs — AI products & business automation'
+const description = 'AeolusLabs builds AI-powered products and automation systems for businesses in Nigeria, across Africa and internationally.'
 
 export const metadata: Metadata = {
   title: { default: title, template: '%s — AeolusLabs' },

@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'AeolusLabs',
     short_name: 'AeolusLabs',
-    description: 'Websites, applications, business systems and practical AI for businesses in Nigeria and across Africa.',
+    description: 'AI-powered products and automation systems for businesses.',
     start_url: '/',
     scope: '/',
     display: 'standalone',

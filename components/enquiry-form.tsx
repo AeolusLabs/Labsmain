@@ -81,7 +81,7 @@ export function EnquiryForm({ initialChallenge = '', initialNeed, fromAssistant 
         {needOptions.map(option => <option key={option}>{option}</option>)}
       </select>
     </label>
-    <label>What would you like to work on?<textarea required name="challenge" minLength={20} maxLength={5000} rows={fromAssistant ? 12 : 6} defaultValue={initialChallenge} placeholder="The idea, the recurring problem, or what you wish worked better." /></label>
+    <label>What would you like to work on?<textarea required name="challenge" minLength={20} maxLength={5000} rows={fromAssistant ? 12 : 6} defaultValue={initialChallenge} placeholder="Describe your product idea or the process you want to automate, including the tools and manual steps involved." /></label>
     {fromAssistant && <input type="hidden" name="source" value="assistant" />}
     <div className="honeypot" aria-hidden="true"><label>Leave this empty<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
     <label className="consent"><input required type="checkbox" name="consent" value="yes" /><span>I agree that AeolusLabs may use these details to respond to my enquiry. <Link href="/privacy">Read the privacy notice.</Link></span></label>

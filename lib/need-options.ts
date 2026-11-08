@@ -1,9 +1,9 @@
 export const needOptions = [
   'I’m not sure yet',
-  'Website or web application',
-  'Mobile application',
+  'AI-powered product',
+  'Automation system or workflow',
   'Backend or integrations',
-  'AI solution or autonomous workflow',
+  'Website or application',
   'Maintenance and support',
 ] as const
 
