@@ -17,7 +17,7 @@ export default function Privacy() {
       <h2>Access and retention</h2>
       <p>Enquiries received by email are accessible to the team handling your request and the providers operating our email services. We keep correspondence for follow-up and any resulting business relationship. You can contact us to request access, correction or deletion, subject to any records we need to retain.</p>
       <h2>The AI assistant</h2>
-      <p>Where it is available, the contact page offers an AI assistant that helps you turn an idea into a written brief. It is an AI, not a person. The messages you type are sent to our AI provider, Anthropic, to write the replies, and are handled under that provider’s own terms. We do not save the conversation. Nothing reaches our team unless you review the draft brief and choose to send it through the enquiry form. Please do not share passwords, payment details or ID numbers.</p>
+      <p>Where it is available, the contact page offers an AI assistant that helps you turn an idea into a written brief. It is an AI, not a person. Depending on this website’s configuration, your messages are sent directly to Anthropic or through OpenRouter to the provider running the selected AI model. Those services process your messages under their own terms and privacy policies. We do not save the conversation. Nothing reaches our team unless you review the draft brief and choose to send it through the enquiry form. Please do not share passwords, payment details or ID numbers.</p>
       <h2>Analytics</h2>
       <p>The local development version does not load production analytics. The production configuration includes Vercel Analytics for aggregate website usage measurement.</p>
       <h2>Contact</h2>

@@ -29,9 +29,9 @@ export function ContactPanel({ assistantEnabled, onValues }: { assistantEnabled:
 
     <div hidden={mode !== 'assistant'}><BriefAssistant onDraft={acceptDraft} /></div>
 
-    {mode === 'form' && <>
+    <div hidden={mode !== 'form'}>
       {draft && <p className="draft-note" ref={note} tabIndex={-1} role="status">We drafted this from your conversation. Please read it, change anything that isn’t right, add your details and send it when you’re happy. Nothing has been sent yet.</p>}
       <EnquiryForm key={round} initialChallenge={draft?.brief} initialNeed={draft?.need} fromAssistant={Boolean(draft)} onValues={onValues} />
-    </>}
+    </div>
   </div>
 }

@@ -10,11 +10,11 @@ const capabilities = [
   { label: 'Connect what you already use', title: 'Integrations', text: 'Bring your tools and data together so the product or workflow fits your operations.', items: ['Backend development & APIs', 'Databases', 'Business tool integrations'] },
   { label: 'Keep your software useful', title: 'Maintenance & support', text: 'Ongoing care, technical support and improvements as your needs evolve.', items: [] as string[] },
 ]
-const principles = [
-  ['Understand first.', 'Listen before choosing a solution.'],
-  ['Build deliberately.', 'Keep the work focused on a clear need.'],
-  ['Communicate openly.', 'Keep you involved as the work takes shape.'],
-  ['Keep improving.', 'Learn from use and plan the next useful change.'],
+const engagement = [
+  ['Understand the need.', 'Bring your idea or describe the work your team repeats, the tools you use and what gets in the way. We start by understanding the goal and constraints.'],
+  ['Agree a scope.', 'Work through what to build, what it needs to connect to and how you will judge the result. For AI and automation, agree where people review or make decisions.'],
+  ['Build and review.', 'Stay involved as the product or workflow takes shape. Review the work against the agreed need and discuss changes before they become new scope.'],
+  ['Plan the next step.', 'Agree what handover, ongoing support and future improvements should cover. Keep the next phase tied to how the system will be used.'],
 ]
 
 export default function Solutions() {
@@ -56,8 +56,8 @@ export default function Solutions() {
     </div></section>
 
     <section className="case-delivered studio-how wrap" aria-labelledby="how-title">
-      <div className="case-delivered-heading" data-reveal=""><p className="eyebrow">How we work</p><h2 id="how-title">Understand. Build. Keep improving.</h2></div>
-      <ol className="case-delivery-grid case-delivery-grid--four">{principles.map(([title, text], index) => <li key={title} data-reveal="" data-delay={index * 110}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
+      <div className="case-delivered-heading" data-reveal=""><p className="eyebrow">Working together</p><h2 id="how-title">From the first conversation<br />to what comes next.</h2></div>
+      <ol className="case-delivery-grid case-delivery-grid--four">{engagement.map(([title, text], index) => <li key={title} data-reveal="" data-delay={index * 110}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
     </section>
 
     <StudioClosing title={<>Start with your<br /><em>business need.</em></>} action="Discuss what to build or automate" />

@@ -1,0 +1,13 @@
+# Phone services band refinement — 8 November 2026
+
+BAND-20261108 | Make Home's oversized services ticker readable on phones and improve copy | owner: Codex | files: app/page.tsx, styles/home.css, generated styles/system.css, DESIGN.md | dependency: owner supplied screenshot and requested phone/copy fixes | status: DONE locally, not deployed.
+
+Phone/touch treatment: replaced the clipped animated words with a semantic static list under “What we help you do.” Four outcomes have short explanations: Build your product; Simplify daily work; Connect your tools; Keep things running. One column at <=640px; normal wrapping. Touch-only landscape devices also use the static list. No gestures, hovering or JavaScript are required for the phone summary.
+
+Desktop keeps the reference's opposing decorative rows, with clearer labels: AI products / Business automation / Connected systems / Ongoing support; Websites / Web apps / Mobile apps / Integrations. Decorative duplicates remain aria-hidden. Pausing or requesting reduced motion replaces the ticker with the readable summary rather than freezing clipped text. No animation engine edits or dependencies.
+
+Rendered phone inspection exposed the existing floating motion button covering the final summary row. On phones and touch-only devices the control now sits in normal flow after the footer, where it remains operable without overlapping content. Desktop keeps its floating control. This is a broader shared-control positioning change; other route content is untouched.
+
+Verification: pnpm typecheck passed. Final pnpm build exited 0, with 427 validated tokens / 14 boards / 195 mapped reference decisions. git diff --check passed. Production-browser widths 320, 390, 640, 768, 1440: no horizontal document overflow or clipped summary items. <=640 shows summary, hides ticker; desktop shows animated ticker. Measured track transform changed over 250ms. Pause switches to summary; resume restores ticker; reduced-motion switches to summary. Touch context 844×390 showed summary with ticker hidden and no overflow. JavaScript-disabled 390px context showed all four static items. Final phone-control check: computed position static; pause remained functional; no overflow.
+
+Inspected final phone screenshot: architecture/evidence/services-band-20261108/phone.png. Existing local Vercel analytics endpoint returns 404 in the standalone server; unrelated to this change. Self-reviewed, no independent agent used for this scoped edit. Temporary server stopped. Earlier portfolio/PWA work and unrelated reference moves/deletions preserved. No commit, push or deployment. Next: owner review of the phone treatment; live publication remains separate.

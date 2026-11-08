@@ -5,7 +5,7 @@ import { ButtonLink } from '@/components/page-parts'
 import { imageSizes } from '@/design-system/media'
 import tokens from '@/design-system/tokens.json'
 
-export const metadata = { title: 'Our work', description: 'Explore client work and products built by AeolusLabs, including Tikvah and Vib3Pulse.' }
+export const metadata = { title: 'Our work', description: 'Explore Tikvah, TLC Beauty Shop and Vib3Pulse: client websites, applications and products built by AeolusLabs.' }
 
 export default function Work() {
   return <StudioPage>
@@ -38,8 +38,16 @@ export default function Work() {
       </div>
     </section>
 
+    <section className="portfolio-preview wrap" aria-labelledby="tlc-work-title">
+      <Link className="home-desktop-capture" href="/work/tlc-beauty-shop" aria-label="Explore the TLC Beauty Shop case study"><Image src="/projects/tlc-beauty-shop/home-desktop.jpg" alt="TheLashCode salon homepage, built for TLC Beauty Shop" width={1440} height={1000} sizes={imageSizes.full} /></Link>
+      <div className="studio-brief">
+        <div><p className="eyebrow">Client project / Beauty &amp; booking</p><h2 id="tlc-work-title">TLC Beauty Shop</h2><p>A salon website for TheLashCode, connecting services, pricing and a work gallery with appointment booking.</p></div>
+        <div><dl><dt>Our role</dt><dd>End-to-end delivery</dd><dt>Experience</dt><dd>Website &amp; booking flow</dd></dl><ButtonLink href="/work/tlc-beauty-shop">Explore the project</ButtonLink></div>
+      </div>
+    </section>
+
     <section className="studio-product-section wrap" aria-label="Vib3Pulse">
-      <Link className="studio-product" href="/products" data-reveal="">
+      <Link className="studio-product" href="/work/vib3pulse" data-reveal="">
         <canvas data-pulse="" aria-hidden="true" />
         <div className="studio-product-inner">
           <div>
@@ -51,7 +59,7 @@ export default function Work() {
             <p className="studio-product-kicker">Our own product</p>
             <p className="studio-product-copy">Bringing event discovery, ticketing and social planning into one platform.</p>
             <dl><dt>Type</dt><dd>Owned web product</dd><dt>Focus</dt><dd>Events &amp; community</dd></dl>
-            <p className="studio-product-note">Brand artwork shown; interface imagery is still pending.</p>
+            <p className="studio-product-note">Brand artwork. Explore the project and actual public screens ↗</p>
           </div>
         </div>
       </Link>

@@ -1,5 +1,6 @@
 import { PageShell } from '@/components/site-header'
 import { ClosingLine, Eyebrow } from '@/components/page-parts'
+import Link from 'next/link'
 
 export const metadata = { title: 'About', description: 'Meet the collective behind AeolusLabs: AI-powered products and automation systems for businesses.' }
 
@@ -25,6 +26,7 @@ export default function About() {
       <div>
         <h2>Technology meets<br />business thinking.</h2>
         <p>A useful product needs a clear business purpose. An automation system needs to fit the people and processes using it. We bring these perspectives together, from understanding the need to shaping what gets built.</p>
+        <p>Our work makes that approach tangible: a complete application for <Link className="text-link" href="/work/tikvah">Tikvah</Link>, a website and appointment journey for <Link className="text-link" href="/work/tlc-beauty-shop">TLC Beauty Shop</Link>, and our own events product, <Link className="text-link" href="/work/vib3pulse">Vib3Pulse</Link>.</p>
         <p>Our mission is to help African businesses put practical AI and automation to work. We’re working towards an Africa where businesses of every size can access technology that helps them operate efficiently, innovate and grow.</p>
       </div>
     </div>

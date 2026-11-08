@@ -27,6 +27,8 @@ Seven identifying features must survive: dark/mint shell; Bricolage Grotesque wi
 
 ### Product truth
 
+The website is AeolusLabs’ company portfolio and enquiry channel (owner clarification, 8 November 2026). Its primary job is to introduce the collective, showcase real client work and owned products, explain our contribution, and help prospective clients judge whether to work with us. Assess the site against that purpose as well as reference fidelity.
+
 AeolusLabs is a collective bringing together expertise across technology and business development. We build AI-powered products and automation systems for businesses. Based in Nigeria, we serve businesses, entrepreneurs and startups across Africa and internationally. Owner approved this positioning and the collective description on 8 November 2026, replacing the two-developer company framing. Do not invent team size, members, specialist credentials or AI capabilities for existing projects. Help visitors understand the offer, inspect real work and start a relevant enquiry. Approved copy takes precedence over reference-board wording; visual composition remains governed by the reference.
 
 - Founders: Allan Ajayi-Adjari and Bernard Nneboh. Introduce them as co-founders; do not define the collective as two software developers. Type-led introductions as in the reference; no invented portraits/biographies.
@@ -36,7 +38,9 @@ AeolusLabs is a collective bringing together expertise across technology and bus
 - Services, in order: AI-powered products (applications and custom agents), automation systems and workflows with agreed human oversight, integrations, ongoing support. Websites, web/mobile applications, backends and APIs remain supporting capabilities rather than the company definition.
 - Canonical: https://www.aeoluslabsltd.com. Public email/recipient: info@aeoluslabsltd.com. No unconfirmed WhatsApp/social links.
 - Tikvah: approved client project, complete frontend/backend delivery; https://www.tikvah.space/. Real public captures, accurate capture dates, private flows explicitly untested. Screenshots do not prove backend operation.
-- Vib3Pulse: company-owned; https://vib3pulse-production.up.railway.app/. Lime artwork is not a product screenshot. Interface imagery pending; account-only features remain product-presented claims until verified.
+- Vib3Pulse: company-owned; https://vib3pulse-production.up.railway.app/. Lime artwork is not a product screenshot. Actual public landing and sign-in captures from 8 November 2026 now accompany the artwork. Sample tickets/events shown in the landing are demonstrations, not transactions. Account-only features remain product-presented claims until verified.
+- TLC Beauty Shop / TheLashCode: owner requested inclusion and confirmed end-to-end delivery on 8 November 2026; https://www.tlcbeautyshop.com/. The public brand is TheLashCode. Showcase the salon website, service pricing, gallery and appointment journey. Public booking describes a 50% Paystack deposit and WhatsApp follow-up; completed payments, bookings and business outcomes were not tested or claimed. Capture provenance belongs with the assets.
+- This website’s own brief assistant is a first-party example of AI-assisted intake with visitor review before submission. Explain its actual workflow and availability-dependent assistant; retain the ordinary form and prepared-email fallback. Do not imply that Tikvah or TLC uses AI.
 - Other client names, private notes/screenshots remain unpublished pending permission. Omit poetry app. Never invent metrics, testimonials, results, guarantees or approvals.
 - Preserve the angular A mark. Current vector recreates supplied artwork; it is not extracted original artwork. Approved final artwork may replace it.
 
@@ -133,19 +137,21 @@ Fixed export board heights (phone 2300–6000px) are not route heights. Content 
 
 | Route | Required composition in order |
 | --- | --- |
-| / | Wind/spotlight hero; two opposing type marquees; large Tikvah desktop capture plus overlapping phone; pale expertise/three service rows; lime Vib3Pulse teaser; reactive “What would you automate?” closing; footer. |
-| /work | Wind hero “See what we’ve built”; layered Tikvah stage/role/delivery/case link; lime Vib3Pulse panel with ownership/type/focus and artwork disclaimer; “Your next product. Your next workflow.” closing. |
+| / | Wind/spotlight hero; two opposing type marquees; large Tikvah desktop capture plus overlapping phone; TLC website preview and case link; pale expertise/three service rows; lime Vib3Pulse teaser; own AI-assisted enquiry workflow; reactive “What would you automate?” closing; footer. |
+| /work | Wind hero “See what we’ve built”; layered Tikvah stage/role/delivery/case link; TLC website preview/scope/case link; lime Vib3Pulse panel with direct project link; “Your next product. Your next workflow.” closing. |
 | /work/tikvah | Back link/category/huge title/subtitle/live link; four wrapping facts; desktop image/caption; dark challenge; pale experience with phone/three public-journey points; dark delivery rows/provenance; supported result; “Your idea could be next” closing. |
 | /solutions | Wind problem-led hero; pale orientation/CTA beside four large linked capability rows; dark four-principle process; “A clear scope comes first” closing. |
 | /products | Wind hero; large lime Vib3Pulse artwork/description/live link/disclaimer; “Ready to build your product?” closing. |
 | /about | Wind hero; type-led co-founders; “What defines us” narrative; four numbered principles; “What could you build or automate?” closing. |
 | /contact | Wind invitation hero; form beside direct email/next steps; generous bottom breathing room; footer. Preserve consent/chat/validation/fallback omitted from the board. |
 
-Marquee first line: AI products • Automation • Systems • Integrations, filled pale. Second: Web • Mobile • Maintenance • Support, outlined pale. Mint circular separators. Bricolage 500, clamp(56px,8vw,112px), line-height 1.1, tracking -.035em, outline 1.5px. Decorative band, not the only service content.
+Services band (owner-requested phone/readability refinement, 8 November 2026): on screens above 640px with motion running, keep the opposing decorative marquees. First line: AI products • Business automation • Connected systems • Ongoing support, filled pale. Second: Websites • Web apps • Mobile apps • Integrations, outlined pale. Mint circular separators. Bricolage 500, clamp(56px,8vw,112px), line-height 1.1, tracking -.035em, outline 1.5px. On phones, when paused, and under reduced motion, replace the clipped ticker with a static, semantic service summary: Build your product; Simplify daily work; Connect your tools; Keep things running, each with a short explanation. Phone text wraps naturally in one column; no hover, swipe, cursor or animation is needed to read every item. This supersedes the reference's phone ticker treatment. The later pale expertise section remains the detailed service navigation.
 
 Solutions rows: AI-powered products; Automation systems; Integrations; Maintenance & support, each outcome-led eyebrow/scope/arrow. Home's shorter rows: AI-powered products, Automation systems, Integrations & support. Two levels of one taxonomy.
 
-No dedicated reference boards for /work/vib3pulse, Privacy or not-found: extend the same vocabulary and retain factual content/disclosures. Map export .dc.html links to actual routes. Do not invent unrelated page identities.
+Touch-only devices also use the static services summary, including landscape phones wider than 640px. On phones and touch-only devices the motion control sits in normal flow after the footer instead of floating over copy; desktop retains the fixed control.
+
+No dedicated reference boards for /work/vib3pulse, /work/tlc-beauty-shop, Privacy or not-found: extend the same vocabulary and retain factual content/disclosures. Case studies should show the business need, confirmed contribution, distinct real public screens and honest verification boundaries. Products pairs the lime cover with actual Vib3Pulse public imagery. Solutions explains the engagement sequence: understand the need, agree scope, build and review, agree handover/support. These portfolio improvements were requested on 8 November 2026. Map export .dc.html links to actual routes. Do not invent unrelated page identities.
 
 ## Elevation & Depth
 
@@ -184,7 +190,7 @@ DESIGN.md governs decisions. **design-system/tokens.json is the sole editable ru
 | app/globals.css | Single global entry importing the generated stylesheet. Imported once by root layout. |
 | design-system/resolve.ts | Typed alias resolution for non-CSS consumers. Pixel sizing follows semantic aliases rather than hardcoded primitive keys. |
 | design-system/media.ts | Image sizing hints derived from the same shell, breakpoints and grid tokens. Intrinsic asset dimensions remain with assets. |
-| app/layout.tsx / app/manifest.ts | Next font loading and browser metadata; browser colours read tokens.json, not copied hex values. |
+| app/layout.tsx | Next font loading and browser metadata; browser colours read tokens.json, not copied hex values. |
 | components / app / lib | Shared UI and behaviour / route composition / domain and server logic. Do not move backend validation or provider clients into design code. |
 
 The reference audit now maps 195 extracted visual/dimensional decisions across all fourteen boards to this same source. The inventory includes founder/service/principle/product type roles, all reference leading/tracking variants, paragraph measures, section/header/footer/hero rhythm, column minima, phone-overlay placement, component padding, border opacity variants, shadows, masks and gradients. Wind, spring, tilt, magnet, marquee, pulse and variable-letter tuning have named groups for future consumers. They are reserved implementation values, not claims that those effects have shipped.
@@ -260,9 +266,11 @@ Keep honeypot, same-origin/payload validation and best-effort per-visitor/per-in
 
 ANTHROPIC_API_KEY or OPENROUTER_API_KEY must exist before the prerendered Contact build and at runtime for /api/brief (Anthropic wins if both are set; BRIEF_ASSISTANT_PROVIDER overrides; OPENROUTER_MODEL sets the OpenRouter slug, default anthropic/claude-sonnet-4.5, tool calling required). Without a key retain the form. BRIEF_ASSISTANT_MODEL overrides the source default (currently claude-opus-5-5); confirm account availability. Never expose credentials through NEXT_PUBLIC_. Mock provider configuration is local verification only.
 
-Assistant output is a reviewable/editable draft, never automatic enquiry submission. Preserve focus handoff and explicit visitor send. Anthropic processes messages; the site does not persist conversations. No sensitive-data requests, invented facts, pricing or delivery promises.
+Assistant output is a reviewable/editable draft, never automatic enquiry submission. Preserve focus handoff and explicit visitor send. Messages are processed directly by Anthropic or through OpenRouter and the selected model provider, depending on deployment configuration; the privacy notice must cover both paths. The site does not persist conversations. No sensitive-data requests, invented facts, pricing or delivery promises.
 
 ### Setup and hosting
+
+The site is a regular website, not an installable PWA (owner decision, 8 November 2026). Do not add a web app manifest, standalone-mode metadata, install prompts or a service worker. Retain ordinary browser favicons and touch icons.
 
 Node.js 24, pnpm 11.25.0. Commands: pnpm install --frozen-lockfile, pnpm dev, pnpm typecheck, pnpm build. Stack: Next.js 16.4.5, React 19, TypeScript, plain CSS, existing Anthropic SDK. No active Tailwind/shadcn system. Read relevant installed node_modules/next/dist/docs/ before runtime changes; retain generated AGENTS.md rules. Choose the lightest implementation that faithfully reproduces the reference, not a framework for its own sake.
 
