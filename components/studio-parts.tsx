@@ -22,7 +22,7 @@ export function HeroLines({ lines }: { lines: ReactNode[] }) {
 /** Large closing statement with a single action. */
 export function StudioClosing({ title, action, href = '/contact' }: { title: ReactNode; action: string; href?: string }) {
   return <section className="studio-closing wrap" aria-labelledby="closing-title">
-    <h2 id="closing-title" data-reveal="">{title}</h2>
+    <h2 id="closing-title">{title}</h2>
     <span data-magnet=""><ButtonLink href={href}>{action}</ButtonLink></span>
   </section>
 }

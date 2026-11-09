@@ -1,6 +1,6 @@
 # AeolusLabs — single project and design authority
 
-Updated: 8 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending.
+Updated: 9 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending.
 
 ## Overview
 
@@ -23,7 +23,7 @@ Port the visual/interaction intent into the existing Next.js app with real route
 
 An expressive software studio shaped by air, space and responsive movement: deep ink surfaces, pale green-white text, fresh mint, monumental characterful type, layered real work and generous composition. Wind responds to the pointer, typography moves, images have depth, and purposeful pale sections interrupt the dark canvas. The offer and contact route remain clear.
 
-Seven identifying features must survive: dark/mint shell; Bricolage Grotesque with Instrument Sans; enormous two-line headlines; pill CTAs; layered desktop/phone Tikvah captures; pale expertise/experience sections; wind, kinetic type and responsive artwork. A dark recolour of the old minimal site is insufficient.
+Seven identifying features must survive: dark/mint shell; Bricolage Grotesque with Instrument Sans; enormous two-line headlines; pill CTAs; layered desktop/phone Tikvah captures; pale expertise/experience sections; wind, the animated hero headline and responsive artwork. A dark recolour of the old minimal site is insufficient.
 
 ### Product truth
 
@@ -123,7 +123,7 @@ Desktop 1440px: centred max-width 1360px border-box shell with 40px inner horizo
 
 Header: padding 28px 40px, wrapping flex/space-between, gap 16px 32px. Logo 30×30px, wordmark 22px, gap 12px. Nav order Work/Solutions/Products/About then mint “Start a conversation”; gaps 8px 28px. Normal-flow header, not an invented sticky/floating menu.
 
-Home hero: 88px 40px 120px padding, reference min-height 620px, 48px main gaps. Eyebrow, huge heading, supporting two-column grid and pointer hint. Supporting grid: auto-fit/minmax 360px preferred columns, gaps 32px 64px. Do not revert to a small headline beside a paragraph.
+Home hero: 88px 40px 120px padding, reference min-height 620px, 48px main gaps. Huge heading, supporting two-column grid and pointer hint (no eyebrow). Supporting grid: auto-fit/minmax 360px preferred columns, gaps 32px 64px. Do not revert to a small headline beside a paragraph.
 
 Inner hero: usually 72px 40px 104px; Tikvah 56px 40px 88px; Contact 72px 40px 88px. Dark section separation generally 140px. Pale interiors 112px 40px. Two-column gaps typically 56px 80px. Standard closing 160px 40px 120px, Home 180px 40px 120px. Footer top rule, padding 32px 40px 40px, wrapping credit/nav with 16px 32px gaps. Encode shared spacing roles instead of repeating inline styles.
 
@@ -137,7 +137,7 @@ Fixed export board heights (phone 2300–6000px) are not route heights. Content 
 
 | Route | Required composition in order |
 | --- | --- |
-| / | Wind/spotlight hero; two opposing type marquees; large Tikvah desktop capture plus overlapping phone; TLC website preview and case link; pale expertise/three service rows; lime Vib3Pulse teaser; own AI-assisted enquiry workflow; reactive “What would you automate?” closing; footer. |
+| / | Wind/spotlight hero; static four-point services summary; large Tikvah desktop capture plus overlapping phone; TLC website preview and case link; pale expertise/three service rows; lime Vib3Pulse teaser; own AI-assisted enquiry workflow; “What would you automate?” closing; footer. |
 | /work | Wind hero “See what we’ve built”; layered Tikvah stage/role/delivery/case link; TLC website preview/scope/case link; lime Vib3Pulse panel with direct project link; “Your next product. Your next workflow.” closing. |
 | /work/tikvah | Back link/category/huge title/subtitle/live link; four wrapping facts; desktop image/caption; dark challenge; pale experience with phone/three public-journey points; dark delivery rows/provenance; supported result; “Your idea could be next” closing. |
 | /solutions | Wind problem-led hero; pale orientation/CTA beside four large linked capability rows; dark four-principle process; “A clear scope comes first” closing. |
@@ -145,11 +145,11 @@ Fixed export board heights (phone 2300–6000px) are not route heights. Content 
 | /about | Wind hero; type-led co-founders; “What defines us” narrative; four numbered principles; “What could you build or automate?” closing. |
 | /contact | Wind invitation hero; form beside direct email/next steps; generous bottom breathing room; footer. Preserve consent/chat/validation/fallback omitted from the board. |
 
-Services band (owner-requested phone/readability refinement, 8 November 2026): on screens above 640px with motion running, keep the opposing decorative marquees. First line: AI products • Business automation • Connected systems • Ongoing support, filled pale. Second: Websites • Web apps • Mobile apps • Integrations, outlined pale. Mint circular separators. Bricolage 500, clamp(56px,8vw,112px), line-height 1.1, tracking -.035em, outline 1.5px. On phones, when paused, and under reduced motion, replace the clipped ticker with a static, semantic service summary: Build your product; Simplify daily work; Connect your tools; Keep things running, each with a short explanation. Phone text wraps naturally in one column; no hover, swipe, cursor or animation is needed to read every item. This supersedes the reference's phone ticker treatment. The later pale expertise section remains the detailed service navigation.
+Services band (owner decision, 9 November 2026: the decorative marquees are removed): a static, semantic service summary is shown at every width, in the place the marquees held: Build your product; Simplify daily work; Connect your tools; Keep things running, each with a short explanation. Phone text wraps naturally in one column; no hover, swipe, cursor or animation is needed to read every item. This supersedes the reference's ticker treatment. The later pale expertise section remains the detailed service navigation.
 
 Solutions rows: AI-powered products; Automation systems; Integrations; Maintenance & support, each outcome-led eyebrow/scope/arrow. Home's shorter rows: AI-powered products, Automation systems, Integrations & support. Two levels of one taxonomy.
 
-Touch-only devices also use the static services summary, including landscape phones wider than 640px. On phones and touch-only devices the motion control sits in normal flow after the footer instead of floating over copy; desktop retains the fixed control.
+On phones and touch-only devices the motion control sits in normal flow after the footer instead of floating over copy; desktop retains the fixed control.
 
 No dedicated reference boards for /work/vib3pulse, /work/tlc-beauty-shop, Privacy or not-found: extend the same vocabulary and retain factual content/disclosures. Case studies should show the business need, confirmed contribution, distinct real public screens and honest verification boundaries. Products pairs the lime cover with actual Vib3Pulse public imagery. Solutions explains the engagement sequence: understand the need, agree scope, build and review, agree handover/support. These portfolio improvements were requested on 8 November 2026. Map export .dc.html links to actual routes. Do not invent unrelated page identities.
 
@@ -207,7 +207,7 @@ Breakpoints are phone=640 and stack=960 in JSON. Author @media (--phone) and @me
 
 Workflow: edit tokens or its owning style file → pnpm tokens:generate → pnpm tokens:check → pnpm typecheck / pnpm build. Dev generates on startup. Typecheck/build reject stale generated CSS, unknown token references, reference cycles, raw colours, typography/radius literals in author styles, raw width breakpoints and undefined CSS variables. Runtime font variables and a per-instance reveal-delay variable are explicit external inputs. Generated output stays committed so ordinary builds are reproducible.
 
-Shared colours, fonts, type/space roles, controls, shell, metadata and existing motion now consume this foundation. No-JS content remains server rendered. This architecture pass does not claim the attachment's wind, marquees, layered media, pulse artwork or every page composition has been implemented. Those follow the reference contract below; do not mistake the transitional layouts for a new direction.
+Shared colours, fonts, type/space roles, controls, shell, metadata and existing motion now consume this foundation. No-JS content remains server rendered. This architecture pass does not claim the attachment's wind, layered media, pulse artwork or every page composition has been implemented. Those follow the reference contract below; do not mistake the transitional layouts for a new direction.
 
 ### Shared implementation
 
@@ -221,22 +221,22 @@ One token/component/style system. Refactor app/globals.css into owning sections 
 
 ### Motion contract
 
-Motion is integral. Ambient loops, reveals, pointer effects and canvas artwork are allowed in named locations; old blanket bans are superseded. Match their character rather than substituting a few arrow nudges or adding unrelated spectacle.
+Motion is integral but scoped. Owner decision, 9 November 2026: motion is limited to (1) the hero: wind, spotlight and the animated headline; (2) image reveals and the Tikvah tilt stage; (3) hover and press feedback: magnet buttons, the service-row highlight, link and button states; plus two content graphics, the Solutions system map and the Vib3Pulse panel artwork. Removed and not to be re-added without a new owner decision: marquees, text and section rise-in reveals, scroll parallax, the scroll-progress line, the idle phone float and the per-letter closing headline. The accent words in headlines stay. Eyebrow labels stay except where they only restate the heading beneath them; removed: Home hero and “What we do”, Work “Our work”, Contact “Start a conversation”, Solutions “Systems & integrations” and “Working together”.
 
 | Effect | Extracted reference | Production equivalent/fallback |
 | --- | --- | --- |
 | Wind | Canvas 2D coherent-noise mint trails; area-scaled 450–2600 particles, DPR capped at 2; pointer swirl radius ~210px, idle drift. Page heroes. | Capability-scaled density, suspend offscreen/hidden. Touch autonomous/static, no scroll interception. Reduced motion static texture; canvas failure leaves dark hero. |
 | Spotlight | 700px mint wash with damped pointer tracking. | Fine pointer only, behind content, fade on leave; off for touch/reduced motion. |
 | Headline | Masked rise from 118% Y/8deg; spring 105 stiffness/12.5 damping; .2s start, .12s line stagger. | One entrance per mount; offer/CTA usable immediately. Reduced motion/no JS final text. |
-| Reveal | Once at intersection threshold .12; 56px rise/opacity; spring 92/16, stagger. | Expose focused content immediately; fail open on observer/init failure. No moving form while typing. |
+| Reveal | Removed for text and sections on 9 November 2026 (owner decision); content is visible immediately. Image reveal below is the only scroll reveal. | Fail open on observer/init failure. |
 | Image reveal | Bottom-to-top clip, scale 1.28 to 1; spring 38/13. | Reserve image geometry; reduced motion unclipped final image. |
-| Parallax/progress | Hero factor .16, feature .05; fixed 3px mint progress line. | Native scroll. Reduced motion removes parallax; progress may update immediately. |
-| Tilt | perspective(1500px), rotateX up to 5deg/rotateY 7deg; depth layers 10/46, phone float 9px. | Fine-pointer enhancement; stable legibility/clicks. Touch/reduced motion composed static layers. |
+| Parallax/progress | Removed 9 November 2026 (owner decision): no parallax, no scroll-progress line. | Native scroll. |
+| Tilt | perspective(1500px), rotateX up to 5deg/rotateY 7deg; depth layers 10/46; the idle phone float was removed 9 November 2026. | Fine-pointer enhancement; stable legibility/clicks. Touch/reduced motion composed static layers. |
 | Magnet | Spring 220/15, radius 120px, displacement multiplier .38. | Restrained movement, stable hit area; never evade input. Off for touch/keyboard/reduced motion. |
-| Marquee | Opposing speeds 70/55px/s; scroll velocity boost; skew clamp 14deg. | Seamless track, no layout shift; static reduced-motion band, decorative duplicates aria-hidden; accessible pause for sustained motion. |
+| Marquee | Removed 9 November 2026 (owner decision). The static services summary takes its place at every width. | None needed. |
 | Service highlight | Gliding bar spring 240/26; row shift 16px, arrow enters. | Focus matches hover, clear when leaving list; reduced motion instant highlight without translation. |
 | Product pulse | Lower-right rings every 1.15s lasting 4.2s, pointer rings, 44 equaliser bars. | Artwork, no audio permission/live-data claim. Pause offscreen/hidden; static rings/bars in reduced motion. |
-| Closing lettering | Pointer/slow-wave weight variation roughly 300–740. | Accessible phrase “What would you automate?”, decorative letters hidden from assistive tech; stable layout. Fixed reduced-motion weight. |
+| Closing lettering | Removed 9 November 2026 (owner decision): the closing headline is static text; the accent word “automate?” stays. | Plain heading, no per-letter markup. |
 
 Spring numbers belong to the export physics model, not portable durations. Calibrate another engine against the reference rather than assuming equal settings match. Simple feedback can use 150–250ms; do not retain old 280/640/960ms as a competing motion system.
 
@@ -285,7 +285,7 @@ Last hosting observation (4 November): a860a74 deployed successfully, bare domai
 This revision specifies the remodel, not its implementation. Existing code is expected to diverge until changed. No effect is production-verified merely because documented.
 
 1. Establish palette, two-font loading, type roles, shell and pills. Replace old theme startup/metadata colours and stale selectors together; no old-theme flash.
-2. Implement motion with pause/preferences/lifecycle handling and complete Home: wind, marquees, layered real work, pale expertise, lime product, closing type. Compare with attachment at 1440 and 390.
+2. Implement motion with pause/preferences/lifecycle handling and complete Home: wind, layered real work, pale expertise, lime product, closing type. Compare with attachment at 1440 and 390.
 3. Remodel Work, Tikvah, Solutions, Products, About and Contact with shared vocabulary and specified compositions. Extend uncovered routes consistently.
 4. Verify enquiry/chat, consent, image enlargement, focus/navigation and errors without removing working functionality to match an incomplete mockup.
 5. Typecheck/build, then batch visual/function review at 390/768/1440. Check actual loaded fonts, line breaks, gutters, vertical rhythm, tokens, media depth, motion, links, overflow, keyboard, pause/reduced motion, no-JS usefulness and provider failure states. Fix observed defects and confirm once. Release only with authorization and verify live output.

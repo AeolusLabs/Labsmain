@@ -9,17 +9,17 @@ export const metadata = { title: 'Start a conversation', description: 'Discuss a
 export default function Contact() {
   return <StudioPage>
     <section className="page-hero page-hero--contact wrap" aria-labelledby="contact-title">
-      <p className="eyebrow" data-reveal="">Start a conversation</p>
+      
       <h1 id="contact-title" className="page-hero-title page-hero-title--contact"><HeroLines lines={['What would you', <>build or <em>automate?</em></>]} /></h1>
     </section>
 
     {/* The assistant only appears when an Anthropic or OpenRouter key is configured for this deployment. */}
     <ContactStage assistantEnabled={assistantProvider() !== null}>
-      <div data-reveal="" data-delay="150">
+      <div data-delay="150">
         <p className="eyebrow">Prefer a direct email?</p>
         <a className="studio-contact-email" href={`mailto:${email}`}>{email} <Arrow /></a>
       </div>
-      <div className="studio-contact-next" data-reveal="" data-delay="260">
+      <div className="studio-contact-next" data-delay="260">
         <p className="eyebrow">What happens next</p>
         <h2>Start with your business.</h2>
         <p>Tell us about the product you want to build or the process you want to automate. We’ll read what you share, discuss what’s feasible and agree a scope before work begins.</p>

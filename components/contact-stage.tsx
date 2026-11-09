@@ -23,7 +23,7 @@ function BriefPreview({ values }: { values: EnquiryValues }) {
   const filled = rows.filter(row => text[row.key]).length
   const percent = Math.round((filled / rows.length) * 100)
 
-  return <div className="brief-card" aria-hidden="true" data-reveal="" data-delay="80">
+  return <div className="brief-card" aria-hidden="true" data-delay="80">
     <div className="brief-card-head">
       <div>
         <p className="brief-card-title">Your brief</p>
@@ -51,7 +51,7 @@ function BriefPreview({ values }: { values: EnquiryValues }) {
 export function ContactStage({ assistantEnabled, children }: { assistantEnabled: boolean; children: ReactNode }) {
   const [values, setValues] = useState<EnquiryValues>(emptyValues)
   return <section className="studio-contact wrap" aria-label="Contact">
-    <div data-reveal=""><ContactPanel assistantEnabled={assistantEnabled} onValues={setValues} /></div>
+    <div><ContactPanel assistantEnabled={assistantEnabled} onValues={setValues} /></div>
     <aside className="studio-contact-aside">
       <BriefPreview values={values} />
       {children}

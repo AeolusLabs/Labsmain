@@ -50,7 +50,6 @@ export function HomeExperience({ children }: { children: ReactNode }) {
   }, [paused, reduced, ready])
 
   return <div ref={root} className="home-experience" data-aeolus-root="" data-motion={paused || reduced ? 'paused' : 'running'}>
-    <div className="home-progress" aria-hidden="true"><div data-progress="" /></div>
     {children}
     {ready && <button className="home-motion-toggle" type="button" aria-pressed={paused || reduced} disabled={reduced} onClick={() => setPaused(value => !value)}>{reduced ? 'Reduced motion' : paused ? 'Resume motion' : 'Pause motion'}</button>}
   </div>

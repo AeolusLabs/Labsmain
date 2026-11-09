@@ -20,30 +20,30 @@ const engagement = [
 export default function Solutions() {
   return <StudioPage>
     <section className="page-hero wrap" aria-labelledby="solutions-title">
-      <p className="eyebrow" data-reveal="">Capabilities</p>
+      <p className="eyebrow">Capabilities</p>
       <h1 id="solutions-title" className="page-hero-title page-hero-title--solutions"><HeroLines lines={['Build your product.', <>Automate your <em>processes.</em></>]} /></h1>
-      <p className="page-hero-lead page-hero-lead--wide" data-reveal="" data-delay="500">AI-powered products and automation systems, shaped around what your business needs to do. We start with your goals, processes and constraints.</p>
+      <p className="page-hero-lead page-hero-lead--wide" data-delay="500">AI-powered products and automation systems, shaped around what your business needs to do. We start with your goals, processes and constraints.</p>
     </section>
 
     <section className="solutions-map wrap" aria-labelledby="map-title">
       <div className="solutions-map-head">
-        <div data-reveal=""><p className="eyebrow">Systems &amp; integrations</p><h2 id="map-title">Connect the tools your team already uses.</h2></div>
-        <p className="solutions-map-note" data-reveal="" data-delay="150">Automation depends on the connections between your tools, data and people. Explore how the parts fit together.</p>
+        <div><h2 id="map-title">Connect the tools your team already uses.</h2></div>
+        <p className="solutions-map-note" data-delay="150">Automation depends on the connections between your tools, data and people. Explore how the parts fit together.</p>
       </div>
-      <div className="solutions-map-stage" data-reveal="" data-delay="100">
+      <div className="solutions-map-stage" data-delay="100">
         <canvas data-network="" role="img" aria-label="Diagram: websites, mobile apps, customer portals, APIs, databases, AI workflows and business tools all connect through your business." />
       </div>
     </section>
 
     <section className="solutions-capabilities surface-light" aria-labelledby="begin-title"><div className="wrap solutions-capabilities-inner">
-      <div className="solutions-intro" data-reveal="">
+      <div className="solutions-intro">
         <h2 id="begin-title">What needs to change?</h2>
         <p>Tell us about the product you have in mind or the work your team repeats. We’ll help define a practical starting point.</p>
         <Link className="text-link" href="/contact">Talk it through</Link>
       </div>
       <div className="home-service-list" data-hl="">
         <div className="home-service-highlight" data-hl-bar="" aria-hidden="true" />
-        {capabilities.map(({ label, title, text, items }, index) => <Link className="home-service-row solutions-row" data-hl-row="" data-reveal="" data-delay={index * 90} href="/contact" key={title}>
+        {capabilities.map(({ label, title, text, items }, index) => <Link className="home-service-row solutions-row" data-hl-row="" data-delay={index * 90} href="/contact" key={title}>
           <div data-hl-inner="">
             <span className="solutions-row-label">{label}</span>
             <h3>{title}</h3>
@@ -56,8 +56,8 @@ export default function Solutions() {
     </div></section>
 
     <section className="case-delivered studio-how wrap" aria-labelledby="how-title">
-      <div className="case-delivered-heading" data-reveal=""><p className="eyebrow">Working together</p><h2 id="how-title">From the first conversation<br />to what comes next.</h2></div>
-      <ol className="case-delivery-grid case-delivery-grid--four">{engagement.map(([title, text], index) => <li key={title} data-reveal="" data-delay={index * 110}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
+      <div className="case-delivered-heading"><h2 id="how-title">From the first conversation<br />to what comes next.</h2></div>
+      <ol className="case-delivery-grid case-delivery-grid--four">{engagement.map(([title, text], index) => <li key={title} data-delay={index * 110}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
     </section>
 
     <StudioClosing title={<>Start with your<br /><em>business need.</em></>} action="Discuss what to build or automate" />
