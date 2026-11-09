@@ -1,19 +1,22 @@
 'use client'
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 
-/** Small client boundary for the wind, reveals and motion toggle; page content remains server rendered and usable without it. Used by Home and every remodelled page. */
+/** Small client boundary for the wind, image reveals and the footer motion control; page content remains server rendered and usable without it. Used by Home and every remodelled page. */
 export function HomeExperience({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null)
   const [paused, setPaused] = useState(false)
   const [reduced, setReduced] = useState(false)
   const [ready, setReady] = useState(false)
+  const [slot, setSlot] = useState<Element | null>(null)
 
   useEffect(() => {
     const preference = matchMedia('(prefers-reduced-motion: reduce)')
     const sync = () => setReduced(preference.matches)
     sync()
     setReady(true)
+    setSlot(root.current?.querySelector('[data-motion-slot]') ?? null)
     preference.addEventListener('change', sync)
     return () => preference.removeEventListener('change', sync)
   }, [])
@@ -51,7 +54,7 @@ export function HomeExperience({ children }: { children: ReactNode }) {
 
   return <div ref={root} className="home-experience" data-aeolus-root="" data-motion={paused || reduced ? 'paused' : 'running'}>
     {children}
-    {ready && <button className="home-motion-toggle" type="button" aria-pressed={paused || reduced} disabled={reduced} onClick={() => setPaused(value => !value)}>{reduced ? 'Reduced motion' : paused ? 'Resume motion' : 'Pause motion'}</button>}
+    {slot && createPortal(<button className="motion-toggle" type="button" aria-pressed={paused || reduced} disabled={reduced} onClick={() => setPaused(value => !value)}>{reduced ? 'Motion reduced by your settings' : paused ? 'Resume motion' : 'Pause motion'}</button>, slot)}
   </div>
 }
 

@@ -149,7 +149,7 @@ Services band (owner decision, 9 November 2026: the decorative marquees are remo
 
 Solutions rows: AI-powered products; Automation systems; Integrations; Maintenance & support, each outcome-led eyebrow/scope/arrow. Home's shorter rows: AI-powered products, Automation systems, Integrations & support. Two levels of one taxonomy.
 
-On phones and touch-only devices the motion control sits in normal flow after the footer instead of floating over copy; desktop retains the fixed control.
+The motion control is a plain text control in the footer (owner decision, 9 November 2026); it no longer floats over content on any device. It appears only on routes that run the motion engine.
 
 No dedicated reference boards for /work/vib3pulse, /work/tlc-beauty-shop, Privacy or not-found: extend the same vocabulary and retain factual content/disclosures. Case studies should show the business need, confirmed contribution, distinct real public screens and honest verification boundaries. Products pairs the lime cover with actual Vib3Pulse public imagery. Solutions explains the engagement sequence: understand the need, agree scope, build and review, agree handover/support. These portfolio improvements were requested on 8 November 2026. Map export .dc.html links to actual routes. Do not invent unrelated page identities.
 
@@ -242,7 +242,7 @@ Spring numbers belong to the export physics model, not portable durations. Calib
 
 Centralize scheduling, clean listeners/observers/timers on route change, suspend hidden/offscreen work and settled springs, cap DPR, avoid per-particle DOM. React to preference changes live. Separate transform wrappers so reveal/parallax/tilt cannot overwrite each other. Do not port export polling/reinitialization scaffolding.
 
-Required adaptations beyond export: pause sustained motion, static reduced-motion output, keyboard service feedback, stable button targets, fail-open semantic content. A visible “Pause motion” control may govern ambient effects, not act as a theme chooser. Keep one h1, semantic HTML, visible focus, native scrolling and decorative layers out of hit testing/accessibility.
+Required adaptations beyond export: pause sustained motion, static reduced-motion output, keyboard service feedback, stable button targets, fail-open semantic content. A visible “Pause motion” control, placed in the footer, governs ambient effects (it satisfies WCAG 2.2.2) and is not a theme chooser. Keep one h1, semantic HTML, visible focus, native scrolling and decorative layers out of hit testing/accessibility.
 
 ### Contact and UI states
 

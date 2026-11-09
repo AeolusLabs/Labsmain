@@ -14,7 +14,7 @@ export function SiteHeader() {
 export function SiteFooter() {
   return <footer className="site-footer"><div className="wrap">
     <span>{`© ${new Date().getFullYear()} AeolusLabs. AI products & automation. Built in Nigeria.`}</span>
-    <nav aria-label="Footer navigation"><Link href="/work">Work</Link><Link href="/solutions">Solutions</Link><Link href="/products">Products</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link></nav>
+    <div className="footer-end"><nav aria-label="Footer navigation"><Link href="/work">Work</Link><Link href="/solutions">Solutions</Link><Link href="/products">Products</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link></nav><span data-motion-slot="" /></div>
   </div></footer>
 }
 
