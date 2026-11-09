@@ -101,6 +101,6 @@ export default function Home() {
         <div className="home-actions" data-reveal=""><span data-magnet=""><ButtonLink href="/contact">Discuss your next step</ButtonLink></span><a className="text-link" href={`mailto:${email}`}>{email}</a></div>
       </section>
     </main>
-    <SiteFooter variant="studio" />
+    <SiteFooter />
   </HomeExperience>
 }

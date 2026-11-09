@@ -10,11 +10,11 @@ export function SiteHeader() {
   </header>
 }
 
-export function SiteFooter({ variant = 'default' }: { variant?: 'default' | 'studio' }) {
+/** One footer for every route, so every page links to every section. */
+export function SiteFooter() {
   return <footer className="site-footer"><div className="wrap">
-    <span>{variant === 'studio' ? `© ${new Date().getFullYear()} AeolusLabs. AI products & automation. Built in Nigeria.` : 'AeolusLabs · Digitalize. Automate. Elevate.'}</span>
-    <nav aria-label="Footer navigation"><Link href="/work">Work</Link>{variant === 'studio' && <Link href="/solutions">Solutions</Link>}<Link href="/products">Products</Link>{variant === 'studio' && <Link href="/about">About</Link>}<Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link></nav>
-    {variant !== 'studio' && <span>© {new Date().getFullYear()} AeolusLabs</span>}
+    <span>{`© ${new Date().getFullYear()} AeolusLabs. AI products & automation. Built in Nigeria.`}</span>
+    <nav aria-label="Footer navigation"><Link href="/work">Work</Link><Link href="/solutions">Solutions</Link><Link href="/products">Products</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link></nav>
   </div></footer>
 }
 

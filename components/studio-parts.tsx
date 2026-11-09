@@ -10,7 +10,7 @@ export function StudioPage({ children }: { children: ReactNode }) {
     <div className="home-atmosphere" aria-hidden="true"><canvas data-wind="" /><div data-spot="" /></div>
     <SiteHeader />
     <main id="main-content">{children}</main>
-    <SiteFooter variant="studio" />
+    <SiteFooter />
   </StudioExperience>
 }
 

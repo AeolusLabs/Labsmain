@@ -94,7 +94,7 @@
 .home-word [data-l] { display: inline-block; }
 .home-emphasis { color: var(--accent); }
 .home-closing .text-link { color: var(--text-secondary); }
-.home-experience .site-footer { border-top: var(--border-width) solid var(--line); padding-block: var(--layout-footer-top) var(--layout-footer-bottom); font-size: var(--type-sm); }
+.site-footer { border-top: var(--border-width) solid var(--line); padding-block: var(--layout-footer-top) var(--layout-footer-bottom); font-size: var(--type-sm); }
 .home-motion-toggle { position: fixed; bottom: var(--size-motion-control-offset); right: var(--size-motion-control-offset); z-index: var(--z-progress); min-height: var(--size-target); padding: var(--space-2) var(--space-4); border: var(--border-width) solid var(--line); border-radius: var(--radius-pill); background: var(--bg); color: var(--ink); font-size: var(--type-xs); }
 .home-motion-toggle:disabled { color: var(--muted); cursor: default; }
 /* The fixed toggle sits bottom-right on pointer devices; keep the footer links clear of it. */

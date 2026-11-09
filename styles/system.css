@@ -496,9 +496,10 @@ a { color: inherit; text-decoration: none; }
 .text-link { position: relative; display: inline-block; font-size: var(--type-body); padding-bottom: var(--space-1); background: none; border: 0; padding-left: 0; padding-right: 0; color: var(--ink); }
 .text-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: var(--border-width); background: currentColor; transform: scaleX(.55); transform-origin: left; }
 /* Visual size stays; the pointer/touch hit area grows to the target size. */
-.text-link::before, .site-footer a::before, .brand::before { content: ''; position: absolute; inset: calc(-1 * var(--space-2)) calc(-1 * var(--space-1)); }
-.site-footer a, .brand { position: relative; }
-.site-footer a::before { inset: calc(-1 * var(--space-3)) calc(-1 * var(--space-1)); }
+.text-link::before, .site-footer a::before, .brand::before, .studio-back::before, .studio-contact-email::before { content: ''; position: absolute; inset: calc(-1 * var(--space-2)) calc(-1 * var(--space-1)); }
+.site-footer a, .brand, .studio-back { position: relative; }
+.studio-contact-email { position: relative; display: inline-block; }
+.site-footer a::before, .studio-back::before { inset: calc(-1 * var(--space-3)) calc(-1 * var(--space-1)); }
 .motion-arrow { display: inline-block; vertical-align: baseline; }
 .form { display: grid; gap: var(--space-6); }
 .form label { font-size: var(--type-xs); display: grid; gap: var(--space-2); }
@@ -775,7 +776,7 @@ a { color: inherit; text-decoration: none; }
 .home-word [data-l] { display: inline-block; }
 .home-emphasis { color: var(--accent); }
 .home-closing .text-link { color: var(--text-secondary); }
-.home-experience .site-footer { border-top: var(--border-width) solid var(--line); padding-block: var(--layout-footer-top) var(--layout-footer-bottom); font-size: var(--type-sm); }
+.site-footer { border-top: var(--border-width) solid var(--line); padding-block: var(--layout-footer-top) var(--layout-footer-bottom); font-size: var(--type-sm); }
 .home-motion-toggle { position: fixed; bottom: var(--size-motion-control-offset); right: var(--size-motion-control-offset); z-index: var(--z-progress); min-height: var(--size-target); padding: var(--space-2) var(--space-4); border: var(--border-width) solid var(--line); border-radius: var(--radius-pill); background: var(--bg); color: var(--ink); font-size: var(--type-xs); }
 .home-motion-toggle:disabled { color: var(--muted); cursor: default; }
 /* The fixed toggle sits bottom-right on pointer devices; keep the footer links clear of it. */
