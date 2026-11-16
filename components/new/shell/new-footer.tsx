@@ -18,7 +18,7 @@ export function NewFooter() {
         {links.map(l => <Link key={l.href} href={l.href}>{l.label}</Link>)}
       </nav>
       <MotionToggle />
-      <span className="np-credit">{brainCredit.text} Licence: <a href={brainCredit.licenceUrl} rel="noopener noreferrer">{brainCredit.licence}</a>.</span>
+      <span className="np-credit"><a href={brainCredit.sourceUrl} rel="noopener noreferrer">“Brain”</a> by dgallichan on Sketchfab, via <a href={brainCredit.nihUrl} rel="noopener noreferrer">NIH 3D</a> (Johnson J). Changed into a point sample. Licence: <a href={brainCredit.licenceUrl} rel="noopener noreferrer">{brainCredit.licence}</a>.</span>
     </footer>
   )
 }

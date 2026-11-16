@@ -37,8 +37,8 @@ export const projects: readonly Project[] = [
   {
     slug: 'tikvah', name: 'Tikvah', line: 'A private place to write to a real team.', kind: 'Client project', liveUrl: tikvahUrl,
     role: 'Frontend and backend. A complete web application.',
-    image: { src: '/projects/tikvah/home-desktop.webp', alt: 'Tikvah’s desktop homepage, with its introduction, plant illustration and account entry point', width: 2560, height: 1800 },
-    phone: { src: '/projects/tikvah/home-mobile.webp', alt: 'Tikvah’s homepage on a mobile screen', width: 780, height: 1688 },
+    image: { src: '/projects/tikvah/home-desktop.webp', alt: 'Tikvah’s desktop homepage, with its introduction, plant illustration and account entry point', width: 1440, height: 1000 },
+    phone: { src: '/projects/tikvah/home-mobile.webp', alt: 'Tikvah’s homepage on a mobile screen', width: 390, height: 844 },
   },
   {
     slug: 'tlc-beauty-shop', name: 'TLC Beauty Shop', line: 'A salon website where people book.', kind: 'Client project', liveUrl: tlcUrl,
@@ -55,6 +55,8 @@ export const projects: readonly Project[] = [
 /** Visible credit required by the brain model's CC BY 4.0 licence. Show it wherever the brain is shown (the footer does). */
 export const brainCredit = {
   text: '“Brain” by dgallichan on Sketchfab, via NIH 3D (Johnson J). Changed into a point sample.',
+  sourceUrl: 'https://sketchfab.com/3d-models/brain-cadd2bde67404c43b2359a6a3281d84a',
+  nihUrl: 'https://3d.nih.gov/entries/21161/1.01',
   licence: 'CC BY 4.0',
   licenceUrl: 'https://creativecommons.org/licenses/by/4.0/',
 }

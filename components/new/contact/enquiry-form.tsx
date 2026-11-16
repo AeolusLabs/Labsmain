@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { needOptions } from '@/lib/need-options'
 
@@ -31,6 +31,9 @@ export function ContactEnquiryForm({ initialChallenge = '', initialNeed, fromAss
   const [fallback, setFallback] = useState<'failed' | 'unconfigured'>('unconfigured')
   const [errors, setErrors] = useState<Errors>({})
   const form = useRef<HTMLFormElement>(null)
+  // Until the page is ready the button stays off, so an early press can never send the enquiry as a plain GET into the address bar.
+  const [ready, setReady] = useState(false)
+  useEffect(() => setReady(true), [])
 
   function clear(field: Field) {
     setErrors(current => (current[field] ? { ...current, [field]: undefined } : current))
@@ -79,7 +82,7 @@ export function ContactEnquiryForm({ initialChallenge = '', initialNeed, fromAss
 
   const describe = (field: Field, extra?: string) => [errors[field] ? `np-contact-${field}-error` : '', extra].filter(Boolean).join(' ') || undefined
 
-  return <form ref={form} className="np-contact-form" onSubmit={submit} noValidate aria-label="Enquiry form">
+  return <form ref={form} className="np-contact-form" onSubmit={submit} method="post" noValidate aria-label="Enquiry form">
     <div className="np-contact-pair">
       <div className="np-contact-field">
         <label htmlFor="np-contact-name">Your name</label>
@@ -119,7 +122,7 @@ export function ContactEnquiryForm({ initialChallenge = '', initialNeed, fromAss
     </div>
     {status === 'error' && <p className="np-contact-error np-contact-error--form" role="alert">{message}</p>}
     <div className="np-contact-actions">
-      <button className="np-btn np-contact-btn" type="submit" disabled={status === 'loading'}>{status === 'loading' ? 'Preparing enquiry…' : 'Continue with enquiry'}</button>
+      <button className="np-btn np-contact-btn" type="submit" disabled={!ready || status === 'loading'}>{status === 'loading' ? 'Preparing enquiry…' : 'Continue with enquiry'}</button>
     </div>
     <p className="np-contact-note">If email delivery is unavailable, you can send a prepared email from your own email app.</p>
   </form>

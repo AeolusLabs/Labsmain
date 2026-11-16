@@ -16,6 +16,5 @@ export const caseNotes: Record<Project['slug'], readonly string[]> = {
     'The picture is the real public landing page, captured on 8 November 2026.',
     'The ticket and event shown are samples, not a real purchase.',
     'No account was used. Chats, safety tools, live Rooms and payments were not tested.',
-    'Any lime artwork elsewhere is brand artwork, not a screenshot.',
   ],
 }

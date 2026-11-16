@@ -1,6 +1,6 @@
 /* New particle site: shell and shared classes. Everything is scoped under .np (the old site's global rules still apply). */
 
-.np { --vh: 1vh; --np-gutter: clamp(20px, 6vw, 88px); position: relative; min-height: 100vh; min-height: 100svh; background: var(--np-bg); color: var(--np-star); font: 300 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; touch-action: pan-y; }
+.np { --vh: 1vh; --np-gutter: clamp(20px, 6vw, 88px); position: relative; min-height: 100vh; min-height: 100svh; background: var(--np-bg); color: var(--np-star); font: 300 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; touch-action: manipulation; }
 @supports (height: 1svh) { .np { --vh: 1svh; } }
 .np *, .np *::before, .np *::after { box-sizing: border-box; }
 .np a { color: inherit; text-decoration: none; }
@@ -17,6 +17,7 @@ html.np-snap { scroll-snap-type: y mandatory; }
 
 /* Header: plain lettering with a soft glow in the background colour. */
 .np-bar { position: fixed; left: 0; right: 0; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: 14px clamp(16px, 4vw, 48px); pointer-events: none; }
+.np-bar::before { content: ""; position: absolute; inset: 0 0 -18px 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, color-mix(in srgb, var(--np-bg) 78%, transparent), transparent); }   /* a soft fade so the bar stays readable over pictures and bright particles */
 .np-bar > * { pointer-events: auto; }
 .np-bar a { text-decoration: none; text-shadow: 0 0 12px var(--np-bg), 0 0 3px var(--np-bg); }
 .np-bar a:hover { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
@@ -91,8 +92,25 @@ html.np-snap { scroll-snap-type: y mandatory; }
 .np-founders { display: flex; flex-wrap: wrap; gap: 4px 36px; margin: 1.2rem 0 0; padding: 0; list-style: none; font-size: clamp(1.3rem, 2.4vw, 1.9rem); font-weight: 500; letter-spacing: -.02em; }
 .np-mail { display: inline-block; margin-top: 1.2rem; font-size: 1.1rem; }
 
+/* The menu button only exists on narrow screens, where the three links would not fit in the bar. */
+.np-menu { display: none; position: relative; }
+.np-menu-btn { min-height: 44px; padding: 0 10px; background: none; border: 0; color: var(--np-star); font: inherit; font-size: 16px; font-weight: 500; cursor: pointer; text-shadow: 0 0 12px var(--np-bg), 0 0 3px var(--np-bg); }
+.np-menu-btn::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 8px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); }
+.np-menu-btn[aria-expanded="true"]::after { transform: translateY(1px) rotate(225deg); }
+.np-menu-list { position: absolute; top: calc(100% + 6px); right: 0; min-width: 200px; display: flex; flex-direction: column; padding: 8px; border-radius: 16px; background: color-mix(in srgb, var(--np-bg) 94%, transparent); border: 1px solid color-mix(in srgb, var(--np-star) 28%, transparent); backdrop-filter: blur(8px); }
+.np-menu-btn, .np-nav-cta { white-space: nowrap; }
+.np-menu-list[hidden] { display: none; }
+@media (max-width: 480px) {
+  .np-logo { font-size: 20px; }
+  .np-menu-btn { font-size: 15px; padding: 0 6px; }
+  .np-nav-cta { font-size: 14px; gap: 6px; margin-left: 2px; }
+  .np-nav-cta .np-spark { width: 15px; height: 15px; }
+}
+.np-menu-list a { display: flex; align-items: center; min-height: 48px; padding: 0 14px; border-radius: 10px; font-size: 18px; font-weight: 500; text-shadow: none; }
+
 @media (max-width: 920px) {
   .np-nav-link { display: none; }
+  .np-menu { display: block; }
   .np-logo { font-size: 22px; }
   .np-nav-cta { font-size: 16px; }
 }
@@ -106,11 +124,15 @@ html.np-snap { scroll-snap-type: y mandatory; }
   .np-h2 { font-size: clamp(1.7rem, 7.4vw, 2.3rem); }
   .np-lead { font-size: 1rem; }
   .np-dots-list { font-size: 14px; gap: 4px 14px; margin-top: .8rem; }
-  .np-picker { right: 12px; bottom: auto; top: 66px; gap: 6px; }
-  .np-picker-btn { width: 34px; height: 34px; }
+  .np-picker { right: 8px; bottom: auto; top: 70px; gap: 4px; }
   .np-cards { grid-template-columns: 1fr; gap: 36px; }
   .np-promises { grid-template-columns: 1fr; }
   .np-page { padding-top: 112px; }
+}
+
+/* Short or zoomed-in screens: let the page scroll freely, so words taller than the screen can always be reached. */
+@media (max-height: 560px) {
+  html.np-snap { scroll-snap-type: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

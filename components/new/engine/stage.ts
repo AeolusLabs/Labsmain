@@ -157,7 +157,9 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
   // ---------------------------------------------------------------- brain data
   const abort = new AbortController()
   undo.push(() => abort.abort())
-  fetch(BRAIN_URL, { signal: abort.signal })
+  const used = new Set<FormId>(seq)                          // plain pages only ever show the sky, so they build and download nothing else
+  const usedKinds = FORMS.filter(k => used.has(k))
+  if (used.has('brain') || used.has('agent')) fetch(BRAIN_URL, { signal: abort.signal })
     .then(r => { if (!r.ok) throw new Error(String(r.status)); return r.arrayBuffer() })
     .then(ab => {
       if (disposed) return
@@ -165,7 +167,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
       if (!parsed) return
       brain = parsed
       dropBlock('brain'); dropBlock('agent'); bindPair(true)
-      warm(['brain', 'agent'], 120)
+      warm((['brain', 'agent'] as FormId[]).filter(k => used.has(k)), 120)
     })
     .catch(() => { /* the brain falls back to sky points; the page still works */ })
 
@@ -183,7 +185,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
   const applyPalette = (p: Palette) => {
     const b = hex(p.bg), s = hex(p.star)
     gl.clearColor(b[0], b[1], b[2], 1)
-    gl.uniform3fv(loc.uStar, s); gl.uniform3fv(loc.uAccent, hex(p.accent)); gl.uniform3fv(loc.uDeep, s.map((v, i) => v * 0.5 + b[i] * 0.5))
+    gl.uniform3fv(loc.uStar, s); gl.uniform3fv(loc.uAccent, hex(p.accent)); gl.uniform3fv(loc.uDeep, s.map((v, i) => v * 0.62 + b[i] * 0.38))
   }
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE)
   applyPalette(opts.palette)
@@ -216,7 +218,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
   let lastPair = -1, rx = 0, ry = 0, ox = 0, oy = 0, t = 0, last = performance.now(), raf = 0
   let sf = story ? story.position(window.scrollY) : 0
   bindPair(true)
-  warm(['cube', 'bulb', 'agent', 'brain', 'sky'], 300)
+  warm(usedKinds, 300)
 
   const spinOf = (k: FormId) => (k === 'cube' ? 0.7 + Math.sin(t * 0.3) * 0.45 : (k === 'sky' ? Math.sin(t * 0.045) * 0.08 : Math.sin(t * 0.22) * 0.5))
   const tiltOf = (k: FormId) => (k === 'cube' ? 0.5 : 0)
@@ -224,6 +226,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
 
   function frame(now: number) {
     if (disposed) return
+    // A throw inside the frame must never leave the words hidden: fall back to the plain, readable page.
+    try { step(now) } catch { undo.push(markNoGl()); return }
+    raf = requestAnimationFrame(frame)
+  }
+  function step(now: number) {
     const dt = Math.min(0.1, (now - last) / 1000); last = now; t += dt * motion
     const scrollY = window.scrollY
     // The scroll position is eased, so a notchy mouse wheel or a flick on a phone still flows between shapes.
@@ -271,7 +278,6 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
     gl.uniform2f(loc.uPointer, ptr.x, ptr.y); gl.uniform1f(loc.uPush, ptr.str)
     gl.uniform1f(loc.uRadius, ptr.touch ? 0.465 : 0.38); gl.uniform1f(loc.uAmt, ptr.touch ? 0.12 : 0.08)
     gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, N)
-    raf = requestAnimationFrame(frame)
   }
   raf = requestAnimationFrame(frame)
   undo.push(() => cancelAnimationFrame(raf))
