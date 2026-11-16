@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Stage 1 particle test</title>
+<style>
+  :root { --bg:#0A1116; --ink:#EAF0EC; --muted:#A9B8B3; --accent:#7BE8CB; --accent-ink:#06231C; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink); overflow:hidden;
+    font:14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  canvas { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; }
+  .hud { position:fixed; left:0; right:0; bottom:0; padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center; pointer-events:none; }
+  .hud > * { pointer-events:auto; }
+  .stat { font:12px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:var(--muted);
+    background:rgba(10,17,22,.72); padding:8px 10px; border-radius:10px; }
+  button { font:inherit; font-size:13px; color:var(--ink); background:rgba(234,240,236,.08);
+    border:1px solid rgba(234,240,236,.22); border-radius:999px; padding:10px 14px; min-height:44px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .title { position:fixed; top:0; left:0; padding:16px; max-width:34ch; color:var(--muted); font-size:13px; pointer-events:none; }
+  .title b { color:var(--ink); font-weight:600; }
+  .fallback { position:fixed; inset:0; display:none; place-items:center; padding:24px; text-align:center; color:var(--muted); }
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="Particle cloud test"></canvas>
+<div class="title"><b>Stage 1: particle look and speed.</b> Move or drag over the cloud. Use the buttons to try particle counts and shapes, and read the frame time.</div>
+<div class="hud">
+  <span class="stat" id="stat">starting</span>
+  <button id="bn" type="button">Particles</button>
+  <button id="bs" type="button">Shape</button>
+  <button id="bm" type="button">Motion</button>
+</div>
+<div class="fallback" id="fb">WebGL2 is not available in this browser, so the particle test cannot run.</div>
+
+<script>
+(() => {
+  "use strict";
+  const canvas = document.getElementById("c");
+  const gl = canvas.getContext("webgl2", { antialias:false, alpha:false, powerPreference:"high-performance", depth:false, stencil:false });
+  if (!gl) { document.getElementById("fb").style.display = "grid"; return; }
+
+  const COUNTS = [2000, 4000, 8000, 16000];
+  const params = new URLSearchParams(location.search);
+  let countIdx = Math.max(0, COUNTS.indexOf(+params.get("n") || 4000));
+  let shape = params.get("shape") === "dot" ? 0 : 1;           // 0 dot, 1 wedge (our mark)
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let motion = reduce ? 0 : 1;
+  const DPR_CAP = 2;
+
+  const VS = `#version 300 es
+  precision highp float;
+  in vec3 aHome; in vec4 aSeed;
+  uniform mat4 uMV, uP;
+  uniform float uTime, uDpr, uSize, uFocus, uMotion, uAspect;
+  uniform vec2 uPointer;
+  out vec3 vCol; out float vAlpha, vSoft, vRot;
+  void main(){
+    float s = aSeed.x * 6.2831853;
+    vec3 p = aHome + uMotion * 0.055 * vec3(
+      sin(uTime*0.35 + s*3.0 + aHome.y*1.7),
+      cos(uTime*0.31 + s*2.0 + aHome.z*1.3),
+      sin(uTime*0.27 + s     + aHome.x*1.9));
+    vec4 mv = uMV * vec4(p, 1.0);
+    vec4 clip = uP * mv;
+    vec2 ndc = clip.xy / clip.w;
+    vec2 d = ndc - uPointer; d.x *= uAspect;
+    float dist = length(d);
+    float push = smoothstep(0.38, 0.0, dist) * uMotion;
+    vec2 dir = d / (dist + 1e-4); dir.x /= uAspect;
+    ndc += dir * push * 0.08;
+    gl_Position = vec4(ndc * clip.w, clip.z, clip.w);
+    float depth = -mv.z;
+    float blur = clamp(abs(depth - uFocus) / uFocus * 1.3, 0.0, 1.0);
+    gl_PointSize = clamp(uSize * uDpr * aSeed.y * (uFocus / depth) * (1.0 + blur*1.5), 1.0, 64.0);
+    vSoft = blur;
+    vAlpha = mix(0.95, 0.30, blur) * (0.65 + 0.35*aSeed.y) * (1.0 + push*0.8);
+    vec3 mint = vec3(0.482,0.910,0.796);
+    vec3 ink  = vec3(0.918,0.941,0.925);
+    vec3 teal = vec3(0.169,0.620,0.560);
+    vCol = aSeed.z < 0.62 ? mix(mint, ink, aSeed.z*0.5) : (aSeed.z < 0.9 ? mix(teal, mint, (aSeed.z-0.62)*3.0) : ink);
+    vRot = aSeed.w * 6.2831853 + uTime * 0.25 * (aSeed.x - 0.5) * uMotion;
+  }`;
+
+  const FS = `#version 300 es
+  precision mediump float;
+  uniform int uShape;
+  in vec3 vCol; in float vAlpha, vSoft, vRot;
+  out vec4 o;
+  float sdTri(vec2 p){ const float k = 1.7320508; p.x = abs(p.x) - 1.0; p.y = p.y + 1.0/k;
+    if (p.x + k*p.y > 0.0) p = vec2(p.x - k*p.y, -k*p.x - p.y) * 0.5;
+    p.x -= clamp(p.x, -2.0, 0.0); return -length(p) * sign(p.y); }
+  void main(){
+    vec2 q = gl_PointCoord * 2.0 - 1.0;
+    float c = cos(vRot), s = sin(vRot);
+    q = mat2(c, -s, s, c) * q;
+    float d = (uShape == 0) ? length(q) - 0.55 : sdTri(q * 1.9) / 1.9;
+    float soft = mix(0.07, 0.6, vSoft);
+    float a = 1.0 - smoothstep(-soft, soft, d);
+    a *= vAlpha;
+    if (a < 0.01) discard;
+    o = vec4(vCol * a, a);
+  }`;
+
+  function compile(type, src) {
+    const sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+    return sh;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+  const U = n => gl.getUniformLocation(prog, n);
+  const u = { mv:U("uMV"), p:U("uP"), time:U("uTime"), dpr:U("uDpr"), size:U("uSize"), focus:U("uFocus"),
+              motion:U("uMotion"), aspect:U("uAspect"), pointer:U("uPointer"), shape:U("uShape") };
+
+  const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+  const buf = gl.createBuffer();
+  let count = 0;
+
+  // Seeded random so every load looks the same and results are comparable between devices.
+  let rs = 1234567;
+  const rnd = () => { rs = (rs * 1664525 + 1013904223) >>> 0; return rs / 4294967296; };
+  const gauss = () => (rnd() + rnd() + rnd() + rnd() - 2) * 1.2;
+
+  function build(n) {
+    rs = 1234567; count = n;
+    const data = new Float32Array(n * 7);       // home xyz + seed xyzw
+    for (let i = 0; i < n; i++) {
+      let x, y, z;
+      if (rnd() < 0.14) {                         // ambient dust, wide and sparse
+        x = (rnd() * 2 - 1) * 3.4; y = (rnd() * 2 - 1) * 2.2; z = (rnd() * 2 - 1) * 2.4;
+      } else {                                    // main body: a soft, slightly flattened cloud
+        x = gauss() * 0.95; y = gauss() * 0.7; z = gauss() * 0.7;
+      }
+      const o = i * 7;
+      data[o] = x; data[o+1] = y; data[o+2] = z;
+      const r = rnd();
+      data[o+3] = rnd();                          // phase
+      data[o+4] = 0.45 + Math.pow(r, 3) * 1.5;    // size: mostly tiny, a few bright
+      data[o+5] = rnd();                          // colour
+      data[o+6] = rnd();                          // rotation
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    const loc1 = gl.getAttribLocation(prog, "aHome"), loc2 = gl.getAttribLocation(prog, "aSeed");
+    gl.enableVertexAttribArray(loc1); gl.vertexAttribPointer(loc1, 3, gl.FLOAT, false, 28, 0);
+    gl.enableVertexAttribArray(loc2); gl.vertexAttribPointer(loc2, 4, gl.FLOAT, false, 28, 12);
+  }
+
+  // minimal column-major matrices
+  const persp = (fovy, a, n, f) => { const t = 1/Math.tan(fovy/2), nf = 1/(n-f);
+    return [t/a,0,0,0, 0,t,0,0, 0,0,(f+n)*nf,-1, 0,0,2*f*n*nf,0]; };
+  const mul = (a, b) => { const o = new Array(16).fill(0);
+    for (let c=0;c<4;c++) for (let r=0;r<4;r++) for (let k=0;k<4;k++) o[c*4+r] += a[k*4+r]*b[c*4+k]; return o; };
+  const rotY = a => { const c=Math.cos(a), s=Math.sin(a); return [c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]; };
+  const rotX = a => { const c=Math.cos(a), s=Math.sin(a); return [1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]; };
+  const trans = (x,y,z) => [1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1];
+
+  let dpr = 1, w = 1, h = 1;
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, DPR_CAP);
+    w = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+    h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    gl.viewport(0, 0, w, h);
+  }
+  addEventListener("resize", resize); resize();
+
+  const ptr = { x: 9, y: 9, tx: 9, ty: 9 };         // off-screen until the pointer arrives
+  const setPtr = e => { const r = canvas.getBoundingClientRect();
+    ptr.tx = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.ty = -(((e.clientY - r.top) / r.height) * 2 - 1); };
+  canvas.addEventListener("pointermove", setPtr);
+  canvas.addEventListener("pointerdown", setPtr);
+  canvas.addEventListener("pointerleave", () => { ptr.tx = 9; ptr.ty = 9; });
+  canvas.addEventListener("pointerup", e => { if (e.pointerType === "touch") { ptr.tx = 9; ptr.ty = 9; } });
+
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+  gl.clearColor(0.039, 0.067, 0.086, 1);
+
+  const stat = document.getElementById("stat");
+  const bn = document.getElementById("bn"), bs = document.getElementById("bs"), bm = document.getElementById("bm");
+  const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+  const gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : "GPU hidden";
+  const label = () => {
+    bn.textContent = "Particles: " + COUNTS[countIdx].toLocaleString();
+    bs.textContent = "Shape: " + (shape ? "wedge" : "dot");
+    bm.textContent = "Motion: " + (motion ? "on" : "off");
+  };
+  bn.onclick = () => { countIdx = (countIdx + 1) % COUNTS.length; build(COUNTS[countIdx]); label(); };
+  bs.onclick = () => { shape ^= 1; label(); };
+  bm.onclick = () => { motion ^= 1; label(); };
+  label(); build(COUNTS[countIdx]);
+
+  let t = 0, last = performance.now(), acc = 0, frames = 0, worst = 0, shown = "";
+  let rx = 0, ry = 0;
+  function frame(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); const ms = now - last; last = now;
+    t += dt * (motion ? 1 : 0.0);
+    acc += ms; frames++; worst = Math.max(worst, ms);
+    if (acc > 700) {
+      const avg = acc / frames;
+      shown = Math.round(1000 / avg) + " fps · " + avg.toFixed(1) + " ms avg · " + worst.toFixed(0) + " ms worst · " +
+        count.toLocaleString() + " pts · dpr " + dpr.toFixed(2) + " · " + gpu.replace(/ANGLE \(|, .*$/g, "");
+      stat.textContent = shown; acc = 0; frames = 0; worst = 0;
+    }
+    ptr.x += (ptr.tx - ptr.x) * 0.12; ptr.y += (ptr.ty - ptr.y) * 0.12;
+    const px = Math.max(-1, Math.min(1, ptr.x)), py = Math.max(-1, Math.min(1, ptr.y));
+    ry += ((t * 0.07 + px * 0.28) - ry) * 0.05; rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14) - rx) * 0.05;
+
+    const aspect = w / h, dist = 4.4;
+    const P = persp(0.8, aspect, 0.1, 30);
+    const MV = mul(trans(0, 0, -dist), mul(rotX(rx), rotY(ry)));
+    gl.uniformMatrix4fv(u.mv, false, MV); gl.uniformMatrix4fv(u.p, false, P);
+    gl.uniform1f(u.time, t); gl.uniform1f(u.dpr, dpr); gl.uniform1f(u.size, 7.0 * (h / 900 > 0.7 ? 1 : 0.85));
+    gl.uniform1f(u.focus, dist); gl.uniform1f(u.motion, motion); gl.uniform1f(u.aspect, aspect);
+    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1i(u.shape, shape);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.POINTS, 0, count);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
