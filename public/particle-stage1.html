@@ -48,7 +48,9 @@
   const params = new URLSearchParams(location.search);
   let countIdx = Math.max(0, COUNTS.indexOf(+params.get("n") || 4000));
   let shape = params.get("shape") === "dot" ? 0 : 1;           // 0 dot, 1 wedge (our mark)
-  let form = params.get("form") === "brain" ? 1 : 0;           // 0 cloud, 1 brain
+  const FORMS = ["cloud", "bulb", "cube", "brain"];            // simplest first; the brain is the hardest and comes last
+  let form = Math.max(0, FORMS.indexOf(params.get("form")));
+  const kindOf = () => FORMS[form];
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let motion = reduce ? 0 : 1;
   const DPR_CAP = 2;
@@ -157,20 +159,65 @@
   let brain = null;
   fetch("/data/brain-points.bin").then(r => r.arrayBuffer()).then(ab => {
     brain = { pos: new Int16Array(ab, 0, BRAIN_MAX * 3), nrm: new Int8Array(ab, BRAIN_MAX * 6, BRAIN_MAX * 3), fold: new Uint8Array(ab, BRAIN_MAX * 9, BRAIN_MAX) };
-    if (form === 1) build(COUNTS[countIdx]);
+    if (kindOf() === "brain") build(COUNTS[countIdx]);
   }).catch(() => { form = 0; label(); });
+
+  // Procedural forms. Each returns [x, y, z, nx, ny, nz, foldedness] for one point on the form's surface.
+  const TAU = Math.PI * 2, unit = () => { const a = rnd() * TAU, c = rnd() * 2 - 1, s = Math.sqrt(1 - c*c); return [s*Math.cos(a), c, s*Math.sin(a)]; };
+  const mix = (a, b, t) => a + (b - a) * t, ease = t => t * t * (3 - 2 * t);
+  function bulbPoint() {
+    const r = rnd(), th = rnd() * TAU, cx = Math.cos(th), sx = Math.sin(th);
+    if (r < 0.50) {                                              // glass globe, open at the bottom
+      const ct = 1 - rnd() * (1 - Math.cos(2.25)), st = Math.sqrt(1 - ct*ct);
+      return [st*cx*0.95, 0.42 + ct*0.95, st*sx*0.95, st*cx, ct, st*sx, 0];
+    }
+    if (r < 0.58) {                                              // neck, narrowing into the screw base
+      const t = rnd(), y = mix(-0.18, -0.72, t), rad = mix(0.739, 0.42, ease(t));
+      const l = Math.hypot(1, 0.3); return [rad*cx, y, rad*sx, cx/l, 0.3/l, sx/l, 0.1];
+    }
+    if (r < 0.69) {                                              // screw base with ridges
+      const y = -0.72 - rnd() * 0.42, ring = 0.5 + 0.5 * Math.sin(y * 48), rad = 0.42 + 0.04 * ring;
+      return [rad*cx, y, rad*sx, cx, 0, sx, 0.75 * (1 - ring)];
+    }
+    if (r < 0.71) { const q = Math.sqrt(rnd()) * 0.2; return [q*cx, -1.17, q*sx, 0, -1, 0, 0]; }
+    if (r < 0.83) {                                              // filament: supports and a fine coil
+      const n = unit();
+      if (rnd() < 0.3) { const sgn = rnd() < 0.5 ? -1 : 1; return [sgn * 0.15 + (rnd()-0.5)*0.01, mix(-0.12, 0.42, rnd()), (rnd()-0.5)*0.01, n[0], n[1], n[2], 0]; }
+      const u = rnd(), w = u * 64; return [mix(-0.15, 0.15, u), 0.42 + 0.045*Math.sin(w), 0.045*Math.cos(w), n[0], n[1], n[2], 0];
+    }
+    const k = Math.floor(rnd() * 13), ang = mix(-0.45, Math.PI + 0.45, k / 12), s = mix(1.2, 1.75, Math.pow(rnd(), 0.7));   // spark rays
+    const n = unit(); return [Math.cos(ang) * s, 0.42 + Math.sin(ang) * s * 0.95, 0, n[0], n[1], n[2], 0];
+  }
+  function cubePoint() {
+    const r = rnd(), H = r < 0.88 ? 0.78 : 0.34, ax = Math.floor(rnd() * 3), bx = (ax + 1) % 3, cxx = (ax + 2) % 3;
+    const p = [0, 0, 0], n = [0, 0, 0];
+    if (r < 0.46 || r >= 0.88 && rnd() < 0.85) {                 // faces
+      const sg = rnd() < 0.5 ? -1 : 1; p[ax] = sg * H; p[bx] = (rnd()*2-1) * H; p[cxx] = (rnd()*2-1) * H; n[ax] = sg;
+    } else {                                                     // edges, so the corners read sharply
+      const sb = rnd() < 0.5 ? -1 : 1, sc = rnd() < 0.5 ? -1 : 1;
+      p[ax] = (rnd()*2-1) * H; p[bx] = sb * H; p[cxx] = sc * H; n[bx] = sb * 0.7071; n[cxx] = sc * 0.7071;
+      p[ax] += (rnd()-0.5)*0.012;
+    }
+    const cb = Math.cos(0.6), sb2 = Math.sin(0.6), ca = Math.cos(0.45), sa = Math.sin(0.45);   // fixed tilt so it reads as 3D
+    const rot = v => { const x1 = v[0]*cb + v[2]*sb2, z1 = -v[0]*sb2 + v[2]*cb; return [x1, v[1]*ca - z1*sa, v[1]*sa + z1*ca]; };
+    const q = rot(p), m = rot(n); return [q[0], q[1], q[2], m[0], m[1], m[2], 0];
+  }
 
   function build(n) {
     rs = 1234567; count = n;
-    const useBrain = form === 1 && brain;
-    const surfaceN = useBrain ? Math.min(Math.round(n * 0.88), BRAIN_MAX) : 0;
+    const kind = kindOf();
+    const useBrain = kind === "brain" && brain;
+    const procedural = kind === "bulb" || kind === "cube";
+    const surfaceN = useBrain ? Math.min(Math.round(n * 0.88), BRAIN_MAX) : (procedural ? Math.round(n * 0.9) : 0);
     const data = new Float32Array(n * 11);      // home xyz + seed xyzw + normal xyz + foldedness
     for (let i = 0; i < n; i++) {
       let x, y, z, nx = 0, ny = 0, nz = 0, fd = 0;
-      if (i < surfaceN) {                         // brain surface
+      if (i < surfaceN && procedural) {
+        [x, y, z, nx, ny, nz, fd] = kind === "bulb" ? bulbPoint() : cubePoint();
+      } else if (i < surfaceN) {                  // brain surface
         x = brain.pos[i*3] / 32767 * BRAIN_SCALE; y = brain.pos[i*3+1] / 32767 * BRAIN_SCALE; z = brain.pos[i*3+2] / 32767 * BRAIN_SCALE;
         nx = brain.nrm[i*3] / 127; ny = brain.nrm[i*3+1] / 127; nz = brain.nrm[i*3+2] / 127; fd = brain.fold[i] / 255;
-      } else if (useBrain || rnd() < 0.14) {      // ambient dust, wide and sparse
+      } else if (useBrain || procedural || rnd() < 0.14) {      // ambient dust, wide and sparse
         x = (rnd() * 2 - 1) * 3.4; y = (rnd() * 2 - 1) * 2.2; z = (rnd() * 2 - 1) * 2.4;
       } else {                                    // main body: a soft, slightly flattened cloud
         x = gauss() * 0.95; y = gauss() * 0.7; z = gauss() * 0.7;
@@ -229,12 +276,12 @@
     bn.textContent = "Particles: " + COUNTS[countIdx].toLocaleString();
     bs.textContent = "Shape: " + (shape ? "wedge" : "dot");
     bm.textContent = "Motion: " + (motion ? "on" : "off");
-    bf.textContent = "Form: " + (form ? "brain" : "cloud");
+    bf.textContent = "Form: " + kindOf();
   };
   bn.onclick = () => { countIdx = (countIdx + 1) % COUNTS.length; build(COUNTS[countIdx]); label(); };
   bs.onclick = () => { shape ^= 1; label(); };
   bm.onclick = () => { motion ^= 1; label(); };
-  bf.onclick = () => { form ^= 1; build(COUNTS[countIdx]); label(); };
+  bf.onclick = () => { form = (form + 1) % FORMS.length; build(COUNTS[countIdx]); label(); };
   label(); build(COUNTS[countIdx]);
 
   let t = 0, last = performance.now(), acc = 0, frames = 0, worst = 0, shown = "";
@@ -251,7 +298,10 @@
     }
     ptr.x += (ptr.tx - ptr.x) * 0.12; ptr.y += (ptr.ty - ptr.y) * 0.12;
     const px = Math.max(-1, Math.min(1, ptr.x)), py = Math.max(-1, Math.min(1, ptr.y));
-    ry += (((form ? Math.sin(t * 0.22) * 0.5 : t * 0.07) + px * 0.28) - ry) * 0.05;   // the brain sways so it stays readable side-on rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14) - rx) * 0.05;
+    // The brain and bulb sway so they stay readable; the cloud drifts round; the cube turns fully.
+    const kind = kindOf(), spin = kind === "cube" ? t * 0.3 : (kind === "cloud" ? t * 0.07 : Math.sin(t * 0.22) * 0.5);
+    ry += ((spin + px * 0.28) - ry) * 0.05;
+    rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14) - rx) * 0.05;
 
     const aspect = w / h, dist = 4.4 * Math.max(1, 1.25 / aspect);   // pull back on narrow screens so the form fits
     const P = persp(0.8, aspect, 0.1, 30);
