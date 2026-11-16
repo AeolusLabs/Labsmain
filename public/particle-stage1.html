@@ -396,7 +396,7 @@
     gl.uniformMatrix4fv(u.mv, false, MV); gl.uniformMatrix4fv(u.p, false, P);
     gl.uniform1f(u.time, t); gl.uniform1f(u.dpr, dpr); gl.uniform1f(u.size, (form ? 4.6 : 7.0) * (h / 900 > 0.7 ? 1 : 0.85));
     gl.uniform1f(u.focus, dist); gl.uniform1f(u.motion, motion); gl.uniform1f(u.aspect, aspect);
-    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1f(u.push, ptr.str); gl.uniform1f(u.radius, ptr.touch ? 0.62 : 0.38); gl.uniform1f(u.amt, ptr.touch ? 0.16 : 0.08); gl.uniform1i(u.shape, shape); gl.uniform1f(u.form, form); gl.uniform1f(u.cube, kindOf() === "cube" ? 1 : 0); gl.uniform3f(u.move, cube.mv[0], cube.mv[1], cube.mv[2]);
+    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1f(u.push, ptr.str); gl.uniform1f(u.radius, ptr.touch ? 0.465 : 0.38); gl.uniform1f(u.amt, ptr.touch ? 0.12 : 0.08); gl.uniform1i(u.shape, shape); gl.uniform1f(u.form, form); gl.uniform1f(u.cube, kindOf() === "cube" ? 1 : 0); gl.uniform3f(u.move, cube.mv[0], cube.mv[1], cube.mv[2]);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.POINTS, 0, count);
     requestAnimationFrame(frame);
