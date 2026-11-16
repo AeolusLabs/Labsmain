@@ -55,8 +55,9 @@
 
   const VS = `#version 300 es
   precision highp float;
-  in vec3 aHome; in vec4 aSeed; in vec3 aNorm;
+  in vec3 aHome; in vec4 aSeed; in vec4 aNorm;
   uniform mat4 uMV, uP;
+  uniform float uForm;
   uniform float uTime, uDpr, uSize, uFocus, uMotion, uAspect;
   uniform vec2 uPointer;
   out vec3 vCol; out float vAlpha, vSoft, vRot;
@@ -77,19 +78,33 @@
     gl_Position = vec4(ndc * clip.w, clip.z, clip.w);
     float depth = -mv.z;
     float blur = clamp(abs(depth - uFocus) / uFocus * 1.3, 0.0, 1.0);
-    gl_PointSize = clamp(uSize * uDpr * aSeed.y * (uFocus / depth) * (1.0 + blur*1.5), 1.0, 64.0);
-    vSoft = blur;
-    float lit = 1.0;
-    if (dot(aNorm, aNorm) > 0.01) {                       // surface points: edges glow so the form reads
-      vec3 n = normalize(mat3(uMV) * aNorm);
-      float rim = pow(1.0 - abs(n.z), 1.6);
-      lit = 0.42 + 0.9 * rim + 0.25 * max(n.z, 0.0);
+    float lit = 1.0, fold = 0.0, band = 0.0, sizeMul = 1.0;
+    if (dot(aNorm.xyz, aNorm.xyz) > 0.01) {
+      // Surface point of the form. Edges glow, deep folds sit darker and finer, the far side recedes,
+      // and a slow band of light sweeps along the length of the form.
+      fold = aNorm.w;
+      vec3 n = normalize(mat3(uMV) * aNorm.xyz);
+      float rim = pow(1.0 - abs(n.z), 1.5);
+      float back = smoothstep(uFocus - 0.15, uFocus + 1.5, depth);
+      float sweep = mod(uTime * 0.45, 5.0) - 2.5;
+      band = exp(-pow((aHome.x - sweep) / 0.22, 2.0)) * uMotion;
+      lit = (0.12 + 0.55 * rim + 1.0 * pow(1.0 - fold, 1.6)) * mix(1.0, 0.28, back) * (1.0 + 1.2 * band);
+      sizeMul = 1.0 - 0.35 * fold;
+      blur *= 0.6;
+    } else if (uForm > 0.5) {
+      lit = 0.5; sizeMul = 0.6;                          // dust around the form stays quiet
     }
+    gl_PointSize = clamp(uSize * uDpr * sizeMul * aSeed.y * (uFocus / depth) * (1.0 + blur*1.5), 1.0, 64.0);
+    vSoft = blur;
     vAlpha = mix(0.95, 0.30, blur) * (0.65 + 0.35*aSeed.y) * (1.0 + push*0.8) * lit;
     vec3 mint = vec3(0.482,0.910,0.796);
     vec3 ink  = vec3(0.918,0.941,0.925);
     vec3 teal = vec3(0.169,0.620,0.560);
     vCol = aSeed.z < 0.62 ? mix(mint, ink, aSeed.z*0.5) : (aSeed.z < 0.9 ? mix(teal, mint, (aSeed.z-0.62)*3.0) : ink);
+    if (dot(aNorm.xyz, aNorm.xyz) > 0.01) {              // lit parts read pale, shaded folds read teal
+      vec3 c = mix(teal, mint, smoothstep(0.1, 0.65, lit));
+      vCol = mix(c, ink, clamp(smoothstep(0.7, 1.5, lit) + band * 0.6, 0.0, 1.0));
+    }
     vRot = aSeed.w * 6.2831853 + uTime * 0.25 * (aSeed.x - 0.5) * uMotion;
   }`;
 
@@ -126,7 +141,7 @@
   gl.useProgram(prog);
   const U = n => gl.getUniformLocation(prog, n);
   const u = { mv:U("uMV"), p:U("uP"), time:U("uTime"), dpr:U("uDpr"), size:U("uSize"), focus:U("uFocus"),
-              motion:U("uMotion"), aspect:U("uAspect"), pointer:U("uPointer"), shape:U("uShape") };
+              motion:U("uMotion"), aspect:U("uAspect"), pointer:U("uPointer"), shape:U("uShape"), form:U("uForm") };
 
   const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
   const buf = gl.createBuffer();
@@ -141,7 +156,7 @@
   const BRAIN_SCALE = 1.45, BRAIN_MAX = 16000;
   let brain = null;
   fetch("/data/brain-points.bin").then(r => r.arrayBuffer()).then(ab => {
-    brain = { pos: new Int16Array(ab, 0, BRAIN_MAX * 3), nrm: new Int8Array(ab, BRAIN_MAX * 6, BRAIN_MAX * 3) };
+    brain = { pos: new Int16Array(ab, 0, BRAIN_MAX * 3), nrm: new Int8Array(ab, BRAIN_MAX * 6, BRAIN_MAX * 3), fold: new Uint8Array(ab, BRAIN_MAX * 9, BRAIN_MAX) };
     if (form === 1) build(COUNTS[countIdx]);
   }).catch(() => { form = 0; label(); });
 
@@ -149,19 +164,19 @@
     rs = 1234567; count = n;
     const useBrain = form === 1 && brain;
     const surfaceN = useBrain ? Math.min(Math.round(n * 0.88), BRAIN_MAX) : 0;
-    const data = new Float32Array(n * 10);      // home xyz + seed xyzw + normal xyz
+    const data = new Float32Array(n * 11);      // home xyz + seed xyzw + normal xyz + foldedness
     for (let i = 0; i < n; i++) {
-      let x, y, z, nx = 0, ny = 0, nz = 0;
+      let x, y, z, nx = 0, ny = 0, nz = 0, fd = 0;
       if (i < surfaceN) {                         // brain surface
         x = brain.pos[i*3] / 32767 * BRAIN_SCALE; y = brain.pos[i*3+1] / 32767 * BRAIN_SCALE; z = brain.pos[i*3+2] / 32767 * BRAIN_SCALE;
-        nx = brain.nrm[i*3] / 127; ny = brain.nrm[i*3+1] / 127; nz = brain.nrm[i*3+2] / 127;
+        nx = brain.nrm[i*3] / 127; ny = brain.nrm[i*3+1] / 127; nz = brain.nrm[i*3+2] / 127; fd = brain.fold[i] / 255;
       } else if (useBrain || rnd() < 0.14) {      // ambient dust, wide and sparse
         x = (rnd() * 2 - 1) * 3.4; y = (rnd() * 2 - 1) * 2.2; z = (rnd() * 2 - 1) * 2.4;
       } else {                                    // main body: a soft, slightly flattened cloud
         x = gauss() * 0.95; y = gauss() * 0.7; z = gauss() * 0.7;
       }
-      const o = i * 10;
-      data[o] = x; data[o+1] = y; data[o+2] = z; data[o+7] = nx; data[o+8] = ny; data[o+9] = nz;
+      const o = i * 11;
+      data[o] = x; data[o+1] = y; data[o+2] = z; data[o+7] = nx; data[o+8] = ny; data[o+9] = nz; data[o+10] = fd;
       const r = rnd();
       data[o+3] = rnd();                          // phase
       data[o+4] = 0.45 + Math.pow(r, 3) * 1.5;    // size: mostly tiny, a few bright
@@ -171,9 +186,9 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
     const loc1 = gl.getAttribLocation(prog, "aHome"), loc2 = gl.getAttribLocation(prog, "aSeed"), loc3 = gl.getAttribLocation(prog, "aNorm");
-    gl.enableVertexAttribArray(loc1); gl.vertexAttribPointer(loc1, 3, gl.FLOAT, false, 40, 0);
-    gl.enableVertexAttribArray(loc2); gl.vertexAttribPointer(loc2, 4, gl.FLOAT, false, 40, 12);
-    gl.enableVertexAttribArray(loc3); gl.vertexAttribPointer(loc3, 3, gl.FLOAT, false, 40, 28);
+    gl.enableVertexAttribArray(loc1); gl.vertexAttribPointer(loc1, 3, gl.FLOAT, false, 44, 0);
+    gl.enableVertexAttribArray(loc2); gl.vertexAttribPointer(loc2, 4, gl.FLOAT, false, 44, 12);
+    gl.enableVertexAttribArray(loc3); gl.vertexAttribPointer(loc3, 4, gl.FLOAT, false, 44, 28);
   }
 
   // minimal column-major matrices
@@ -236,15 +251,15 @@
     }
     ptr.x += (ptr.tx - ptr.x) * 0.12; ptr.y += (ptr.ty - ptr.y) * 0.12;
     const px = Math.max(-1, Math.min(1, ptr.x)), py = Math.max(-1, Math.min(1, ptr.y));
-    ry += ((t * 0.07 + px * 0.28) - ry) * 0.05; rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14) - rx) * 0.05;
+    ry += (((form ? Math.sin(t * 0.22) * 0.5 : t * 0.07) + px * 0.28) - ry) * 0.05;   // the brain sways so it stays readable side-on rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14) - rx) * 0.05;
 
     const aspect = w / h, dist = 4.4 * Math.max(1, 1.25 / aspect);   // pull back on narrow screens so the form fits
     const P = persp(0.8, aspect, 0.1, 30);
     const MV = mul(trans(0, 0, -dist), mul(rotX(rx), rotY(ry)));
     gl.uniformMatrix4fv(u.mv, false, MV); gl.uniformMatrix4fv(u.p, false, P);
-    gl.uniform1f(u.time, t); gl.uniform1f(u.dpr, dpr); gl.uniform1f(u.size, (form ? 3.6 : 7.0) * (h / 900 > 0.7 ? 1 : 0.85));
+    gl.uniform1f(u.time, t); gl.uniform1f(u.dpr, dpr); gl.uniform1f(u.size, (form ? 4.6 : 7.0) * (h / 900 > 0.7 ? 1 : 0.85));
     gl.uniform1f(u.focus, dist); gl.uniform1f(u.motion, motion); gl.uniform1f(u.aspect, aspect);
-    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1i(u.shape, shape);
+    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1i(u.shape, shape); gl.uniform1f(u.form, form);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.POINTS, 0, count);
     requestAnimationFrame(frame);

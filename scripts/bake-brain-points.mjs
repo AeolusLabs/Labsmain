@@ -1,6 +1,6 @@
 // Bakes a surface point sample from a brain GLB into a small binary file for the particle prototype.
 // Usage: node scripts/bake-brain-points.mjs <input.glb> [count] [output.bin]
-// Output layout: int16 x,y,z * N (little-endian, +-32767 = +-1 unit box) then int8 nx,ny,nz * N (+-127).
+// Output layout: int16 x,y,z * N (little-endian, +-32767 = +-1 unit box), int8 nx,ny,nz * N (+-127), uint8 cavity * N.
 // The sample is shuffled, so any prefix of the file is itself an even sample (use fewer points on phones).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
@@ -73,6 +73,20 @@ for (let i = 0; i < N; i++) {
   const n = cross(sub(t[1], t[0]), sub(t[2], t[0])), l = len(n) || 1;
   for (let k = 0; k < 3; k++) nrm[i * 3 + k] = Math.round((n[k] / l) * 127);
 }
+// Foldedness per point, independent of normal direction (the mesh winding is not reliable): count nearby points in a
+// ball. Points are sampled evenly by area, so a ball inside a deep fold holds more surface than one on open cortex.
+const R = 0.155 * 32767, R2 = R * R;                     // about 14 mm in the original model
+const near = new Uint16Array(N);
+for (let i = 0; i < N; i++) {
+  const px = pos[i*3], py = pos[i*3+1], pz = pos[i*3+2]; let c = 0;
+  for (let j = 0; j < N; j++) { const dx = pos[j*3] - px, dy = pos[j*3+1] - py, dz = pos[j*3+2] - pz; if (dx*dx + dy*dy + dz*dz < R2) c++; }
+  near[i] = c;
+}
+const sorted = Array.from(near).sort((a, b) => a - b), lo = sorted[Math.floor(N * 0.1)], hi = sorted[Math.floor(N * 0.9)];
+const ao = new Uint8Array(N);
+for (let i = 0; i < N; i++) ao[i] = Math.round(Math.max(0, Math.min(1, (near[i] - lo) / Math.max(1, hi - lo))) * 255);
+console.log("neighbour count 10th/90th percentile", lo, hi);
+
 mkdirSync(dirname(output), { recursive: true });
-writeFileSync(output, Buffer.concat([Buffer.from(pos.buffer), Buffer.from(nrm.buffer)]));
-console.log("wrote", output, N, "points,", N * 9, "bytes");
+writeFileSync(output, Buffer.concat([Buffer.from(pos.buffer), Buffer.from(nrm.buffer), Buffer.from(ao.buffer)]));
+console.log("wrote", output, N, "points,", N * 10, "bytes");
