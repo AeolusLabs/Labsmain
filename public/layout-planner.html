@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>AeolusLabs layout planner</title>
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fff; color:#000; font:15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header.top { padding:20px 24px; border-bottom:2px solid #000; }
+  h1 { margin:0 0 6px; font-size:22px; }
+  h2 { margin:0 0 10px; font-size:17px; }
+  h3 { margin:0; font-size:15px; }
+  p { margin:0 0 6px; }
+  .note { color:#444; max-width:80ch; }
+  .cols { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0; align-items:start; }
+  @media (max-width:900px) { .cols { grid-template-columns:1fr; } }
+  .col { padding:20px 24px; }
+  .col + .col { border-left:2px solid #000; }
+  @media (max-width:900px) { .col + .col { border-left:0; border-top:2px solid #000; } }
+  .sticky { position:sticky; top:0; align-self:start; max-height:100vh; overflow:auto; }
+  .group { margin:0 0 22px; }
+  .group > h2 { padding-bottom:6px; border-bottom:1px solid #000; }
+  .block { border:1px solid #000; padding:10px 12px; margin:0 0 8px; }
+  .block .meta { font-size:12px; color:#444; text-transform:uppercase; letter-spacing:.04em; }
+  .block .body { margin:4px 0 8px; font-size:14px; }
+  .block.used { background:#eee; }
+  .block.used .meta::after { content:"  · in layout"; }
+  .block.new { border-style:dashed; }
+  button, select { font:inherit; font-size:13px; color:#000; background:#fff; border:1px solid #000; padding:6px 10px; min-height:36px; cursor:pointer; }
+  button:hover { background:#000; color:#fff; }
+  button:disabled { opacity:.35; cursor:not-allowed; background:#fff; color:#000; }
+  .row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .stage { border:3px solid #000; padding:14px; margin:0 0 12px; }
+  .stage .screen { border:1px solid #000; min-height:120px; padding:10px; margin:8px 0; display:flex; flex-direction:column; justify-content:center; gap:4px; background:
+    repeating-linear-gradient(45deg,#fff 0 8px,#f3f3f3 8px 16px); }
+  .stage .screen span { background:#fff; border:1px solid #000; padding:2px 6px; width:fit-content; font-size:13px; }
+  .stage label { display:block; font-size:13px; }
+  .item { border:1px solid #000; padding:10px 12px; margin:0 0 8px; }
+  .item .num { font-weight:700; }
+  .item .shape { font-size:13px; }
+  textarea { width:100%; min-height:60px; font:inherit; font-size:13px; border:1px solid #000; padding:6px; margin-top:6px; }
+  .out { white-space:pre-wrap; border:1px solid #000; padding:10px; font:13px/1.45 ui-monospace, Menlo, Consolas, monospace; margin-top:10px; }
+  .empty { border:1px dashed #000; padding:14px; color:#444; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>AeolusLabs layout planner</h1>
+  <p class="note">Left: every piece of content on the current site, plus the new story blocks we planned. Right: the order of the home page. The first screen is always the full-screen particle stage. Add blocks, move them up or down, and say which particle shape sits behind each one. Your choices save in this browser.</p>
+</header>
+
+<div class="cols">
+  <section class="col" aria-label="All content">
+    <h2>All content on the site</h2>
+    <p class="note">Plain wording is copied from the live site. Dashed boxes are new blocks from our story plan, not on the site yet.</p>
+    <div id="inventory"></div>
+  </section>
+
+  <section class="col sticky" aria-label="Home page layout">
+    <h2>Home page, top to bottom</h2>
+    <div class="row" style="margin-bottom:12px">
+      <button type="button" id="presetCurrent">Start from today's home page</button>
+      <button type="button" id="presetStory">Start from the story plan</button>
+      <button type="button" id="clearAll">Clear all</button>
+    </div>
+    <div class="stage" id="stage">
+      <h3>1. FULL-SCREEN PARTICLE STAGE (locked first, whole screen)</h3>
+      <p class="note">The particles fill the entire screen. Tick what sits on top of them:</p>
+      <div id="overlays"></div>
+      <div class="screen" id="screen" aria-label="Preview of what sits on the first screen"></div>
+      <label>Particle shape on the first screen
+        <select id="stageShape"></select>
+      </label>
+    </div>
+    <div id="layout"></div>
+    <div class="row" style="margin-top:12px"><button type="button" id="copy">Copy layout as text</button><span id="copied" class="note"></span></div>
+    <div class="out" id="out" aria-live="polite"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const SHAPES = [["same", "Same as the block above"], ["cloud", "Cloud (scattered)"], ["brain", "Brain"], ["bulb", "Light bulb"], ["cube", "Rubik's cube"], ["none", "No particles (plain)"]];
+
+  // id, group, title, text, isNew
+  const B = (id, group, title, text, isNew) => ({ id, group, title, text, isNew: !!isNew });
+  const BLOCKS = [
+    B("hdr-logo", "Header (every page)", "Logo", "The angular A mark and the word AeolusLabs. Links home."),
+    B("hdr-nav", "Header (every page)", "Navigation", "Work · Solutions · Products · About · Start a conversation (button)."),
+
+    B("h-title", "Home: first screen (today)", "Headline", "AI-powered products. Business automation."),
+    B("h-lead", "Home: first screen (today)", "One-line lead", "We build AI-powered products and automation systems for businesses."),
+    B("h-intro", "Home: first screen (today)", "Short intro", "We're AeolusLabs, a collective bringing technology and business development together. Based in Nigeria, we work with businesses across Africa and beyond."),
+    B("h-cta", "Home: first screen (today)", "Two buttons", "Build or automate with us (to Contact) · See our work (to Work)."),
+    B("h-hint", "Home: first screen (today)", "Hint line", "The wind responds. Move your cursor through it."),
+
+    B("h-services", "Home: sections (today)", "What we help you do", "Four points: Build your product (web and mobile apps, with AI where it helps) · Simplify daily work (automate repetitive tasks) · Connect your tools (bring systems and data together) · Keep things running (maintenance and support)."),
+    B("h-tikvah", "Home: sections (today)", "Tikvah, client work", "Selected client work. Tikvah, a place for human connection. A complete emotional-support platform, delivered from frontend to backend. Desktop and phone screenshots layered. Links: Explore the case study, All work."),
+    B("h-tlc", "Home: sections (today)", "TLC Beauty Shop, client work", "Beauty. With a clearer path to booking. Website and booking experience for TLC Beauty Shop's TheLashCode. Salon website screenshot. Button: Explore TLC Beauty Shop."),
+    B("h-expertise", "Home: sections (today)", "Build the product. Connect the work. (pale section)", "Bring us the product you want to create or the process you want to improve. Three rows linking to Solutions: AI-powered products · Automation systems · Integrations & support. Line: Understand the business. Build what helps."),
+    B("h-vib3", "Home: sections (today)", "Vib3Pulse, our own product", "Our own product. Vib3Pulse. Events. Tickets. Community. Animated panel linking to Products."),
+    B("h-workflow", "Home: sections (today)", "Our AI enquiry workflow", "From a rough idea to a brief you control. Three steps: Talk through the need · Review the draft · Choose what to send. Nothing is submitted automatically. Button: Explore our enquiry flow."),
+    B("h-closing", "Home: sections (today)", "Closing", "What would you automate? Button: Discuss your next step. Email: info@aeoluslabsltd.com."),
+
+    B("w-hero", "Work page", "Hero", "See what we've built. A closer look at our client work and products."),
+    B("w-tikvah", "Work page", "Tikvah entry", "Client project. A private emotional-support platform organised around correspondence with a human team. Our role: frontend and backend. Delivered: complete web application. Button: View the case study."),
+    B("w-tlc", "Work page", "TLC Beauty Shop entry", "Client project / Beauty and booking. A salon website connecting services, pricing and a work gallery with appointment booking. End-to-end delivery. Button: Explore the project."),
+    B("w-vib3", "Work page", "Vib3Pulse panel", "Our own product. Find Your Vib3. Event discovery, ticketing and social planning in one platform. Brand artwork, links to actual public screens."),
+    B("w-closing", "Work page", "Closing", "Your next product. Your next workflow."),
+
+    B("c-case", "Case study pages (Tikvah, TLC, Vib3Pulse)", "Case study layout", "Back link · category · big title · subtitle · live link · four facts · main screenshot with caption · challenge or experience section · phone captures · what we delivered · honest note on what was and was not tested · closing. Tikvah sections: The experience, Beyond the homepage, What we delivered."),
+
+    B("s-hero", "Solutions page", "Hero", "Build your product. Automate your processes. AI-powered products and automation systems, shaped around what your business needs to do."),
+    B("s-map", "Solutions page", "Tools network diagram", "Connect the tools your team already uses. An animated network of websites, mobile apps, portals, APIs, databases, AI workflows and business tools."),
+    B("s-caps", "Solutions page", "What needs to change? (pale section)", "Four rows: AI-powered products · Automation systems · Integrations · Maintenance and support, each with a one-line scope."),
+    B("s-how", "Solutions page", "From the first conversation to what comes next", "Four numbered steps: Understand the need · Agree a scope · Build and review · Plan the next step."),
+    B("s-closing", "Solutions page", "Closing", "Start with your business need. Discuss what to build or automate."),
+
+    B("p-open", "Products page", "Opening", "Our ideas, built into products. We build products of our own alongside our work for businesses."),
+    B("p-vib3", "Products page", "Vib3Pulse entry", "Vib3Pulse. A platform bringing together event listings, ticketing and social planning. Links: Visit Vib3Pulse, About the project."),
+    B("p-capture", "Products page", "Vib3Pulse public screen", "Actual public landing page capture with an honest caption about sample content."),
+    B("p-closing", "Products page", "Closing", "Ready to build your product? Discuss your idea."),
+
+    B("a-open", "About page", "Opening", "Different perspectives. A shared purpose. A collective combining technology and business development."),
+    B("a-founders", "About page", "Co-founders", "Allan Ajayi-Adjari · Bernard Nneboh. Type only, no portraits."),
+    B("a-story", "About page", "What defines us", "Technology meets business thinking. Why a product needs a clear business purpose. Mission: help African businesses put practical AI and automation to work. Vision: an Africa where businesses of every size can access technology that helps them operate efficiently, innovate and grow."),
+    B("a-principles", "About page", "How we work", "Understand first. Build deliberately. Communicate openly. Keep improving."),
+    B("a-closing", "About page", "Closing", "What could you build or automate? Start a conversation."),
+
+    B("ct-hero", "Contact page", "Hero", "What would you build or automate?"),
+    B("ct-form", "Contact page", "Enquiry form and brief assistant", "Form with consent, validation and a prepared-email fallback. The AI brief assistant appears only when it is configured."),
+    B("ct-email", "Contact page", "Direct email", "Prefer a direct email? info@aeoluslabsltd.com."),
+    B("ct-next", "Contact page", "What happens next", "Start with your business. Tell us about the product or process. We read it, discuss what is feasible and agree a scope before work begins. No finished brief required."),
+
+    B("f-footer", "Footer (every page)", "Footer", "Copyright line. Links: Work, Solutions, Products, About, Contact, Privacy. The Pause motion control."),
+
+    B("n-brain", "New story blocks (not on the site yet)", "Brain beat", "The AI and the thinking. Interactive particle brain. Needs one line from you.", true),
+    B("n-tangle", "New story blocks (not on the site yet)", "The tangle", "A few short lines about a business stuck with manual work and disconnected tools. Particles drift scattered.", true),
+    B("n-bulb", "New story blocks (not on the site yet)", "The spark (light bulb)", "A spark of an idea. Bring it to us to build for you. Needs your wording.", true),
+    B("n-cube", "New story blocks (not on the site yet)", "Solved (Rubik's cube)", "The idea built and the problem solved. The cube scrambles and solves itself. Needs one line from you.", true),
+    B("n-offer", "New story blocks (not on the site yet)", "How you can work with us", "Payment plan, ongoing partnership or full purchase. NOT confirmed. Do not publish until you confirm the terms.", true),
+    B("n-credit", "New story blocks (not on the site yet)", "Brain model credit (required)", "Brain model: \"Brain\" by dgallichan on Sketchfab, via NIH 3D (Johnson J), licensed CC BY 4.0. Must be visible on the site.", true),
+  ];
+  const byId = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
+  const OVERLAYABLE = ["hdr-logo", "hdr-nav", "h-title", "h-lead", "h-intro", "h-cta", "h-hint", "n-credit"];
+
+  const PRESET_CURRENT = ["h-services", "h-tikvah", "h-tlc", "h-expertise", "h-vib3", "h-workflow", "h-closing", "f-footer"];
+  const PRESET_STORY = ["n-tangle", "n-bulb", "n-cube", "h-services", "h-tikvah", "h-tlc", "h-vib3", "h-workflow", "n-offer", "h-closing", "f-footer"];
+  const STORY_SHAPES = { "n-tangle": "cloud", "n-bulb": "bulb", "n-cube": "cube" };
+
+  let state = { overlays: ["hdr-logo", "hdr-nav", "h-title", "h-lead", "h-cta"], stageShape: "brain", items: [] };
+  const KEY = "aeolus-layout-planner-v1";
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && Array.isArray(saved.items)) state = saved; } catch (e) {}
+  if (!state.items.length && !localStorage.getItem(KEY)) state.items = PRESET_CURRENT.map(id => ({ id, shape: "same", note: "" }));
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+  const el = (tag, attrs = {}, ...kids) => { const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) { if (k === "class") n.className = v; else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else if (v !== null && v !== false) n.setAttribute(k, v === true ? "" : v); }
+    kids.flat().forEach(c => n.append(c && c.nodeType ? c : document.createTextNode(c == null ? "" : c))); return n; };
+
+  const stageShape = document.getElementById("stageShape");
+  SHAPES.filter(s => s[0] !== "same").forEach(([v, t]) => stageShape.append(el("option", { value: v }, t)));
+  stageShape.addEventListener("change", () => { state.stageShape = stageShape.value; render(); });
+
+  const usedIds = () => new Set([...state.items.map(i => i.id), ...state.overlays]);
+
+  function renderInventory() {
+    const root = document.getElementById("inventory"); root.textContent = "";
+    const used = usedIds(), groups = [...new Set(BLOCKS.map(b => b.group))];
+    groups.forEach(g => {
+      const wrap = el("div", { class: "group" }, el("h2", {}, g));
+      BLOCKS.filter(b => b.group === g).forEach(b => {
+        const inLayout = state.items.some(i => i.id === b.id), inStage = state.overlays.includes(b.id);
+        const actions = el("div", { class: "row" });
+        actions.append(el("button", { type: "button", disabled: inLayout, onclick: () => { state.items.push({ id: b.id, shape: STORY_SHAPES[b.id] || "same", note: "" }); save(); render(); } }, inLayout ? "Added below" : "Add to layout"));
+        if (OVERLAYABLE.includes(b.id)) actions.append(el("button", { type: "button", onclick: () => { toggleOverlay(b.id); } }, inStage ? "Remove from first screen" : "Put on first screen"));
+        wrap.append(el("div", { class: "block" + (used.has(b.id) ? " used" : "") + (b.isNew ? " new" : "") }, el("div", { class: "meta" }, b.group), el("h3", {}, b.title), el("p", { class: "body" }, b.text), actions));
+      });
+      root.append(wrap);
+    });
+  }
+  function toggleOverlay(id) { const i = state.overlays.indexOf(id); if (i >= 0) state.overlays.splice(i, 1); else state.overlays.push(id); save(); render(); }
+
+  function renderStage() {
+    stageShape.value = state.stageShape;
+    const ov = document.getElementById("overlays"); ov.textContent = "";
+    OVERLAYABLE.forEach(id => ov.append(el("label", {}, el("input", { type: "checkbox", checked: state.overlays.includes(id) ? true : null, onchange: () => toggleOverlay(id) }), " " + byId[id].title)));
+    const screen = document.getElementById("screen"); screen.textContent = "";
+    if (!state.overlays.length) screen.append(el("em", {}, "Particles only. Nothing on top."));
+    state.overlays.forEach(id => screen.append(el("span", {}, byId[id].title)));
+  }
+
+  function renderLayout() {
+    const root = document.getElementById("layout"); root.textContent = "";
+    if (!state.items.length) { root.append(el("div", { class: "empty" }, "Nothing added yet. Use \"Add to layout\" on the left, or start from a preset.")); return; }
+    let shapeAbove = state.stageShape;
+    state.items.forEach((it, i) => {
+      const b = byId[it.id]; const shape = it.shape === "same" ? shapeAbove : it.shape; if (it.shape !== "same") shapeAbove = it.shape;
+      const sel = el("select", { "aria-label": "Particle shape behind " + b.title, onchange: e => { it.shape = e.target.value; save(); render(); } }, SHAPES.map(([v, t]) => el("option", { value: v, selected: it.shape === v ? true : null }, t)));
+      const note = el("textarea", { "aria-label": "Note for " + b.title, placeholder: "Notes: where it sits, which side, what changes", onchange: e => { it.note = e.target.value; save(); renderOut(); } }); note.value = it.note || "";
+      root.append(el("div", { class: "item" },
+        el("div", { class: "row" }, el("span", { class: "num" }, (i + 2) + "."), el("h3", {}, b.title),
+          el("button", { type: "button", disabled: i === 0, onclick: () => move(i, -1) }, "Up"),
+          el("button", { type: "button", disabled: i === state.items.length - 1, onclick: () => move(i, 1) }, "Down"),
+          el("button", { type: "button", onclick: () => { state.items.splice(i, 1); save(); render(); } }, "Remove")),
+        el("p", { class: "shape" }, "Particles behind it: ", sel, "  (currently " + labelShape(shape) + ")"), note));
+    });
+  }
+  const labelShape = v => (SHAPES.find(s => s[0] === v) || [0, v])[1];
+  function move(i, d) { const j = i + d; if (j < 0 || j >= state.items.length) return; [state.items[i], state.items[j]] = [state.items[j], state.items[i]]; save(); render(); }
+
+  function text() {
+    const lines = ["HOME PAGE LAYOUT, top to bottom", "", "1. FULL-SCREEN PARTICLE STAGE (" + labelShape(state.stageShape) + ")", "   On top: " + (state.overlays.map(id => byId[id].title).join(", ") || "nothing")];
+    let shapeAbove = state.stageShape;
+    state.items.forEach((it, i) => { const b = byId[it.id]; if (it.shape !== "same") shapeAbove = it.shape;
+      lines.push("", (i + 2) + ". " + b.title + (b.isNew ? " [new]" : ""), "   Particles: " + labelShape(shapeAbove)); if (it.note && it.note.trim()) lines.push("   Note: " + it.note.trim()); });
+    return lines.join("\n");
+  }
+  function renderOut() { document.getElementById("out").textContent = text(); }
+
+  function render() { renderInventory(); renderStage(); renderLayout(); renderOut(); }
+  document.getElementById("presetCurrent").onclick = () => { state.items = PRESET_CURRENT.map(id => ({ id, shape: "same", note: "" })); save(); render(); };
+  document.getElementById("presetStory").onclick = () => { state.items = PRESET_STORY.map(id => ({ id, shape: STORY_SHAPES[id] || "same", note: "" })); state.stageShape = "brain"; save(); render(); };
+  document.getElementById("clearAll").onclick = () => { state.items = []; save(); render(); };
+  document.getElementById("copy").onclick = async () => { const msg = document.getElementById("copied"); try { await navigator.clipboard.writeText(text()); msg.textContent = " Copied."; } catch (e) { msg.textContent = " Select the text below and copy it."; } };
+  render();
+})();
+</script>
+</body>
+</html>
