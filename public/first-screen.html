@@ -30,6 +30,17 @@
   body.v-hollow nav a.cta svg { display:none; }
   @media (min-width:921px) { body.v-built .logo { font-size:36px; } body.v-built .logo svg { width:48px; height:41px; } body.v-built nav a { font-size:22px; } body.v-built nav a.cta { font-size:22px; } }
   body.v-caps .logo svg { display:none; } body.v-caps .logo b { margin-left:.7em; }
+
+  /* Plain: ordinary solid lettering in the star colour, with nothing behind it. The wide capitals are what ties it to the sky. */
+  body.v-plain .bar a { color:var(--star); text-shadow:0 0 10px var(--bg), 0 0 2px var(--bg); }
+  body.v-plain .logo svg { display:none; }
+  body.v-plain .logo span { font-size:22px; font-weight:500; letter-spacing:.34em; text-transform:uppercase; }
+  body.v-plain .logo b { margin-left:.7em; font-weight:700; }
+  body.v-plain nav a { font-size:13px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; }
+  body.v-plain nav a:hover { box-shadow:none; text-decoration:underline; text-underline-offset:7px; text-decoration-thickness:1px; }
+  body.v-plain nav a.cta { font-size:13px; padding:11px 8px; }
+  body.v-plain nav a.cta svg path { fill:var(--accent); }
+  @media (max-width:920px) { body.v-plain .logo span { font-size:17px; letter-spacing:.28em; } body.v-plain nav a.cta { font-size:12px; } }
   body.v-caps .logo span { font-size:23px; font-weight:500; letter-spacing:.34em; text-transform:uppercase; }
   @media (max-width:920px) { nav a:not(.cta) { display:none; } .logo { font-size:24px; } .logo svg { width:32px; height:27px; } nav a.cta { font-size:16px; padding:10px 14px; } body.v-built nav a.cta, body.v-caps nav a.cta { font-size:20px; padding:10px 6px; } }
 
@@ -49,7 +60,7 @@
   .picker-label { width:100%; text-align:center; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#fff; opacity:.75; margin-top:2px; }
 </style>
 </head>
-<body class="v-built">
+<body class="v-plain">
 <canvas id="c" aria-hidden="true"></canvas>
 <h1 class="sr">AeolusLabs: AI-powered products. Business automation.</h1>
 <header class="bar">
@@ -85,13 +96,14 @@
     { id: "white",  name: "Black and white (first try)", bg: "#000000", star: "#FFFFFF", accent: "#FFFFFF" },
   ];
   const STYLES = [
+    { id: "plain",  name: "Plain lettering" },
     { id: "built",  name: "Built from stars" },
     { id: "caps",   name: "Wide capitals, no A mark" },
     { id: "hollow", name: "Hollow letters (before)" },
   ];
   let hv = (STYLES.find(x => x.id === params.get("h")) || {}).id;
   try { if (!hv) { const sv = localStorage.getItem("aeolus-first-screen-header"); if (STYLES.some(x => x.id === sv)) hv = sv; } } catch (e) {}
-  hv = hv || "built";
+  hv = hv || "plain";
   const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
   let pal = PALETTES.find(p => p.id === params.get("p")) || PALETTES[0];
   try { const saved = PALETTES.find(p => p.id === localStorage.getItem("aeolus-first-screen-palette")); if (saved && !params.get("p")) pal = saved; } catch (e) {}
@@ -200,6 +212,10 @@
   function pill(c, x, y, w, h) { const r = h / 2; c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
   const spark = document.getElementById("spark"), sparkPath = new Path2D(document.getElementById("sparkPath").getAttribute("d"));
   function buildMask() {
+    if (hv === "plain") {                                  // nothing to cut out and no stars behind the text
+      if (header) { gl.deleteBuffer(header.buf); gl.deleteVertexArray(header.vao); header = null; }
+      return;
+    }
     const W = innerWidth, H = innerHeight, hollow = hv === "hollow", mw = Math.ceil(W * MASK_SCALE), mh = Math.ceil(H * MASK_SCALE);
     mc.width = mw; mc.height = mh;
     ctx.setTransform(MASK_SCALE, 0, 0, MASK_SCALE, 0, 0);
@@ -296,7 +312,7 @@
     try { localStorage.setItem("aeolus-first-screen-palette", pal.id); } catch (e) {}
   }
   const applyStyle = () => {
-    document.body.classList.remove("v-built", "v-caps", "v-hollow"); document.body.classList.add("v-" + hv);
+    document.body.classList.remove("v-plain", "v-built", "v-caps", "v-hollow"); document.body.classList.add("v-" + hv);
     picker.querySelectorAll("button[data-style]").forEach(btn => btn.setAttribute("aria-pressed", String(btn.dataset.style === hv)));
     gl.uniform1f(u.uHollow, hv === "hollow" ? 1 : 0); gl.uniform1f(u.uBoost, 1);
     try { localStorage.setItem("aeolus-first-screen-header", hv); } catch (e) {}
