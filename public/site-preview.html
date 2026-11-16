@@ -60,10 +60,15 @@
 
   @media (max-width:920px) { nav a:not(.cta) { display:none; } .logo { font-size:22px; } nav a.cta { font-size:16px; } }
   @media (max-width:760px) {
-    .copy { margin-top:calc(var(--vh) * 54); max-width:none; }
-    .panel.right { justify-content:flex-start; }
+    .panel { display:block; }
+    .copy { position:absolute; left:clamp(20px, 6vw, 88px); right:clamp(20px, 6vw, 88px); margin-top:0; max-width:none; bottom:calc(var(--vh) * 25 + 32px); }   /* bottom of the first screenful of the section */
+    .panel:last-child .copy { bottom:150px; }
+    h1 { font-size:clamp(2.4rem, 11vw, 3.4rem); } h2 { font-size:clamp(1.7rem, 7.4vw, 2.3rem); }
+    .copy p { font-size:1rem; } .tools { font-size:14px; gap:4px 14px; margin-top:.8rem; }
     .dots { display:none; }
-    .picker { right:auto; left:16px; bottom:auto; top:70px; }
+    .picker { right:12px; left:auto; bottom:auto; top:64px; gap:6px; }
+    .picker button { width:34px; height:34px; }
+    .foot { bottom:12px; }
   }
   @media (prefers-reduced-motion:reduce) { .copy { transform:none !important; } }
 </style>
@@ -484,7 +489,10 @@
   PALETTES.forEach(p => { const b = document.createElement("button"); b.type = "button"; b.dataset.id = p.id; b.setAttribute("aria-label", "Colours: " + p.name); b.title = p.name;
     b.innerHTML = `<span style="background:${p.bg}"></span><span style="background:${p.star}"></span><span style="background:${p.accent}"></span>`;
     b.addEventListener("click", () => { pal = p; applyPalette(); }); picker.append(b); });
+  let copyH = [];
   const dots = document.getElementById("dots"), panels = [...document.querySelectorAll(".panel")], copies = panels.map(p => p.querySelector(".copy"));
+  const measure = () => { copyH = copies.map(c => c.offsetHeight); };
+  measure(); addEventListener("resize", measure); addEventListener("load", measure); if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
   panels.forEach(p => { const a = document.createElement("span"); a.className = "snap"; a.setAttribute("aria-hidden", "true"); p.prepend(a); });
   const names = ["Start", "Intelligence", "Agentic systems", "Simplify", "Build with us", "Contact"];
   panels.forEach((_, i) => { const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Go to: " + names[i]);
@@ -528,16 +536,28 @@
     // camera: where the shape sits and how it turns blend with the scroll
     const wide = innerWidth >= 760, aspect = w / h, dist = 4.4 * Math.max(1, 1.25 / aspect);
     const halfW = dist * Math.tan(0.4) * aspect, fit = Math.min(1, 0.42 * halfW / 1.5);
-    const offX = wide ? mixf(OFFX[i], OFFX[i + 1], m) * halfW : 0, offY = wide ? 0 : (curA === "sky" && curB === "sky" ? 0 : 0.75) * 1;
+    const offX = wide ? mixf(OFFX[i], OFFX[i + 1], m) * halfW : 0;
     const skyMix = (curA === "sky" ? 1 - m : 0) + (curB === "sky" ? m : 0);                  // 1 when the sky is showing
-    const tgtY = wide ? 0 : mixf(0.75, 0, skyMix);
+    // Phones: the shape sits in the free space above the words of the section it belongs to, sized to fit that space.
+    let tgtY = 0, scPhone = 1;
+    if (!wide) {
+      const H = innerHeight, W = innerWidth, halfH = dist * Math.tan(0.4), ppu = H / (2 * halfH);
+      const place = k => {
+        if (SEQ[k] === "sky") return { y: 0, s: 1 };
+        const top = 118, bottom = H - 32 - (copyH[k] || 200) - 18, avail = Math.max(140, bottom - top);
+        const diam = Math.min(W * 0.84, avail), cy = top + avail / 2;
+        return { y: (1 - 2 * cy / H) * halfH, s: Math.max(0.4, Math.min(1.1, diam / (2 * 1.55 * ppu))) };
+      };
+      const pa = place(i), pb = place(i + 1);
+      tgtY = mixf(pa.y, pb.y, m); scPhone = mixf(pa.s, pb.s, m);
+    }
     ox += (offX - ox) * 0.12; oy += (tgtY - oy) * 0.12;
     const spinOf = k => k === "cube" ? 0.7 + Math.sin(t * 0.3) * 0.45 : (k === "sky" ? Math.sin(t * 0.045) * 0.08 : Math.sin(t * 0.22) * 0.5);
     const tiltOf = k => k === "cube" ? 0.5 : 0;
     ry += ((mixf(spinOf(curA), spinOf(curB), m) + px * 0.2) - ry) * 0.05;
     rx += ((Math.sin(t * 0.05) * 0.06 + py * 0.1 + mixf(tiltOf(curA), tiltOf(curB), m)) - rx) * 0.05;
     const size = k => k === "sky" ? 3.0 : 4.6;
-    const sc = skyMix + (1 - skyMix) * (wide ? fit : Math.min(1, 0.9 * halfW / 1.5));       // the sky fills the screen; shapes shrink to fit narrow ones
+    const sc = wide ? skyMix + (1 - skyMix) * fit : scPhone;                                 // the sky fills the screen; shapes shrink to fit
     const MV = mul(trans(ox, oy, -dist), mul([sc,0,0,0, 0,sc,0,0, 0,0,sc,0, 0,0,0,1], mul(rotX(rx), mul(rotY(ry), rotZ(skyMix * t * 0.006)))));
     gl.uniformMatrix4fv(u.uMV, false, MV); gl.uniformMatrix4fv(u.uP, false, persp(0.8, aspect, 0.1, 30));
     gl.uniform1f(u.uMorph, m); gl.uniform1f(u.uFormA, FORMS.indexOf(curA)); gl.uniform1f(u.uFormB, FORMS.indexOf(curB));
