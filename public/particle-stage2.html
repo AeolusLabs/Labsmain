@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Stage 2 morph test</title>
+<style>
+  :root { --bg:#0A1116; --ink:#EAF0EC; --muted:#A9B8B3; --accent:#7BE8CB; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink); overflow:hidden;
+    font:14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  canvas { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; }
+  .hud { position:fixed; left:0; right:0; bottom:0; padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center; pointer-events:none; }
+  .hud > * { pointer-events:auto; }
+  .stat { font:12px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:var(--muted);
+    background:rgba(10,17,22,.72); padding:8px 10px; border-radius:10px; }
+  button { font:inherit; font-size:13px; color:var(--ink); background:rgba(234,240,236,.08);
+    border:1px solid rgba(234,240,236,.22); border-radius:999px; padding:10px 14px; min-height:44px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  button[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); }
+  button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .title { position:fixed; top:0; left:0; padding:16px; max-width:36ch; color:var(--muted); font-size:13px; pointer-events:none; }
+  .title b { color:var(--ink); font-weight:600; }
+  .fallback { position:fixed; inset:0; display:none; place-items:center; padding:24px; text-align:center; color:var(--muted); }
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="Particle morph test"></canvas>
+<div class="title"><b>Stage 2: the morph.</b> Tap a shape to flow into it, or press Auto to watch the whole story. Move or drag over the particles.</div>
+<div class="hud">
+  <span class="stat" id="stat">starting</span>
+  <button id="f0" type="button">Cloud</button>
+  <button id="f1" type="button">Bulb</button>
+  <button id="f2" type="button">Cube</button>
+  <button id="f3" type="button">Brain</button>
+  <button id="ba" type="button" aria-pressed="false">Auto</button>
+  <button id="bn" type="button">Particles</button>
+  <button id="bm" type="button">Motion</button>
+</div>
+<div class="fallback" id="fb">WebGL2 is not available in this browser, so the particle test cannot run.</div>
+
+<script>
+(() => {
+  "use strict";
+  const canvas = document.getElementById("c");
+  const gl = canvas.getContext("webgl2", { antialias:false, alpha:false, powerPreference:"high-performance", depth:false, stencil:false });
+  if (!gl) { document.getElementById("fb").style.display = "grid"; return; }
+
+  const COUNTS = [2000, 4000, 8000, 16000];
+  const params = new URLSearchParams(location.search);
+  let countIdx = Math.max(0, COUNTS.indexOf(+params.get("n") || 8000));
+  const FORMS = ["cloud", "bulb", "cube", "brain"];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let motion = reduce ? 0 : 1;
+  let cur = Math.max(0, FORMS.indexOf(params.get("form")));   // the form on screen (or the one we are leaving)
+  let nxt = cur, morph = 0, morphing = false, pending = null;
+  let auto = params.get("auto") === "1", autoTimer = 0;
+  const MORPH_SECONDS = 2.4, HOLD = [2.4, 3.2, 13.5, 4.5];     // how long auto mode rests on each form (the cube needs a full scramble and solve)
+  const DPR_CAP = 2;
+
+  // ---------------------------------------------------------------- shaders
+  const VS = `#version 300 es
+  precision highp float;
+  in vec3 aS;                                              // phase, size, rotation
+  in vec3 aHomeA; in vec4 aNormA; in vec3 aCellA; in float aColA;   // where the particle is now
+  in vec3 aHomeB; in vec4 aNormB; in vec3 aCellB; in float aColB;   // where it is going
+  uniform mat4 uMV, uP;
+  uniform float uMorph, uFormA, uFormB;
+  uniform vec3 uMove;                                      // cube turn: axis index, layer coordinate, angle
+  uniform float uTime, uDpr, uSize, uFocus, uMotion, uAspect;
+  uniform vec2 uPointer;
+  uniform float uPush, uRadius, uAmt;
+  out vec3 vCol; out float vAlpha, vSoft, vRot;
+  const vec3 MINT = vec3(0.482,0.910,0.796), INK = vec3(0.918,0.941,0.925), TEAL = vec3(0.169,0.620,0.560);
+  const vec3 PAL[7] = vec3[7](MINT, INK, TEAL, vec3(0.36,0.69,0.91), vec3(0.78,0.945,0.41), vec3(0.95,0.77,0.43), vec3(0.14,0.24,0.28));
+  vec3 rotAxis(vec3 v, float ax, float a){
+    float c = cos(a), sn = sin(a);
+    if (ax < 0.5) return vec3(v.x, c*v.y - sn*v.z, sn*v.y + c*v.z);
+    if (ax < 1.5) return vec3(c*v.x + sn*v.z, v.y, -sn*v.x + c*v.z);
+    return vec3(c*v.x - sn*v.y, sn*v.x + c*v.y, v.z);
+  }
+  void turn(inout vec3 h, inout vec3 n, vec3 cell){
+    float ac = uMove.x < 0.5 ? cell.x : (uMove.x < 1.5 ? cell.y : cell.z);
+    if (abs(ac - uMove.y) < 0.2) { h = rotAxis(h, uMove.x, uMove.z); n = rotAxis(n, uMove.x, uMove.z); }
+  }
+  // Lighting for one form: x = brightness, y = size, z = sweeping band, w = blur scale.
+  vec4 shadeForm(vec3 h, vec3 n, float fold, bool surf, float formId, float depth){
+    if (surf) {
+      float cubeF = (formId > 1.5 && formId < 2.5) ? 1.0 : 0.0;
+      vec3 nv = normalize(mat3(uMV) * n);
+      float rim = pow(1.0 - abs(nv.z), 1.5);
+      float back = smoothstep(uFocus - 0.15, uFocus + 1.5, depth);
+      float sweep = mod(uTime * 0.45, 5.0) - 2.5;
+      float band = exp(-pow((h.x - sweep) / 0.22, 2.0)) * uMotion * (1.0 - cubeF);
+      float lit = (0.12 + 0.55 * rim + 1.0 * pow(1.0 - fold, 1.6)) * mix(1.0, 0.28, back) * (1.0 + 1.2 * band);
+      return vec4(lit, 1.0 - 0.35 * fold, band, 0.6);
+    }
+    return formId > 0.5 ? vec4(0.5, 0.6, 0.0, 1.0) : vec4(1.0, 1.0, 0.0, 1.0);   // dust round a form stays quiet
+  }
+  vec3 colorFor(float col, bool surf, float formId, float lit, float band){
+    vec3 c = col < 0.62 ? mix(MINT, INK, col * 0.5) : (col < 0.9 ? mix(TEAL, MINT, (col - 0.62) * 3.0) : INK);
+    if (surf) {
+      vec3 cc = mix(TEAL, MINT, smoothstep(0.1, 0.65, lit));
+      c = mix(cc, INK, clamp(smoothstep(0.7, 1.5, lit) + band * 0.6, 0.0, 1.0));
+      if (formId > 1.5 && formId < 2.5) c = PAL[min(int(col * 7.0), 6)];     // cube: col holds the sticker colour id
+    }
+    return c;
+  }
+  void main(){
+    float ph = aS.x * 6.2831853;
+    float e = 0.0;                                         // this particle's own progress, staggered so the morph flows
+    if (uMorph > 0.0) { float k = clamp((uMorph - aS.x * 0.45) / 0.55, 0.0, 1.0); e = k * k * (3.0 - 2.0 * k); }
+    vec3 hA = aHomeA, nA = aNormA.xyz, hB = aHomeB, nB = aNormB.xyz;
+    bool sA = dot(nA, nA) > 0.01, sB = dot(nB, nB) > 0.01;
+    if (abs(uMove.z) > 1e-5) {
+      if (uFormA > 1.5 && uFormA < 2.5 && sA) turn(hA, nA, aCellA);
+      if (uFormB > 1.5 && uFormB < 2.5 && sB) turn(hB, nB, aCellB);
+    }
+    float arc = sin(e * 3.14159265);
+    vec3 home = mix(hA, hB, e) + arc * 0.55 * vec3(sin(ph*3.0 + uTime*0.6), cos(ph*2.0 - uTime*0.5), sin(ph*5.0 + uTime*0.4));
+    float cubeAmt = mix(step(1.5, uFormA) * step(uFormA, 2.5), step(1.5, uFormB) * step(uFormB, 2.5), e);
+    vec3 p = home + uMotion * (1.0 - 0.75 * cubeAmt) * 0.055 * vec3(
+      sin(uTime*0.35 + ph*3.0 + home.y*1.7),
+      cos(uTime*0.31 + ph*2.0 + home.z*1.3),
+      sin(uTime*0.27 + ph     + home.x*1.9));
+    vec4 mv = uMV * vec4(p, 1.0);
+    vec4 clip = uP * mv;
+    vec2 ndc = clip.xy / clip.w;
+    vec2 d = ndc - uPointer; d.x *= uAspect;
+    float dist = length(d);
+    float push = smoothstep(uRadius, 0.0, dist) * uMotion * uPush;
+    vec2 dir = d / (dist + 1e-4); dir.x /= uAspect;
+    ndc += dir * push * uAmt;
+    gl_Position = vec4(ndc * clip.w, clip.z, clip.w);
+    float depth = -mv.z;
+    float blur = clamp(abs(depth - uFocus) / uFocus * 1.3, 0.0, 1.0);
+    vec4 shA = shadeForm(hA, nA, aNormA.w, sA, uFormA, depth);
+    vec4 shB = shadeForm(hB, nB, aNormB.w, sB, uFormB, depth);
+    vec4 sh = mix(shA, shB, e);
+    float lit = sh.x * (1.0 + 0.6 * arc);
+    float soft = blur * sh.w;
+    gl_PointSize = clamp(uSize * uDpr * sh.y * aS.y * (uFocus / depth) * (1.0 + soft * 1.5), 1.0, 64.0);
+    vSoft = soft;
+    vAlpha = mix(0.95, 0.30, soft) * (0.65 + 0.35 * aS.y) * (1.0 + push * 0.8) * lit;
+    vCol = mix(colorFor(aColA, sA, uFormA, shA.x, shA.z), colorFor(aColB, sB, uFormB, shB.x, shB.z), e);
+    vRot = aS.z * 6.2831853 + uTime * 0.25 * (aS.x - 0.5) * uMotion;
+  }`;
+
+  const FS = `#version 300 es
+  precision mediump float;
+  uniform int uShape;
+  in vec3 vCol; in float vAlpha, vSoft, vRot;
+  out vec4 o;
+  float sdTri(vec2 p){ const float k = 1.7320508; p.x = abs(p.x) - 1.0; p.y = p.y + 1.0/k;
+    if (p.x + k*p.y > 0.0) p = vec2(p.x - k*p.y, -k*p.x - p.y) * 0.5;
+    p.x -= clamp(p.x, -2.0, 0.0); return -length(p) * sign(p.y); }
+  void main(){
+    vec2 q = gl_PointCoord * 2.0 - 1.0;
+    float c = cos(vRot), s = sin(vRot);
+    q = mat2(c, -s, s, c) * q;
+    float d = (uShape == 0) ? length(q) - 0.55 : sdTri(q * 1.9) / 1.9;
+    float soft = mix(0.07, 0.6, vSoft);
+    float a = (1.0 - smoothstep(-soft, soft, d)) * vAlpha;
+    if (a < 0.01) discard;
+    o = vec4(vCol * a, a);
+  }`;
+
+  function compile(type, src) {
+    const sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+    return sh;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+  const U = n => gl.getUniformLocation(prog, n), L = n => gl.getAttribLocation(prog, n);
+  const u = {};
+  ["uMV","uP","uMorph","uFormA","uFormB","uMove","uTime","uDpr","uSize","uFocus","uMotion","uAspect","uPointer","uPush","uRadius","uAmt","uShape"].forEach(k => u[k] = U(k));
+  const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+
+  // ---------------------------------------------------------------- random, forms, data
+  let rs = 1;
+  const rnd = () => { rs = (rs * 1664525 + 1013904223) >>> 0; return rs / 4294967296; };
+  const gauss = () => (rnd() + rnd() + rnd() + rnd() - 2) * 1.2;
+  const TAU = Math.PI * 2, mixf = (a, b, t) => a + (b - a) * t, ease = t => t * t * (3 - 2 * t);
+  const unit = () => { const a = rnd() * TAU, c = rnd() * 2 - 1, s = Math.sqrt(1 - c*c); return [s*Math.cos(a), c, s*Math.sin(a)]; };
+
+  // Brain: surface sample baked from a CC BY 4.0 model (credit in /data/brain-credit.txt).
+  const BRAIN_SCALE = 1.45, BRAIN_MAX = 16000;
+  let brain = null;
+  fetch("/data/brain-points.bin").then(r => r.arrayBuffer()).then(ab => {
+    brain = { pos: new Int16Array(ab, 0, BRAIN_MAX * 3), nrm: new Int8Array(ab, BRAIN_MAX * 6, BRAIN_MAX * 3), fold: new Uint8Array(ab, BRAIN_MAX * 9, BRAIN_MAX) };
+    dropBlock("brain"); ensureBlock("brain"); bindPair();
+  }).catch(() => {});
+
+  function bulbPoint() {
+    const r = rnd(), th = rnd() * TAU, cx = Math.cos(th), sx = Math.sin(th);
+    if (r < 0.50) { const ct = 1 - rnd() * (1 - Math.cos(2.25)), st = Math.sqrt(1 - ct*ct); return [st*cx*0.95, 0.42 + ct*0.95, st*sx*0.95, st*cx, ct, st*sx, 0]; }
+    if (r < 0.58) { const t = rnd(), y = mixf(-0.18, -0.72, t), rad = mixf(0.739, 0.42, ease(t)), l = Math.hypot(1, 0.3); return [rad*cx, y, rad*sx, cx/l, 0.3/l, sx/l, 0.1]; }
+    if (r < 0.69) { const y = -0.72 - rnd() * 0.42, ring = 0.5 + 0.5 * Math.sin(y * 48), rad = 0.42 + 0.04 * ring; return [rad*cx, y, rad*sx, cx, 0, sx, 0.75 * (1 - ring)]; }
+    if (r < 0.71) { const q = Math.sqrt(rnd()) * 0.2; return [q*cx, -1.17, q*sx, 0, -1, 0, 0]; }
+    if (r < 0.83) {
+      const n = unit();
+      if (rnd() < 0.3) { const sg = rnd() < 0.5 ? -1 : 1; return [sg * 0.15 + (rnd()-0.5)*0.01, mixf(-0.12, 0.42, rnd()), (rnd()-0.5)*0.01, n[0], n[1], n[2], 0]; }
+      const t = rnd(), w = t * 64; return [mixf(-0.15, 0.15, t), 0.42 + 0.045*Math.sin(w), 0.045*Math.cos(w), n[0], n[1], n[2], 0];
+    }
+    const k = Math.floor(rnd() * 13), ang = mixf(-0.45, Math.PI + 0.45, k / 12), s = mixf(1.2, 1.75, Math.pow(rnd(), 0.7)), n = unit();   // spark rays
+    return [Math.cos(ang) * s, 0.42 + Math.sin(ang) * s * 0.95, 0, n[0], n[1], n[2], 0];
+  }
+
+  // Rubik's cube: 27 cubelets, outer faces only (54 stickers); each particle carries its cubelet's centre so a layer can turn.
+  const PITCH = 0.56, HALF = 0.25, STICKERS = [];
+  for (let a = 0; a < 3; a++) for (const sg of [-1, 1]) for (let ib = -1; ib <= 1; ib++) for (let ic = -1; ic <= 1; ic++) {
+    const cell = [0, 0, 0]; cell[a] = sg; cell[(a + 1) % 3] = ib; cell[(a + 2) % 3] = ic;
+    STICKERS.push({ a, sg, cell: cell.map(v => v * PITCH), cid: a * 2 + (sg > 0 ? 1 : 0) });
+  }
+  function rubikPoint(k) {
+    const st = STICKERS[k], { a, sg, cell } = st, b = (a + 1) % 3, c = (a + 2) % 3;
+    const p = cell.slice(), n = [0, 0, 0]; n[a] = sg; let cid = st.cid;
+    if (rnd() < 0.8) { p[a] += sg * HALF; p[b] += (rnd()*2-1) * HALF * 0.84; p[c] += (rnd()*2-1) * HALF * 0.84; }
+    else { p[a] += sg * HALF; const along = (rnd()*2-1) * HALF, side = rnd() < 0.5 ? -1 : 1, swap = rnd() < 0.5;
+      p[swap ? b : c] += along; p[swap ? c : b] += side * HALF * 0.97; cid = 6; }
+    return { p, n, cell, cid };
+  }
+
+  // One block of per-particle data per form: home xyz, normal xyz + foldedness, cube cell xyz, colour = 11 floats.
+  // Particles are ordered by height band then angle, so index i sits in a similar place in every form and
+  // the morph flows instead of crossing the whole screen.
+  const BL = 11, STRIDE = BL * 4;
+  function makeBlock(kind, n) {
+    rs = 1234567 + FORMS.indexOf(kind) * 977;
+    const useBrain = kind === "brain" && brain, isProc = kind === "bulb" || kind === "cube";
+    const surfaceN = useBrain ? Math.min(Math.round(n * 0.88), BRAIN_MAX) : (isProc ? Math.round(n * 0.9) : 0);
+    const per = Math.max(1, Math.floor(surfaceN / 54));
+    const items = new Array(n);
+    for (let i = 0; i < n; i++) {
+      let x, y, z, nx = 0, ny = 0, nz = 0, fd = 0, cid = -1, cell = [0, 0, 0];
+      if (i < surfaceN && kind === "cube") { const q = rubikPoint(Math.min(53, Math.floor(i / per))); [x, y, z] = q.p; [nx, ny, nz] = q.n; cell = q.cell; cid = q.cid; }
+      else if (i < surfaceN && kind === "bulb") { [x, y, z, nx, ny, nz, fd] = bulbPoint(); }
+      else if (i < surfaceN) {
+        x = brain.pos[i*3] / 32767 * BRAIN_SCALE; y = brain.pos[i*3+1] / 32767 * BRAIN_SCALE; z = brain.pos[i*3+2] / 32767 * BRAIN_SCALE;
+        nx = brain.nrm[i*3] / 127; ny = brain.nrm[i*3+1] / 127; nz = brain.nrm[i*3+2] / 127; fd = brain.fold[i] / 255;
+      } else if (kind === "cloud" || (kind === "brain" && !brain)) {
+        if (rnd() < 0.14) { x = (rnd()*2-1) * 3.4; y = (rnd()*2-1) * 2.2; z = (rnd()*2-1) * 2.4; }
+        else { x = gauss() * 0.95; y = gauss() * 0.7; z = gauss() * 0.7; }
+      } else { x = (rnd()*2-1) * 3.4; y = (rnd()*2-1) * 2.2; z = (rnd()*2-1) * 2.4; }   // dust round a form
+      items[i] = { x, y, z, nx, ny, nz, fd, cell, col: cid >= 0 ? (cid + 0.5) / 7 : rnd() };
+    }
+    const sortEnd = kind === "cloud" || surfaceN === 0 ? n : surfaceN;   // dust stays at the end, in random order
+    let minY = 1e9, maxY = -1e9;
+    for (let i = 0; i < sortEnd; i++) { minY = Math.min(minY, items[i].y); maxY = Math.max(maxY, items[i].y); }
+    const span = maxY - minY || 1;
+    for (let i = 0; i < sortEnd; i++) { const it = items[i]; it.key = Math.floor(Math.min(0.999, (it.y - minY) / span) * 10) + (Math.atan2(it.z, it.x) + Math.PI) / TAU * 0.999; }
+    const head = items.slice(0, sortEnd).sort((a, b) => a.key - b.key);
+    const ordered = head.concat(items.slice(sortEnd));
+    const d = new Float32Array(n * BL);
+    for (let i = 0; i < n; i++) { const it = ordered[i], o = i * BL;
+      d[o] = it.x; d[o+1] = it.y; d[o+2] = it.z; d[o+3] = it.nx; d[o+4] = it.ny; d[o+5] = it.nz; d[o+6] = it.fd;
+      d[o+7] = it.cell[0]; d[o+8] = it.cell[1]; d[o+9] = it.cell[2]; d[o+10] = it.col; }
+    return d;
+  }
+
+  // ---------------------------------------------------------------- GPU buffers
+  let count = COUNTS[countIdx];
+  const blocks = {}, seedBuf = gl.createBuffer();
+  function buildSeeds(n) {
+    rs = 99; const s = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) { s[i*3] = rnd(); s[i*3+1] = 0.45 + Math.pow(rnd(), 3) * 1.5; s[i*3+2] = rnd(); }
+    gl.bindBuffer(gl.ARRAY_BUFFER, seedBuf); gl.bufferData(gl.ARRAY_BUFFER, s, gl.STATIC_DRAW);
+  }
+  function ensureBlock(kind) {
+    if (blocks[kind]) return blocks[kind];
+    const data = makeBlock(kind, count), vbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+    return (blocks[kind] = { data, vbo });
+  }
+  function dropBlock(kind) { if (blocks[kind]) { gl.deleteBuffer(blocks[kind].vbo); delete blocks[kind]; } }
+  function attr(loc, size, stride, offset) { gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, size, gl.FLOAT, false, stride, offset); }
+  function bindPair() {
+    const a = ensureBlock(FORMS[cur]), b = ensureBlock(FORMS[morphing ? nxt : cur]);
+    gl.bindVertexArray(vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, seedBuf); attr(L("aS"), 3, 12, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, a.vbo);
+    attr(L("aHomeA"), 3, STRIDE, 0); attr(L("aNormA"), 4, STRIDE, 12); attr(L("aCellA"), 3, STRIDE, 28); attr(L("aColA"), 1, STRIDE, 40);
+    gl.bindBuffer(gl.ARRAY_BUFFER, b.vbo);
+    attr(L("aHomeB"), 3, STRIDE, 0); attr(L("aNormB"), 4, STRIDE, 12); attr(L("aCellB"), 3, STRIDE, 28); attr(L("aColB"), 1, STRIDE, 40);
+  }
+  function rebuildAll() {
+    for (const k of Object.keys(blocks)) dropBlock(k);
+    count = COUNTS[countIdx]; buildSeeds(count); bindPair();
+  }
+
+  // ---------------------------------------------------------------- cube turns (scramble, then solve)
+  const cube = { queue: [], cur: null, p: 0, hold: 0.8, hist: [], mv: [0, 0, 0], prev: null };
+  const easeIO = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+  function resetCube() { dropBlock("cube"); Object.assign(cube, { queue: [], cur: null, p: 0, hold: 0.8, hist: [], mv: [0, 0, 0], prev: null }); }
+  function planCube() {
+    cube.queue = [];
+    if (!cube.hist.length) {
+      for (let i = 0; i < 7; i++) {
+        let m; do { m = { ax: Math.floor(Math.random()*3), layer: Math.floor(Math.random()*3) - 1, dir: Math.random() < 0.5 ? -1 : 1 }; }
+        while (cube.prev && m.ax === cube.prev.ax && m.layer === cube.prev.layer);
+        m.dur = 0.42; cube.prev = m; cube.queue.push(m); cube.hist.push(m);
+      }
+      cube.queue[6].after = 1.3;
+    } else {
+      for (let i = cube.hist.length - 1; i >= 0; i--) { const h = cube.hist[i]; cube.queue.push({ ax: h.ax, layer: h.layer, dir: -h.dir, dur: 0.6 }); }
+      cube.queue[cube.queue.length - 1].after = 3.2; cube.hist = []; cube.prev = null;
+    }
+  }
+  function rot90(d, o, ax, s) {                            // exact quarter turn, matches rotAxis() in the shader
+    const x = d[o], y = d[o+1], z = d[o+2];
+    if (ax === 0) { d[o+1] = -s*z; d[o+2] = s*y; } else if (ax === 1) { d[o] = s*z; d[o+2] = -s*x; } else { d[o] = -s*y; d[o+1] = s*x; }
+  }
+  function commitTurn(m) {
+    const blk = blocks.cube; if (!blk) return; const d = blk.data;
+    for (let i = 0; i < count; i++) {
+      const o = i * BL;
+      if (d[o+3] === 0 && d[o+4] === 0 && d[o+5] === 0) continue;
+      if (Math.abs(d[o + 7 + m.ax] - m.layer * PITCH) > 0.2) continue;
+      rot90(d, o, m.ax, m.dir); rot90(d, o + 3, m.ax, m.dir); rot90(d, o + 7, m.ax, m.dir);
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, blk.vbo); gl.bufferSubData(gl.ARRAY_BUFFER, 0, d);
+  }
+  function updateCube(dt) {
+    if (!motion) return;
+    if (!cube.cur) {
+      if (pending !== null) return;                        // let a turn finish, but start no new one when leaving
+      if (cube.hold > 0) { cube.hold -= dt; return; }
+      if (!cube.queue.length) planCube();
+      cube.cur = cube.queue.shift(); cube.p = 0;
+    }
+    cube.p += dt / cube.cur.dur;
+    cube.mv = [cube.cur.ax, cube.cur.layer * PITCH, cube.cur.dir * easeIO(Math.min(1, cube.p)) * Math.PI / 2];
+    if (cube.p >= 1) { commitTurn(cube.cur); cube.hold = cube.cur.after || 0; cube.cur = null; cube.mv = [0, 0, 0]; }
+  }
+
+  // ---------------------------------------------------------------- morph control
+  function goTo(i) { if (i !== cur && !morphing) pending = i; else if (morphing && i !== nxt) pending = i; }
+  function startMorph(i) {
+    if (FORMS[i] === "cube") { resetCube(); }              // always arrive at a solved cube
+    nxt = i; morph = 0; morphing = true; pending = null; bindPair(); labelForms();
+  }
+  function finishMorph() {
+    cur = nxt; morph = 0; morphing = false; autoTimer = 0;
+    for (const k of Object.keys(blocks)) if (k !== FORMS[cur] && k !== "brain") dropBlock(k);   // keep memory low; brain data is the slow one
+    bindPair(); labelForms();
+  }
+
+  // ---------------------------------------------------------------- matrices, size, pointer
+  const persp = (fovy, a, n, f) => { const t = 1/Math.tan(fovy/2), nf = 1/(n-f); return [t/a,0,0,0, 0,t,0,0, 0,0,(f+n)*nf,-1, 0,0,2*f*n*nf,0]; };
+  const mul = (a, b) => { const o = new Array(16).fill(0); for (let c=0;c<4;c++) for (let r=0;r<4;r++) for (let k=0;k<4;k++) o[c*4+r] += a[k*4+r]*b[c*4+k]; return o; };
+  const rotY = a => { const c=Math.cos(a), s=Math.sin(a); return [c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]; };
+  const rotX = a => { const c=Math.cos(a), s=Math.sin(a); return [1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]; };
+  const trans = (x,y,z) => [1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1];
+
+  let dpr = 1, w = 1, h = 1;
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, DPR_CAP);
+    w = Math.max(1, Math.floor(canvas.clientWidth * dpr)); h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    gl.viewport(0, 0, w, h);
+  }
+  addEventListener("resize", resize); resize();
+
+  // Pointer strength eases in and out; touch gets a wider reach and a firmer push than a mouse.
+  const ptr = { x: 0, y: 0, tx: 0, ty: 0, str: 0, target: 0, touch: false };
+  const setPtr = e => { const r = canvas.getBoundingClientRect();
+    ptr.touch = e.pointerType === "touch";
+    ptr.tx = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.ty = -(((e.clientY - r.top) / r.height) * 2 - 1);
+    if (ptr.target === 0 || e.type === "pointerdown") { ptr.x = ptr.tx; ptr.y = ptr.ty; }
+    ptr.target = 1; };
+  const release = () => { ptr.target = 0; };
+  canvas.addEventListener("pointermove", setPtr); canvas.addEventListener("pointerdown", setPtr);
+  canvas.addEventListener("pointerleave", release); canvas.addEventListener("pointerup", release); canvas.addEventListener("pointercancel", release);
+
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+  gl.clearColor(0.039, 0.067, 0.086, 1);
+
+  // ---------------------------------------------------------------- HUD
+  const stat = document.getElementById("stat"), bn = document.getElementById("bn"), bm = document.getElementById("bm"), ba = document.getElementById("ba");
+  const fb = FORMS.map((_, i) => document.getElementById("f" + i));
+  const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+  const gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : "GPU hidden";
+  function labelForms() { fb.forEach((b, i) => b.setAttribute("aria-pressed", String(i === (morphing ? nxt : cur)))); }
+  function label() { bn.textContent = "Particles: " + COUNTS[countIdx].toLocaleString(); bm.textContent = "Motion: " + (motion ? "on" : "off"); ba.setAttribute("aria-pressed", String(auto)); labelForms(); }
+  fb.forEach((b, i) => b.onclick = () => { auto = false; goTo(i); label(); });
+  ba.onclick = () => { auto = !auto; autoTimer = 0; label(); };
+  bn.onclick = () => { countIdx = (countIdx + 1) % COUNTS.length; resetCube(); rebuildAll(); label(); };
+  bm.onclick = () => { motion ^= 1; label(); };
+
+  buildSeeds(count); bindPair(); label();
+
+  // ---------------------------------------------------------------- frame loop
+  let t = 0, last = performance.now(), acc = 0, frames = 0, worst = 0, rx = 0, ry = 0;
+  const viewFor = (kind, tt) => ({
+    spin: kind === "cube" ? 0.7 + Math.sin(tt * 0.3) * 0.45 : (kind === "cloud" ? tt * 0.07 : Math.sin(tt * 0.22) * 0.5),
+    tilt: kind === "cube" ? 0.5 : 0, size: kind === "cloud" ? 7.0 : 4.6 });
+  function frame(now) {
+    const ms = now - last, dt = Math.min(0.1, ms / 1000); last = now;
+    t += dt * (motion ? 1 : 0);
+    acc += ms; frames++; worst = Math.max(worst, ms);
+    if (acc > 700) {
+      const avg = acc / frames;
+      stat.textContent = Math.round(1000 / avg) + " fps · " + avg.toFixed(1) + " ms · " + worst.toFixed(0) + " worst · " + count.toLocaleString() + " pts · " + gpu.replace(/ANGLE \(|, .*$/g, "");
+      acc = 0; frames = 0; worst = 0;
+    }
+
+    // morph state
+    if (auto && !morphing && pending === null) { autoTimer += dt; if (autoTimer > HOLD[cur]) pending = (cur + 1) % FORMS.length; }
+    if (pending !== null && !morphing && !(FORMS[cur] === "cube" && cube.cur)) startMorph(pending);
+    if (morphing) { morph += dt / MORPH_SECONDS; if (morph >= 1) finishMorph(); }
+    if (FORMS[cur] === "cube" && !morphing) updateCube(dt); else if (!cube.cur) cube.mv = [0, 0, 0];
+
+    // pointer
+    const follow = ptr.touch ? 0.35 : 0.12;
+    ptr.x += (ptr.tx - ptr.x) * follow; ptr.y += (ptr.ty - ptr.y) * follow;
+    ptr.str += (ptr.target - ptr.str) * (ptr.target > ptr.str ? 0.4 : 0.05);
+    const px = Math.max(-1, Math.min(1, ptr.x)) * ptr.str, py = Math.max(-1, Math.min(1, ptr.y)) * ptr.str;
+
+    // camera follows the form (blends while morphing)
+    const m = morphing ? ease(Math.min(1, morph)) : 0, vA = viewFor(FORMS[cur], t), vB = viewFor(FORMS[morphing ? nxt : cur], t);
+    ry += ((mixf(vA.spin, vB.spin, m) + px * 0.28) - ry) * 0.05;
+    rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14 + mixf(vA.tilt, vB.tilt, m)) - rx) * 0.05;
+    const aspect = w / h, dist = 4.4 * Math.max(1, 1.25 / aspect);
+    const MV = mul(trans(0, 0, -dist), mul(rotX(rx), rotY(ry)));
+    gl.uniformMatrix4fv(u.uMV, false, MV); gl.uniformMatrix4fv(u.uP, false, persp(0.8, aspect, 0.1, 30));
+    gl.uniform1f(u.uMorph, morphing ? morph : 0); gl.uniform1f(u.uFormA, cur); gl.uniform1f(u.uFormB, morphing ? nxt : cur);
+    gl.uniform3f(u.uMove, cube.mv[0], cube.mv[1], cube.mv[2]);
+    gl.uniform1f(u.uTime, t); gl.uniform1f(u.uDpr, dpr); gl.uniform1f(u.uSize, mixf(vA.size, vB.size, m) * (h / 900 > 0.7 ? 1 : 0.85));
+    gl.uniform1f(u.uFocus, dist); gl.uniform1f(u.uMotion, motion); gl.uniform1f(u.uAspect, aspect);
+    gl.uniform2f(u.uPointer, ptr.x, ptr.y); gl.uniform1f(u.uPush, ptr.str);
+    gl.uniform1f(u.uRadius, ptr.touch ? 0.465 : 0.38); gl.uniform1f(u.uAmt, ptr.touch ? 0.12 : 0.08);
+    gl.uniform1i(u.uShape, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.POINTS, 0, count);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
