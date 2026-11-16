@@ -57,18 +57,31 @@
 
   const VS = `#version 300 es
   precision highp float;
-  in vec3 aHome; in vec4 aSeed; in vec4 aNorm;
+  in vec3 aHome; in vec4 aSeed; in vec4 aNorm; in vec3 aCell;
   uniform mat4 uMV, uP;
-  uniform float uForm;
+  uniform float uForm, uCube;
+  uniform vec3 uMove;                                    // cube turn: axis index, layer coordinate, angle (radians)
   uniform float uTime, uDpr, uSize, uFocus, uMotion, uAspect;
   uniform vec2 uPointer;
   out vec3 vCol; out float vAlpha, vSoft, vRot;
+  vec3 rotAxis(vec3 v, float ax, float a){
+    float c = cos(a), sn = sin(a);
+    if (ax < 0.5) return vec3(v.x, c*v.y - sn*v.z, sn*v.y + c*v.z);
+    if (ax < 1.5) return vec3(c*v.x + sn*v.z, v.y, -sn*v.x + c*v.z);
+    return vec3(c*v.x - sn*v.y, sn*v.x + c*v.y, v.z);
+  }
   void main(){
     float s = aSeed.x * 6.2831853;
-    vec3 p = aHome + uMotion * 0.055 * vec3(
-      sin(uTime*0.35 + s*3.0 + aHome.y*1.7),
-      cos(uTime*0.31 + s*2.0 + aHome.z*1.3),
-      sin(uTime*0.27 + s     + aHome.x*1.9));
+    vec3 home = aHome, nrm = aNorm.xyz;
+    bool surface = dot(nrm, nrm) > 0.01;
+    if (uCube > 0.5 && surface && abs(uMove.z) > 1e-5) {   // the turning layer of the cube
+      float ac = uMove.x < 0.5 ? aCell.x : (uMove.x < 1.5 ? aCell.y : aCell.z);
+      if (abs(ac - uMove.y) < 0.2) { home = rotAxis(home, uMove.x, uMove.z); nrm = rotAxis(nrm, uMove.x, uMove.z); }
+    }
+    vec3 p = home + uMotion * (1.0 - 0.75 * uCube) * 0.055 * vec3(
+      sin(uTime*0.35 + s*3.0 + home.y*1.7),
+      cos(uTime*0.31 + s*2.0 + home.z*1.3),
+      sin(uTime*0.27 + s     + home.x*1.9));
     vec4 mv = uMV * vec4(p, 1.0);
     vec4 clip = uP * mv;
     vec2 ndc = clip.xy / clip.w;
@@ -81,15 +94,15 @@
     float depth = -mv.z;
     float blur = clamp(abs(depth - uFocus) / uFocus * 1.3, 0.0, 1.0);
     float lit = 1.0, fold = 0.0, band = 0.0, sizeMul = 1.0;
-    if (dot(aNorm.xyz, aNorm.xyz) > 0.01) {
+    if (surface) {
       // Surface point of the form. Edges glow, deep folds sit darker and finer, the far side recedes,
       // and a slow band of light sweeps along the length of the form.
       fold = aNorm.w;
-      vec3 n = normalize(mat3(uMV) * aNorm.xyz);
+      vec3 n = normalize(mat3(uMV) * nrm);
       float rim = pow(1.0 - abs(n.z), 1.5);
       float back = smoothstep(uFocus - 0.15, uFocus + 1.5, depth);
       float sweep = mod(uTime * 0.45, 5.0) - 2.5;
-      band = exp(-pow((aHome.x - sweep) / 0.22, 2.0)) * uMotion;
+      band = exp(-pow((home.x - sweep) / 0.22, 2.0)) * uMotion * (1.0 - uCube);
       lit = (0.12 + 0.55 * rim + 1.0 * pow(1.0 - fold, 1.6)) * mix(1.0, 0.28, back) * (1.0 + 1.2 * band);
       sizeMul = 1.0 - 0.35 * fold;
       blur *= 0.6;
@@ -103,9 +116,13 @@
     vec3 ink  = vec3(0.918,0.941,0.925);
     vec3 teal = vec3(0.169,0.620,0.560);
     vCol = aSeed.z < 0.62 ? mix(mint, ink, aSeed.z*0.5) : (aSeed.z < 0.9 ? mix(teal, mint, (aSeed.z-0.62)*3.0) : ink);
-    if (dot(aNorm.xyz, aNorm.xyz) > 0.01) {              // lit parts read pale, shaded folds read teal
+    if (surface) {                                        // lit parts read pale, shaded folds read teal
       vec3 c = mix(teal, mint, smoothstep(0.1, 0.65, lit));
       vCol = mix(c, ink, clamp(smoothstep(0.7, 1.5, lit) + band * 0.6, 0.0, 1.0));
+    }
+    if (uCube > 0.5 && surface) {                         // each sticker keeps its own colour; seed.z holds the colour id
+      vec3 PAL[7] = vec3[7](mint, ink, teal, vec3(0.36,0.69,0.91), vec3(0.78,0.945,0.41), vec3(0.95,0.77,0.43), vec3(0.14,0.24,0.28));
+      vCol = PAL[int(aSeed.z * 7.0)];
     }
     vRot = aSeed.w * 6.2831853 + uTime * 0.25 * (aSeed.x - 0.5) * uMotion;
   }`;
@@ -143,7 +160,7 @@
   gl.useProgram(prog);
   const U = n => gl.getUniformLocation(prog, n);
   const u = { mv:U("uMV"), p:U("uP"), time:U("uTime"), dpr:U("uDpr"), size:U("uSize"), focus:U("uFocus"),
-              motion:U("uMotion"), aspect:U("uAspect"), pointer:U("uPointer"), shape:U("uShape"), form:U("uForm") };
+              motion:U("uMotion"), aspect:U("uAspect"), pointer:U("uPointer"), shape:U("uShape"), form:U("uForm"), cube:U("uCube"), move:U("uMove") };
 
   const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
   const buf = gl.createBuffer();
@@ -188,19 +205,70 @@
     const k = Math.floor(rnd() * 13), ang = mix(-0.45, Math.PI + 0.45, k / 12), s = mix(1.2, 1.75, Math.pow(rnd(), 0.7));   // spark rays
     const n = unit(); return [Math.cos(ang) * s, 0.42 + Math.sin(ang) * s * 0.95, 0, n[0], n[1], n[2], 0];
   }
-  function cubePoint() {
-    const r = rnd(), H = r < 0.88 ? 0.78 : 0.34, ax = Math.floor(rnd() * 3), bx = (ax + 1) % 3, cxx = (ax + 2) % 3;
-    const p = [0, 0, 0], n = [0, 0, 0];
-    if (r < 0.46 || r >= 0.88 && rnd() < 0.85) {                 // faces
-      const sg = rnd() < 0.5 ? -1 : 1; p[ax] = sg * H; p[bx] = (rnd()*2-1) * H; p[cxx] = (rnd()*2-1) * H; n[ax] = sg;
-    } else {                                                     // edges, so the corners read sharply
-      const sb = rnd() < 0.5 ? -1 : 1, sc = rnd() < 0.5 ? -1 : 1;
-      p[ax] = (rnd()*2-1) * H; p[bx] = sb * H; p[cxx] = sc * H; n[bx] = sb * 0.7071; n[cxx] = sc * 0.7071;
-      p[ax] += (rnd()-0.5)*0.012;
+  // Rubik's cube: 27 cubelets, only their outer faces are sampled (54 stickers, 6 colours, thin dark borders).
+  // Each particle carries its cubelet's centre (aCell) so the shader can turn a whole layer.
+  const PITCH = 0.56, HALF = 0.25;
+  const STICKERS = [];
+  for (let a = 0; a < 3; a++) for (const sg of [-1, 1]) for (let ib = -1; ib <= 1; ib++) for (let ic = -1; ic <= 1; ic++) {
+    const cell = [0, 0, 0]; cell[a] = sg; cell[(a + 1) % 3] = ib; cell[(a + 2) % 3] = ic;
+    STICKERS.push({ a, sg, cell: cell.map(v => v * PITCH), cid: a * 2 + (sg > 0 ? 1 : 0) });
+  }
+  function rubikPoint(k) {
+    const st = STICKERS[k], { a, sg, cell } = st, b = (a + 1) % 3, c = (a + 2) % 3;
+    const p = cell.slice(), n = [0, 0, 0]; n[a] = sg;
+    let cid = st.cid;
+    if (rnd() < 0.8) { p[a] += sg * HALF; p[b] += (rnd()*2-1) * HALF * 0.84; p[c] += (rnd()*2-1) * HALF * 0.84; }
+    else {                                                       // dark border so the grid of cubelets reads
+      p[a] += sg * HALF; const along = (rnd()*2-1) * HALF, side = rnd() < 0.5 ? -1 : 1, swap = rnd() < 0.5;
+      p[swap ? b : c] += along; p[swap ? c : b] += side * HALF * 0.97; cid = 6;
     }
-    const cb = Math.cos(0.6), sb2 = Math.sin(0.6), ca = Math.cos(0.45), sa = Math.sin(0.45);   // fixed tilt so it reads as 3D
-    const rot = v => { const x1 = v[0]*cb + v[2]*sb2, z1 = -v[0]*sb2 + v[2]*cb; return [x1, v[1]*ca - z1*sa, v[1]*sa + z1*ca]; };
-    const q = rot(p), m = rot(n); return [q[0], q[1], q[2], m[0], m[1], m[2], 0];
+    return { p, n, cell, cid };
+  }
+  // Move queue: scramble a few turns, hold, then undo them in reverse so the cube solves itself.
+  const cube = { queue: [], cur: null, p: 0, hold: 0.8, hist: [], mv: [0, 0, 0], prev: null };
+  const easeIO = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+  function planCube() {
+    cube.queue = [];
+    if (!cube.hist.length) {                                     // scramble
+      for (let i = 0; i < 7; i++) {
+        let m; do { m = { ax: Math.floor(rnd()*3), layer: Math.floor(rnd()*3) - 1, dir: rnd() < 0.5 ? -1 : 1 }; }
+        while (cube.prev && m.ax === cube.prev.ax && m.layer === cube.prev.layer);
+        m.dur = 0.42; cube.prev = m; cube.queue.push(m); cube.hist.push(m);
+      }
+      cube.queue[cube.queue.length - 1].after = 1.3;
+    } else {                                                     // solve: reverse order, opposite direction
+      for (let i = cube.hist.length - 1; i >= 0; i--) { const h = cube.hist[i]; cube.queue.push({ ax: h.ax, layer: h.layer, dir: -h.dir, dur: 0.6 }); }
+      cube.queue[cube.queue.length - 1].after = 3.2; cube.hist = []; cube.prev = null;
+    }
+  }
+  function rot90(d, o, ax, s) {                                  // exact quarter turn, matches rotAxis() in the shader
+    const x = d[o], y = d[o+1], z = d[o+2];
+    if (ax === 0) { d[o+1] = -s*z; d[o+2] = s*y; }
+    else if (ax === 1) { d[o] = s*z; d[o+2] = -s*x; }
+    else { d[o] = -s*y; d[o+1] = s*x; }
+  }
+  let cubeData = null;
+  function commitTurn(m) {
+    const d = cubeData; if (!d) return;
+    for (let i = 0; i < count; i++) {
+      const o = i * 14;
+      if (d[o+7] === 0 && d[o+8] === 0 && d[o+9] === 0) continue;
+      if (Math.abs(d[o + 11 + m.ax] - m.layer * PITCH) > 0.2) continue;
+      rot90(d, o, m.ax, m.dir); rot90(d, o + 7, m.ax, m.dir); rot90(d, o + 11, m.ax, m.dir);
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferSubData(gl.ARRAY_BUFFER, 0, d);
+  }
+  function updateCube(dt) {
+    if (!motion) return;
+    if (!cube.cur) {
+      if (cube.hold > 0) { cube.hold -= dt; return; }
+      if (!cube.queue.length) planCube();
+      cube.cur = cube.queue.shift(); cube.p = 0;
+    }
+    cube.p += dt / cube.cur.dur;
+    const e = easeIO(Math.min(1, cube.p));
+    cube.mv = [cube.cur.ax, cube.cur.layer * PITCH, cube.cur.dir * e * Math.PI / 2];
+    if (cube.p >= 1) { commitTurn(cube.cur); cube.hold = cube.cur.after || 0; cube.cur = null; cube.mv = [0, 0, 0]; }
   }
 
   function build(n) {
@@ -209,11 +277,16 @@
     const useBrain = kind === "brain" && brain;
     const procedural = kind === "bulb" || kind === "cube";
     const surfaceN = useBrain ? Math.min(Math.round(n * 0.88), BRAIN_MAX) : (procedural ? Math.round(n * 0.9) : 0);
-    const data = new Float32Array(n * 11);      // home xyz + seed xyzw + normal xyz + foldedness
+    const data = new Float32Array(n * 14);      // home xyz + seed xyzw + normal xyz + foldedness + cube cell xyz
+    const per = Math.max(1, Math.floor(surfaceN / 54));
+    cube.queue = []; cube.cur = null; cube.hist = []; cube.prev = null; cube.hold = 0.8; cube.mv = [0, 0, 0];
     for (let i = 0; i < n; i++) {
-      let x, y, z, nx = 0, ny = 0, nz = 0, fd = 0;
-      if (i < surfaceN && procedural) {
-        [x, y, z, nx, ny, nz, fd] = kind === "bulb" ? bulbPoint() : cubePoint();
+      let x, y, z, nx = 0, ny = 0, nz = 0, fd = 0, cid = -1, cell = [0, 0, 0];
+      if (i < surfaceN && kind === "cube") {
+        const q = rubikPoint(Math.min(53, Math.floor(i / per)));
+        [x, y, z] = q.p; [nx, ny, nz] = q.n; cell = q.cell; cid = q.cid;
+      } else if (i < surfaceN && procedural) {
+        [x, y, z, nx, ny, nz, fd] = bulbPoint();
       } else if (i < surfaceN) {                  // brain surface
         x = brain.pos[i*3] / 32767 * BRAIN_SCALE; y = brain.pos[i*3+1] / 32767 * BRAIN_SCALE; z = brain.pos[i*3+2] / 32767 * BRAIN_SCALE;
         nx = brain.nrm[i*3] / 127; ny = brain.nrm[i*3+1] / 127; nz = brain.nrm[i*3+2] / 127; fd = brain.fold[i] / 255;
@@ -222,20 +295,23 @@
       } else {                                    // main body: a soft, slightly flattened cloud
         x = gauss() * 0.95; y = gauss() * 0.7; z = gauss() * 0.7;
       }
-      const o = i * 11;
+      const o = i * 14;
       data[o] = x; data[o+1] = y; data[o+2] = z; data[o+7] = nx; data[o+8] = ny; data[o+9] = nz; data[o+10] = fd;
+      data[o+11] = cell[0]; data[o+12] = cell[1]; data[o+13] = cell[2];
       const r = rnd();
       data[o+3] = rnd();                          // phase
       data[o+4] = 0.45 + Math.pow(r, 3) * 1.5;    // size: mostly tiny, a few bright
-      data[o+5] = rnd();                          // colour
+      data[o+5] = cid >= 0 ? (cid + 0.5) / 7 : rnd();   // colour (for the cube: sticker colour id)
       data[o+6] = rnd();                          // rotation
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    const loc1 = gl.getAttribLocation(prog, "aHome"), loc2 = gl.getAttribLocation(prog, "aSeed"), loc3 = gl.getAttribLocation(prog, "aNorm");
-    gl.enableVertexAttribArray(loc1); gl.vertexAttribPointer(loc1, 3, gl.FLOAT, false, 44, 0);
-    gl.enableVertexAttribArray(loc2); gl.vertexAttribPointer(loc2, 4, gl.FLOAT, false, 44, 12);
-    gl.enableVertexAttribArray(loc3); gl.vertexAttribPointer(loc3, 4, gl.FLOAT, false, 44, 28);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+    cubeData = kind === "cube" ? data : null;
+    const loc1 = gl.getAttribLocation(prog, "aHome"), loc2 = gl.getAttribLocation(prog, "aSeed"), loc3 = gl.getAttribLocation(prog, "aNorm"), loc4 = gl.getAttribLocation(prog, "aCell");
+    gl.enableVertexAttribArray(loc1); gl.vertexAttribPointer(loc1, 3, gl.FLOAT, false, 56, 0);
+    gl.enableVertexAttribArray(loc2); gl.vertexAttribPointer(loc2, 4, gl.FLOAT, false, 56, 12);
+    gl.enableVertexAttribArray(loc3); gl.vertexAttribPointer(loc3, 4, gl.FLOAT, false, 56, 28);
+    gl.enableVertexAttribArray(loc4); gl.vertexAttribPointer(loc4, 3, gl.FLOAT, false, 56, 44);
   }
 
   // minimal column-major matrices
@@ -289,6 +365,7 @@
   function frame(now) {
     const dt = Math.min(0.1, (now - last) / 1000); const ms = now - last; last = now;
     t += dt * (motion ? 1 : 0.0);
+    if (kindOf() === "cube") updateCube(dt);
     acc += ms; frames++; worst = Math.max(worst, ms);
     if (acc > 700) {
       const avg = acc / frames;
@@ -299,9 +376,9 @@
     ptr.x += (ptr.tx - ptr.x) * 0.12; ptr.y += (ptr.ty - ptr.y) * 0.12;
     const px = Math.max(-1, Math.min(1, ptr.x)), py = Math.max(-1, Math.min(1, ptr.y));
     // The brain and bulb sway so they stay readable; the cloud drifts round; the cube turns fully.
-    const kind = kindOf(), spin = kind === "cube" ? t * 0.3 : (kind === "cloud" ? t * 0.07 : Math.sin(t * 0.22) * 0.5);
+    const kind = kindOf(), spin = kind === "cube" ? 0.7 + Math.sin(t * 0.3) * 0.45 : (kind === "cloud" ? t * 0.07 : Math.sin(t * 0.22) * 0.5);
     ry += ((spin + px * 0.28) - ry) * 0.05;
-    rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14) - rx) * 0.05;
+    rx += ((Math.sin(t * 0.05) * 0.1 + py * 0.14 + (kind === "cube" ? 0.5 : 0)) - rx) * 0.05;   // the cube sits tilted so three faces show
 
     const aspect = w / h, dist = 4.4 * Math.max(1, 1.25 / aspect);   // pull back on narrow screens so the form fits
     const P = persp(0.8, aspect, 0.1, 30);
@@ -309,7 +386,7 @@
     gl.uniformMatrix4fv(u.mv, false, MV); gl.uniformMatrix4fv(u.p, false, P);
     gl.uniform1f(u.time, t); gl.uniform1f(u.dpr, dpr); gl.uniform1f(u.size, (form ? 4.6 : 7.0) * (h / 900 > 0.7 ? 1 : 0.85));
     gl.uniform1f(u.focus, dist); gl.uniform1f(u.motion, motion); gl.uniform1f(u.aspect, aspect);
-    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1i(u.shape, shape); gl.uniform1f(u.form, form);
+    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1i(u.shape, shape); gl.uniform1f(u.form, form); gl.uniform1f(u.cube, kindOf() === "cube" ? 1 : 0); gl.uniform3f(u.move, cube.mv[0], cube.mv[1], cube.mv[2]);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.POINTS, 0, count);
     requestAnimationFrame(frame);
