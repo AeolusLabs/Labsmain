@@ -6,9 +6,11 @@
 <meta name="robots" content="noindex">
 <title>AeolusLabs: site preview</title>
 <style>
-  :root { --bg:#10291D; --star:#F4ECD6; --accent:#D9B04A; --sec:125vh; }
+  :root { --bg:#10291D; --star:#F4ECD6; --accent:#D9B04A; --vh:1vh; --sec:calc(var(--vh) * 125); }
+  @supports (height:1svh) { :root { --vh:1svh; } }          /* small-viewport units: the page does not jump when a phone's address bar hides */
   * { box-sizing:border-box; }
-  html { background:var(--bg); }
+  html { background:var(--bg); scroll-snap-type:y mandatory; }   /* every scroll settles on a section, with its shape formed and its words clear */
+  .snap { position:absolute; top:0; left:0; width:1px; height:1px; scroll-snap-align:start; pointer-events:none; }   /* tiny anchors, because a snap area taller than the screen would let the page rest half-way */
   body { margin:0; background:transparent; color:var(--star); font:17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; touch-action:pan-y; }
   canvas { position:fixed; inset:0; width:100%; height:100%; display:block; z-index:-1; pointer-events:none; background:var(--bg); }
   a { color:inherit; }
@@ -28,8 +30,8 @@
   /* The story: six panels, each as tall as a section, over the fixed particle canvas. */
   main { position:relative; z-index:1; }
   .panel { height:var(--sec); position:relative; padding:0 clamp(20px, 6vw, 88px); display:flex; }
-  .panel:last-child { height:100vh; }
-  .copy { margin-top:calc(50vh - 130px); max-width:34rem; opacity:0; transform:translateY(18px); will-change:opacity, transform; text-shadow:0 0 18px var(--bg), 0 0 4px var(--bg); }
+  .panel:last-child { height:calc(var(--vh) * 100); }
+  .copy { margin-top:calc(var(--vh) * 50 - 130px); max-width:34rem; opacity:0; transform:translateY(18px); will-change:opacity, transform; text-shadow:0 0 18px var(--bg), 0 0 4px var(--bg); }
   .panel.right { justify-content:flex-end; }
   .kicker { margin:0 0 .8rem; font-size:13px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); }
   h1, h2 { margin:0 0 1rem; font-weight:500; letter-spacing:-.03em; line-height:1.04; }
@@ -58,7 +60,7 @@
 
   @media (max-width:920px) { nav a:not(.cta) { display:none; } .logo { font-size:22px; } nav a.cta { font-size:16px; } }
   @media (max-width:760px) {
-    .copy { margin-top:calc(54vh); max-width:none; }
+    .copy { margin-top:calc(var(--vh) * 54); max-width:none; }
     .panel.right { justify-content:flex-start; }
     .dots { display:none; }
     .picker { right:auto; left:16px; bottom:auto; top:70px; }
@@ -371,6 +373,7 @@
     if (blocks[kind]) return blocks[kind];
     const data = makeBlock(kind, N), vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+    if (kind === "cube" && !solvedCube) solvedCube = data.slice();
     return (blocks[kind] = { data, vbo });
   }
   function dropBlock(kind) { if (blocks[kind]) { gl.deleteBuffer(blocks[kind].vbo); delete blocks[kind]; } }
@@ -391,7 +394,12 @@
   // ---------------------------------------------------------------- cube turns (scramble, then solve)
   const cube = { queue: [], cur: null, p: 0, hold: 0.8, hist: [], mv: [0, 0, 0], prev: null };
   const easeIO = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
-  function resetCube() { dropBlock("cube"); Object.assign(cube, { queue: [], cur: null, p: 0, hold: 0.8, hist: [], mv: [0, 0, 0], prev: null }); }
+  let solvedCube = null;                                   // a copy of the solved cube, so starting over is instant
+  function resetCube() {
+    const blk = blocks.cube;
+    if (blk && solvedCube) { blk.data.set(solvedCube); gl.bindBuffer(gl.ARRAY_BUFFER, blk.vbo); gl.bufferSubData(gl.ARRAY_BUFFER, 0, blk.data); }
+    Object.assign(cube, { queue: [], cur: null, p: 0, hold: 0.8, hist: [], mv: [0, 0, 0], prev: null });
+  }
   function planCube() {
     cube.queue = [];
     if (!cube.hist.length) {
@@ -445,7 +453,7 @@
   function resize() {
     dpr = Math.min(devicePixelRatio || 1, DPR_CAP); w = Math.max(1, Math.floor(canvas.clientWidth * dpr)); h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; } gl.viewport(0, 0, w, h);
-    vh = innerHeight; secH = vh * 1.25;
+    vh = innerHeight; secH = document.querySelector(".panel").offsetHeight || vh * 1.25;   // measured, so the story always matches the real page height
   }
   addEventListener("resize", resize); resize();
 
@@ -471,6 +479,7 @@
     b.innerHTML = `<span style="background:${p.bg}"></span><span style="background:${p.star}"></span><span style="background:${p.accent}"></span>`;
     b.addEventListener("click", () => { pal = p; applyPalette(); }); picker.append(b); });
   const dots = document.getElementById("dots"), panels = [...document.querySelectorAll(".panel")], copies = panels.map(p => p.querySelector(".copy"));
+  panels.forEach(p => { const a = document.createElement("span"); a.className = "snap"; a.setAttribute("aria-hidden", "true"); p.prepend(a); });
   const names = ["Start", "Intelligence", "Agentic systems", "Simplify", "Build with us", "Contact"];
   panels.forEach((_, i) => { const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Go to: " + names[i]);
     b.addEventListener("click", () => scrollTo({ top: i * secH, behavior: motion ? "smooth" : "auto" })); dots.append(b); });
@@ -482,11 +491,16 @@
   applyPalette();
 
   // Which shapes are showing, and how far between them we are, comes straight from the scroll position.
-  let curA = SEQ[0], curB = SEQ[1], lastPair = -1, rx = 0, ry = 0, ox = 0, oy = 0, t = 0, last = performance.now();
+  let curA = SEQ[0], curB = SEQ[1], lastPair = -1, rx = 0, ry = 0, ox = 0, oy = 0, t = 0, last = performance.now(), sf = scrollY / secH;
   bindPair(true);
+  // Build every other shape a moment after the first one is on screen, so scrolling never stops to make one.
+  const warm = () => ["cube", "bulb", "agent", "brain", "sky"].forEach((k, n) => setTimeout(() => ensureBlock(k), 300 + n * 220));
+  warm();
   function frame(now) {
     const dt = Math.min(0.1, (now - last) / 1000); last = now; t += dt * motion;
-    const f = scrollY / secH, fc = Math.max(0, Math.min(SEQ.length - 1, f));
+    // The scroll position is eased, so a notchy mouse wheel or a flick on a phone still gives a smooth flow between shapes.
+    sf += (scrollY / secH - sf) * (reduceMq.matches ? 1 : 1 - Math.exp(-dt * 9));
+    const f = sf, fc = Math.max(0, Math.min(SEQ.length - 1, f));
     const i = Math.min(Math.floor(fc), SEQ.length - 2), frac = fc - i, m = ease(clamp01((frac - 0.22) / 0.56));
     curA = SEQ[i]; curB = SEQ[i + 1];
     if (i !== lastPair) { if (curB === "cube") resetCube(); lastPair = i; }   // always arrive at a solved cube

@@ -1,6 +1,6 @@
 # AeolusLabs — single project and design authority
 
-Updated: 16 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending. A home-page story and scroll narrative was added on 16 November 2026 (see "Story and scroll narrative"); it is a direction awaiting a prototype, and the page compositions table below is unchanged until that prototype is approved.
+Updated: 16 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending. A new particle scroll-story site is being built alongside the current site (see "New particle site"); the current site and the page compositions table below are unchanged and stay live until the owner approves a switch.
 
 ## Overview
 
@@ -38,7 +38,30 @@ The home page should tell one story instead of listing sections. Intended order:
 5. **Proof.** Tikvah, TLC and Vib3Pulse as evidence for the approach, not a gallery.
 6. **Closing.** "What would you automate?" and the enquiry route.
 
-Implementation intent: one scroll-driven particle canvas that morphs brain, bulb and cube, using our own forms and the wind idea (the Aeolus name), not a copy of any other site's artwork. Study references only: dala.craftedbygc.com and its token files. Aeolus keeps its own palette and typefaces. It needs a still fallback, a lighter phone version, reduced-motion support and the footer Pause control. It narrows the 9 November motion trim for this one centerpiece only; marquees and decorative text effects stay removed. The cube is a Rubik's cube whose layers turn, scrambling then solving itself, to show problems being solved. Owner approved, 16 November 2026, six sticker colours for it beyond the core palette: mint, pale ink, teal, azure, lime and amber; these are for the cube artwork only. The brain comes from a CC BY 4.0 model that needs visible credit on the site (see public/data/brain-credit.txt). Status: pending prototype (public/particle-stage1.html on the story-particle-prototype branch). Open: whether audience copy narrows to small businesses (current text says businesses, entrepreneurs and startups).
+Implementation intent: one scroll-driven particle canvas that morphs brain, bulb and cube, using our own forms and the wind idea (the Aeolus name), not a copy of any other site's artwork. Study references only: dala.craftedbygc.com and its token files. Aeolus keeps its own palette and typefaces. It needs a still fallback, a lighter phone version, reduced-motion support and the footer Pause control. It narrows the 9 November motion trim for this one centerpiece only; marquees and decorative text effects stay removed. The cube is a Rubik's cube whose layers turn, scrambling then solving itself, to show problems being solved. Owner approved, 16 November 2026, six sticker colours for it beyond the core palette: mint, pale ink, teal, azure, lime and amber; these are for the cube artwork only. The brain comes from a CC BY 4.0 model that needs visible credit on the site (see public/data/brain-credit.txt). Status: prototype built (see "New particle site" below). Open: whether audience copy narrows to small businesses (current text says businesses, entrepreneurs and startups).
+
+### New particle site (built alongside the current site)
+
+Owner decision, 16 November 2026. The new scroll-story site is built **side by side** with the current site. Nothing is removed: the current site, its routes and the page compositions table below stay as they are, and stay the live site, until the owner approves a switch. The new work lives on the `story-particle-prototype` branch: `public/site-preview.html` (the home story) and the test pages `public/particle-stage1.html`, `particle-stage2.html`, `first-screen.html` and `layout-planner.html`.
+
+**Word rule.** Taken from the partner's artifact: simple words, straight to the point. Every block has one big line of 8 words or fewer and one small line of 15 words or fewer. No small labels above headlines, no paragraphs. Detail lives on pages a visitor chooses to open. Honest notes about what was and was not tested stay on case-study pages, in small plain text; they are never cut.
+
+**Colours.** Two sets only, owner to pick one later: Forest (background #10291D, cream #F4ECD6, gold #D9B04A) and Aeolus ink and mint (background #0A1116, #EAF0EC, #7BE8CB). The Rubik's cube keeps its six sticker colours.
+
+**Header.** Plain, normal lettering: the wordmark AeolusLabs on the left (no A mark), links on the right, and "Start a conversation" with a small spark, no pill. Planned links: Work, What we do, About, Start a conversation.
+
+**Home story, in order.** Sky (hero), brain (Intelligence), agent diagram (Agentic systems, with the tools list), Rubik's cube that scrambles and solves itself (Simplify), light bulb (Build with us). Still to add after those: Our work (Tikvah, TLC Beauty Shop, Vib3Pulse with real captures), How we work, Who we are (the two co-founders, names only, and the mission line), then the closing ("What would you automate?", button, email) and the footer (page links, privacy, Pause motion, brain credit).
+
+**Pages in the new site.**
+- **Home:** the story above.
+- **Work:** a short scroll, three full-screen beats, one per project. Products folds in here: Vib3Pulse is shown as "our own product". Lines: Tikvah, "A private place to write to a real team."; TLC Beauty Shop, "A salon website where people book."; Vib3Pulse, "Events, tickets and community. Our own product."
+- **What we do:** replaces Solutions. Four lines (Build your product. Automate your work. Connect your tools. Keep it running.) and four steps (Listen. Agree the plan. Build together. Plan what's next.).
+- **About:** a short scroll. "Two founders. One goal." The mission line, the co-founders' names, and the four promises (understand first, build deliberately, communicate openly, keep improving), one line each.
+- **Contact:** a plain, calm page with no scroll story. The form, the email and the AI brief helper, with the ordinary form always available.
+- **Case studies** (Tikvah, TLC, Vib3Pulse): their own short pages. One picture, one line on what we did, one on what we delivered, and the honest notes.
+- **Privacy:** plain page.
+
+**Not public yet.** Payment plan, ongoing partnership and outright purchase wording stays off every page until the owner confirms the terms. The brain model needs its visible CC BY credit wherever it is shown.
 
 ### Product truth
 
