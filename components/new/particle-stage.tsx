@@ -5,7 +5,7 @@ import { createStage, type Stage } from './engine/stage'
 import { useNewPrefs } from './prefs'
 import type { SceneId } from './types'
 
-const CANVAS_STYLE: CSSProperties = { position: 'fixed', inset: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none', display: 'block' }
+const CANVAS_STYLE: CSSProperties = { position: 'fixed', inset: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none', display: 'block' }   // behind the words: the canvas sits inside <main>, so -1 puts it under its siblings
 
 /**
  * The fixed full-screen particle canvas. One scene per `[data-np-story]` panel, in order; with no story on the page

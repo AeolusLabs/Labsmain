@@ -41,9 +41,14 @@ export function attachStory(): StoryDom | null {
   let snapOn = false
   let disposed = false
 
+  // The leading run of story panels snaps. The first flow panel after it also gets an anchor, so the visitor can scroll
+  // INTO the free content: with mandatory snapping and no further anchor, the page would pull them back for ever.
+  let lastStory = -1
+  for (let k = 0; k < panels.length && isStory[k]; k++) lastStory = k
+  const firstFlow = lastStory >= 0 && lastStory + 1 < panels.length ? lastStory + 1 : -1
   const anchors: HTMLElement[] = []
   panels.forEach((p, k) => {
-    if (!isStory[k]) return
+    if (!isStory[k] && k !== firstFlow) return
     const a = document.createElement('span')
     a.className = 'np-snap-anchor'
     a.setAttribute('aria-hidden', 'true')
@@ -60,9 +65,8 @@ export function attachStory(): StoryDom | null {
       const c = copies[k]
       copyHeights[k] = c ? c.offsetHeight : 0
     })
-    let lastStory = -1
-    for (let k = 0; k < panels.length && isStory[k]; k++) lastStory = k
-    snapEnd = lastStory >= 0 ? tops[lastStory] + SNAP_SLACK : -1
+    // Snapping stays on only while the visitor is above the last anchor, so the page never holds them back from what follows.
+    snapEnd = lastStory < 0 ? -1 : (firstFlow >= 0 ? tops[firstFlow] : tops[lastStory]) - SNAP_SLACK
     syncSnap(window.scrollY)
   }
 

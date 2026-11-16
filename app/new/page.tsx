@@ -5,6 +5,8 @@ import { ParticleStage } from '@/components/new/particle-stage'
 import { email, founders, projects, promises } from '@/components/new/content'
 import { Spark } from '@/components/new/shell/spark'
 
+export const metadata = { title: { absolute: 'AeolusLabs: AI products and business automation' } }
+
 const tools = ['Social media', 'Messaging', 'Payments', 'CRM', 'Accounting', 'Email', 'Your database', 'Any other tool']
 const steps = ['Listen.', 'Agree the plan.', 'Build together.', 'Plan what’s next.']
 
