@@ -1,6 +1,6 @@
 # AeolusLabs — single project and design authority
 
-Updated: 9 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending.
+Updated: 16 November 2026. Status: owner-selected remodelling direction; shared token foundation implemented locally, full reference compositions and expressive effects pending. A home-page story and scroll narrative was added on 16 November 2026 (see "Story and scroll narrative"); it is a direction awaiting a prototype, and the page compositions table below is unchanged until that prototype is approved.
 
 ## Overview
 
@@ -24,6 +24,21 @@ Port the visual/interaction intent into the existing Next.js app with real route
 An expressive software studio shaped by air, space and responsive movement: deep ink surfaces, pale green-white text, fresh mint, monumental characterful type, layered real work and generous composition. Wind responds to the pointer, typography moves, images have depth, and purposeful pale sections interrupt the dark canvas. The offer and contact route remain clear.
 
 Seven identifying features must survive: dark/mint shell; Bricolage Grotesque with Instrument Sans; enormous two-line headlines; pill CTAs; layered desktop/phone Tikvah captures; pale expertise/experience sections; wind, the animated hero headline and responsive artwork. A dark recolour of the old minimal site is insufficient.
+
+### Story and scroll narrative
+
+Owner decision, 16 November 2026. Positioning in the owner's words: AeolusLabs is a development company that helps businesses build AI-powered software tools that make their work easier and more efficient. Growth direction: build such tools for small businesses and offer them as a payment plan, ongoing patronage or outright purchase. This is a direction, not a current public offer. Do not publish plans, pricing, subscription or purchase terms until the owner confirms them.
+
+The home page should tell one story instead of listing sections. Intended order:
+
+1. **Brain.** An interactive 3D particle brain in the hero beside the headline.
+2. **The tangle.** A few short beats on a business stuck with manual work and disconnected tools.
+3. **Light bulb.** The spark of an idea. The visitor brings the idea to us to build.
+4. **Cube.** The idea built and the problem solved. Faces may point to real work.
+5. **Proof.** Tikvah, TLC and Vib3Pulse as evidence for the approach, not a gallery.
+6. **Closing.** "What would you automate?" and the enquiry route.
+
+Implementation intent: one scroll-driven particle canvas that morphs brain, bulb and cube, using our own forms and the wind idea (the Aeolus name), not a copy of any other site's artwork. Study references only: dala.craftedbygc.com and its token files. Aeolus keeps its own palette and typefaces. It needs a still fallback, a lighter phone version, reduced-motion support and the footer Pause control. It narrows the 9 November motion trim for this one centerpiece only; marquees and decorative text effects stay removed. Status: pending prototype. Open: whether audience copy narrows to small businesses (current text says businesses, entrepreneurs and startups).
 
 ### Product truth
 
