@@ -6,49 +6,28 @@
 <meta name="robots" content="noindex">
 <title>First screen: the Milky Way</title>
 <style>
-  :root { --bg:#000; --star:#fff; --accent:#fff; }
+  :root { --bg:#10291D; --star:#F4ECD6; --accent:#D9B04A; }
   * { box-sizing:border-box; }
   html, body { margin:0; height:100%; background:var(--bg); color:var(--star); overflow:hidden;
     font:16px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   canvas { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; }
   .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 
-  /* The logo and navigation are real, clickable, readable-by-screen-reader links. On screen their letters are
-     holes cut out of the star field, so the text itself is transparent and only the stars show the shape. */
+  /* Plain, normal lettering in the star colour over the sky. A faint glow in the background colour keeps it readable when a star passes behind. */
   .bar { position:fixed; left:0; right:0; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center;
     padding:18px clamp(16px, 4vw, 48px); }
-  .bar a { color:transparent; text-decoration:none; border-radius:999px; }
-  .bar a:hover { box-shadow:0 0 0 1px var(--star); }
-  .bar a:focus-visible { outline:2px solid var(--star); outline-offset:3px; }
-  .logo { display:flex; align-items:center; gap:10px; padding:6px 10px; font-size:30px; font-weight:500; letter-spacing:0; }
-  .logo svg { width:40px; height:34px; display:block; } .logo svg path { fill:transparent; }
+  .bar a { color:var(--star); text-decoration:none; text-shadow:0 0 10px var(--bg), 0 0 3px var(--bg); }
+  .bar a:hover { text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:1px; }
+  .bar a:focus-visible { outline:2px solid var(--star); outline-offset:4px; border-radius:6px; }
+  .logo { font-size:26px; font-weight:400; padding:6px 4px; }
   .logo b { font-weight:700; }
-  nav { display:flex; align-items:center; gap:clamp(4px, 1.4vw, 18px); }
-  nav a { padding:10px 12px; font-size:19px; font-weight:600; }
-  nav a.cta { padding:11px 20px; margin-left:6px; display:inline-flex; align-items:center; gap:9px; }
-  nav a.cta svg { width:18px; height:18px; display:block; } nav a.cta svg path { fill:transparent; }
-  body.v-hollow nav a.cta svg { display:none; }
-  @media (min-width:921px) { body.v-built .logo { font-size:36px; } body.v-built .logo svg { width:48px; height:41px; } body.v-built nav a { font-size:22px; } body.v-built nav a.cta { font-size:22px; } }
-  body.v-caps .logo svg { display:none; } body.v-caps .logo b { margin-left:.7em; }
+  nav { display:flex; align-items:center; gap:clamp(6px, 2vw, 26px); }
+  nav a { padding:10px 6px; font-size:17px; font-weight:500; }
+  nav a.cta { display:inline-flex; align-items:center; gap:9px; margin-left:6px; }
+  nav a.cta svg { width:18px; height:18px; display:block; } nav a.cta svg path { fill:var(--accent); }
+  @media (max-width:920px) { nav a:not(.cta) { display:none; } .logo { font-size:22px; } nav a.cta { font-size:16px; } }
 
-  /* Plain: ordinary solid lettering in the star colour, with nothing behind it. The wide capitals are what ties it to the sky. */
-  body.v-plain .bar a { color:var(--star); text-shadow:0 0 10px var(--bg), 0 0 2px var(--bg); }
-  body.v-plain .logo svg { display:none; }
-  body.v-plain .logo span { font-size:22px; font-weight:500; letter-spacing:.34em; text-transform:uppercase; }
-  body.v-plain .logo b { margin-left:.7em; font-weight:700; }
-  body.v-plain nav a { font-size:13px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; }
-  body.v-plain nav a:hover { box-shadow:none; text-decoration:underline; text-underline-offset:7px; text-decoration-thickness:1px; }
-  body.v-plain nav a.cta { font-size:13px; padding:11px 8px; }
-  body.v-plain nav a.cta svg path { fill:var(--accent); }
-  @media (max-width:920px) { body.v-plain .logo span { font-size:17px; letter-spacing:.28em; } body.v-plain nav a.cta { font-size:12px; } }
-  body.v-caps .logo span { font-size:23px; font-weight:500; letter-spacing:.34em; text-transform:uppercase; }
-  @media (max-width:920px) { nav a:not(.cta) { display:none; } .logo { font-size:24px; } .logo svg { width:32px; height:27px; } nav a.cta { font-size:16px; padding:10px 14px; } body.v-built nav a.cta, body.v-caps nav a.cta { font-size:20px; padding:10px 6px; } }
-
-  /* Without WebGL2 the holes cannot be drawn, so show the plain white text instead. */
-  body.plain .bar a { color:var(--star); } body.plain .logo svg path { fill:var(--star); }
-  body.plain nav a.cta { box-shadow:0 0 0 1px var(--star); }
-
-  /* Colour test: pick a combination and the stars, background and glow change at once. */
+  /* Colour test: two combinations to compare. */
   .picker { position:fixed; left:50%; bottom:calc(14px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:3;
     display:flex; flex-wrap:wrap; gap:8px; justify-content:center; width:max-content; max-width:calc(100% - 24px); }
   .picker button { display:flex; align-items:center; gap:8px; font:inherit; font-size:13px; color:#fff; background:rgba(0,0,0,.55);
@@ -57,19 +36,17 @@
   .picker button:focus-visible { outline:2px solid #fff; outline-offset:2px; }
   .picker i { display:inline-flex; width:34px; height:16px; border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.4); }
   .picker i span { flex:1; }
-  .picker-label { width:100%; text-align:center; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#fff; opacity:.75; margin-top:2px; }
 </style>
 </head>
-<body class="v-plain">
+<body>
 <canvas id="c" aria-hidden="true"></canvas>
 <h1 class="sr">AeolusLabs: AI-powered products. Business automation.</h1>
 <header class="bar">
-  <a class="logo" id="logo" href="/" aria-label="AeolusLabs home"><svg id="mark" viewBox="0 0 200 170" aria-hidden="true"><path id="markPath" d="M79 4h43l43 91h-45l-22-48-44 100-51 19L79 4Zm96 107 25 55h-48l-7-16-31 16H69l106-55Z"/></svg><span id="word">Aeolus<b>Labs</b></span></a>
-  <nav aria-label="Main navigation" id="nav">
-    <a href="/work">Work</a><a href="/solutions">Solutions</a><a href="/products">Products</a><a href="/about">About</a><a class="cta" href="/contact"><svg id="spark" viewBox="-10 -10 20 20" aria-hidden="true"><path id="sparkPath" d="M0-10 2.4-2.4 10 0 2.4 2.4 0 10-2.4 2.4-10 0-2.4-2.4Z"/></svg>Start a conversation</a>
+  <a class="logo" href="/" aria-label="AeolusLabs home">Aeolus<b>Labs</b></a>
+  <nav aria-label="Main navigation">
+    <a href="/work">Work</a><a href="/solutions">Solutions</a><a href="/products">Products</a><a href="/about">About</a><a class="cta" href="/contact"><svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0-10 2.4-2.4 10 0 2.4 2.4 0 10-2.4 2.4-10 0-2.4-2.4Z"/></svg>Start a conversation</a>
   </nav>
 </header>
-
 <div class="picker" id="picker" role="group" aria-label="Colour combination"></div>
 
 <script>
@@ -77,72 +54,50 @@
   "use strict";
   const canvas = document.getElementById("c");
   const gl = canvas.getContext("webgl2", { antialias:false, alpha:false, powerPreference:"high-performance", depth:false, stencil:false });
-  if (!gl) { document.body.classList.add("plain"); return; }
+  if (!gl) return;                                         // the page still works as plain text on the background colour
 
   const params = new URLSearchParams(location.search);
   const small = innerWidth < 760 || (navigator.hardwareConcurrency || 8) <= 4;
-  const WORLD_N = +params.get("n") || (small ? 9000 : 18000);
+  const N = +params.get("n") || (small ? 9000 : 18000);
   const useWedge = params.get("shape") === "wedge";
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const motion = reduce ? 0 : 1;
   const DPR_CAP = 2;
 
-  // Colour combinations to compare. bg = background, star = most stars, accent = the glow, core and glints.
+  // Two colour combinations. bg = background, star = most stars, accent = the glow, core and glints.
   const PALETTES = [
-    { id: "navy",   name: "Navy, white, light blue",  bg: "#0B1F4A", star: "#FFFFFF", accent: "#8FC1FF" },
-    { id: "lemon",  name: "Black, white, lemon",      bg: "#000000", star: "#FFFFFF", accent: "#F7F25A" },
-    { id: "forest", name: "Forest, cream, gold",      bg: "#10291D", star: "#F4ECD6", accent: "#D9B04A" },
-    { id: "ink",    name: "Aeolus ink and mint",      bg: "#0A1116", star: "#EAF0EC", accent: "#7BE8CB" },
-    { id: "white",  name: "Black and white (first try)", bg: "#000000", star: "#FFFFFF", accent: "#FFFFFF" },
+    { id: "forest", name: "Forest, cream, gold",    bg: "#10291D", star: "#F4ECD6", accent: "#D9B04A" },
+    { id: "ink",    name: "Aeolus ink and mint",    bg: "#0A1116", star: "#EAF0EC", accent: "#7BE8CB" },
   ];
-  const STYLES = [
-    { id: "plain",  name: "Plain lettering" },
-    { id: "built",  name: "Built from stars" },
-    { id: "caps",   name: "Wide capitals, no A mark" },
-    { id: "hollow", name: "Hollow letters (before)" },
-  ];
-  let hv = (STYLES.find(x => x.id === params.get("h")) || {}).id;
-  try { if (!hv) { const sv = localStorage.getItem("aeolus-first-screen-header"); if (STYLES.some(x => x.id === sv)) hv = sv; } } catch (e) {}
-  hv = hv || "plain";
   const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
-  let pal = PALETTES.find(p => p.id === params.get("p")) || PALETTES[0];
-  try { const saved = PALETTES.find(p => p.id === localStorage.getItem("aeolus-first-screen-palette")); if (saved && !params.get("p")) pal = saved; } catch (e) {}
+  let pal = PALETTES.find(p => p.id === params.get("p"));
+  try { if (!pal) pal = PALETTES.find(p => p.id === localStorage.getItem("aeolus-first-screen-palette")); } catch (e) {}
+  pal = pal || PALETTES[0];
 
   const VS = `#version 300 es
   precision highp float;
   in vec3 aS;       // phase, size, rotation
-  in vec3 aHome;    // world position, or (screen x, screen y, 0) for the dense stars round the header
+  in vec3 aHome;    // world position
   uniform mat4 uMV, uP;
-  uniform sampler2D uMask;                                 // the logo and navigation letters, white on black
-  uniform float uHollow, uBoost;
-  uniform float uScreen, uTime, uDpr, uSize, uFocus, uMotion, uAspect, uPush, uRadius, uAmt;
+  uniform float uTime, uDpr, uSize, uFocus, uMotion, uAspect, uPush, uRadius, uAmt;
   uniform vec2 uPointer;
   uniform vec3 uStar, uAccent;
   out float vAlpha, vRot; out vec3 vCol;
   void main(){
     float ph = aS.x * 6.2831853;
-    vec2 ndc; float depth = uFocus; float w = 1.0, z = 0.0;
-    if (uScreen > 0.5) {
-      ndc = aHome.xy + uMotion * 0.0016 * vec2(sin(uTime*0.5 + ph*3.0), cos(uTime*0.43 + ph*2.0));
-    } else {
-      vec3 p = aHome + uMotion * 0.05 * vec3(sin(uTime*0.35 + ph*3.0 + aHome.y*1.7), cos(uTime*0.31 + ph*2.0 + aHome.z*1.3), sin(uTime*0.27 + ph + aHome.x*1.9));
-      vec4 mv = uMV * vec4(p, 1.0); vec4 clip = uP * mv;
-      ndc = clip.xy / clip.w; depth = max(-mv.z, 0.5); w = clip.w; z = clip.z;
-    }
+    vec3 p = aHome + uMotion * 0.05 * vec3(sin(uTime*0.35 + ph*3.0 + aHome.y*1.7), cos(uTime*0.31 + ph*2.0 + aHome.z*1.3), sin(uTime*0.27 + ph + aHome.x*1.9));
+    vec4 mv = uMV * vec4(p, 1.0); vec4 clip = uP * mv;
+    vec2 ndc = clip.xy / clip.w; float depth = max(-mv.z, 0.5);
     vec2 d = ndc - uPointer; d.x *= uAspect;
     float dist = length(d);
     float push = smoothstep(uRadius, 0.0, dist) * uMotion * uPush;
     vec2 dir = d / (dist + 1e-4); dir.x /= uAspect;
     ndc += dir * push * uAmt;
-    // Stars vanish inside the letters and glow along their edges, so the stars themselves draw the outline.
-    float m = texture(uMask, vec2(ndc.x * 0.5 + 0.5, 0.5 - ndc.y * 0.5)).r;
-    float vis = 1.0, rim = 0.0;
-    if (uHollow > 0.5) { vis = 1.0 - smoothstep(0.40, 0.54, m); rim = smoothstep(0.08, 0.40, m) * vis; }
-    gl_Position = vec4(ndc * w, z, w);
-    gl_PointSize = clamp(uSize * uDpr * aS.y * (uFocus / depth) * (1.0 + rim * 0.5), 1.0, 40.0);
+    gl_Position = vec4(ndc * clip.w, clip.z, clip.w);
+    gl_PointSize = clamp(uSize * uDpr * aS.y * (uFocus / depth), 1.0, 40.0);
     float tw = 0.78 + 0.22 * sin(uTime * (0.8 + aS.x * 2.0) * uMotion + ph * 5.0);
     float blur = clamp(abs(depth - uFocus) / uFocus * 1.2, 0.0, 1.0);
-    vAlpha = (0.50 + 0.50 * aS.y) * tw * vis * (1.0 + rim * 1.2) * (1.0 + push * 0.9) * mix(1.0, 0.45, blur) * uBoost;
+    vAlpha = (0.50 + 0.50 * aS.y) * tw * (1.0 + push * 0.9) * mix(1.0, 0.45, blur);
     vRot = aS.z * 6.2831853;
     vCol = aS.z > 0.8 ? uAccent : uStar;                   // about one star in five carries the accent colour
   }`;
@@ -167,114 +122,36 @@
   const prog = gl.createProgram(); gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
   gl.linkProgram(prog); if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
   gl.useProgram(prog);
-  const u = {}; ["uMV","uP","uMask","uScreen","uTime","uDpr","uSize","uFocus","uMotion","uAspect","uPush","uRadius","uAmt","uPointer","uWedge","uStar","uAccent","uHollow","uBoost"].forEach(k => u[k] = gl.getUniformLocation(prog, k));
+  const u = {}; ["uMV","uP","uTime","uDpr","uSize","uFocus","uMotion","uAspect","uPush","uRadius","uAmt","uPointer","uWedge","uStar","uAccent"].forEach(k => u[k] = gl.getUniformLocation(prog, k));
 
-  // ---------------------------------------------------------------- stars
+  // ---------------------------------------------------------------- the Milky Way
+  // A tilted band with a bright core and a thin dark lane, a wide halo that fills the screen, and a few bright glints.
   let rs = 20261116;
   const rnd = () => { rs = (rs * 1664525 + 1013904223) >>> 0; return rs / 4294967296; };
   const gauss = () => (rnd() + rnd() + rnd() + rnd() - 2) * 1.2;
-  function makeBuffer(floatsPerStar, fill, n) {
-    const data = new Float32Array(n * floatsPerStar); for (let i = 0; i < n; i++) fill(data, i * floatsPerStar, i);
-    const vao = gl.createVertexArray(), buf = gl.createBuffer(); gl.bindVertexArray(vao); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    const a = gl.getAttribLocation(prog, "aS"), b = gl.getAttribLocation(prog, "aHome");
-    gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 3, gl.FLOAT, false, 24, 0);
-    gl.enableVertexAttribArray(b); gl.vertexAttribPointer(b, 3, gl.FLOAT, false, 24, 12);
-    return { vao, buf, n };
-  }
-  // The Milky Way: a tilted band with a bright core and a dark lane through it, a wide halo of stars, and a few bright glints.
   const ANG = 0.42, CA = Math.cos(ANG), SA = Math.sin(ANG);
-  function worldStar(d, o) {
-    const r = rnd(); let x, y, z, size;
-    if (r < 0.46) {                                     // the band
-      const u = (rnd() * 2 - 1) * 4.6, v = gauss() * 0.42 * (1.0 - 0.25 * Math.abs(u) / 4.6);
-      if (Math.abs(v) < 0.06 && rnd() < 0.7) { d[o+1] = 0.45; }   // dark lane: thin out the centre line
-      x = u * CA - v * SA; y = u * SA + v * CA; z = gauss() * 0.55; size = 0.4 + Math.pow(rnd(), 3) * 1.2;
-    } else if (r < 0.58) {                              // the bright core, just off centre
-      const cx = 0.6, cy = 0.2;
-      x = cx + gauss() * 0.75; y = cy + gauss() * 0.38; z = gauss() * 0.45; size = 0.4 + Math.pow(rnd(), 3) * 1.4;
-    } else if (r < 0.97) {                              // the halo, filling the whole screen
+  const data = new Float32Array(N * 6);
+  for (let i = 0; i < N; i++) {
+    const o = i * 6, r = rnd(); let x, y, z, size, accent = rnd();
+    if (r < 0.46) {                                        // the band
+      const u2 = (rnd() * 2 - 1) * 4.6, v = gauss() * 0.42 * (1 - 0.25 * Math.abs(u2) / 4.6);
+      x = u2 * CA - v * SA; y = u2 * SA + v * CA; z = gauss() * 0.55; size = (Math.abs(v) < 0.06 && rnd() < 0.7) ? 0.45 : 0.4 + Math.pow(rnd(), 3) * 1.2;
+    } else if (r < 0.58) {                                 // the bright core, just off centre
+      x = 0.6 + gauss() * 0.75; y = 0.2 + gauss() * 0.38; z = gauss() * 0.45; size = 0.4 + Math.pow(rnd(), 3) * 1.4; accent = 0.55 + rnd() * 0.45;
+    } else if (r < 0.97) {                                 // the halo
       x = (rnd() * 2 - 1) * 5.2; y = (rnd() * 2 - 1) * 3.2; z = (rnd() * 2 - 1) * 2.6 - 0.4; size = 0.35 + Math.pow(rnd(), 4) * 0.9;
-    } else {                                            // bright glints
-      x = (rnd() * 2 - 1) * 4.6; y = (rnd() * 2 - 1) * 2.8; z = (rnd() * 2 - 1) * 1.8; size = 1.3 + rnd() * 0.9;
+    } else {                                               // bright glints
+      x = (rnd() * 2 - 1) * 4.6; y = (rnd() * 2 - 1) * 2.8; z = (rnd() * 2 - 1) * 1.8; size = 1.3 + rnd() * 0.9; accent = 0.9 + rnd() * 0.1;
     }
-    d[o] = rnd(); if (!d[o+1]) d[o+1] = size; d[o+2] = (r >= 0.97 ? 0.9 + rnd() * 0.1 : (r >= 0.46 && r < 0.58 ? 0.55 + rnd() * 0.45 : rnd())); d[o+3] = x; d[o+4] = y; d[o+5] = z;
+    data[o] = rnd(); data[o+1] = size; data[o+2] = accent; data[o+3] = x; data[o+4] = y; data[o+5] = z;
   }
-  const world = makeBuffer(6, worldStar, WORLD_N);
+  const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+  const aS = gl.getAttribLocation(prog, "aS"), aHome = gl.getAttribLocation(prog, "aHome");
+  gl.enableVertexAttribArray(aS); gl.vertexAttribPointer(aS, 3, gl.FLOAT, false, 24, 0);
+  gl.enableVertexAttribArray(aHome); gl.vertexAttribPointer(aHome, 3, gl.FLOAT, false, 24, 12);
 
-  // ---------------------------------------------------------------- the holes: logo and navigation drawn into a mask
-  const logo = document.getElementById("logo"), mark = document.getElementById("mark"), markPath = new Path2D(document.getElementById("markPath").getAttribute("d"));
-  const word = document.getElementById("word"), links = [...document.querySelectorAll("#nav a")];
-  const mc = document.createElement("canvas"), ctx = mc.getContext("2d");
-  const MASK_SCALE = 0.7;
-  const maskTex = gl.createTexture();
-  let header = null;
-  function pill(c, x, y, w, h) { const r = h / 2; c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
-  const spark = document.getElementById("spark"), sparkPath = new Path2D(document.getElementById("sparkPath").getAttribute("d"));
-  function buildMask() {
-    if (hv === "plain") {                                  // nothing to cut out and no stars behind the text
-      if (header) { gl.deleteBuffer(header.buf); gl.deleteVertexArray(header.vao); header = null; }
-      return;
-    }
-    const W = innerWidth, H = innerHeight, hollow = hv === "hollow", mw = Math.ceil(W * MASK_SCALE), mh = Math.ceil(H * MASK_SCALE);
-    mc.width = mw; mc.height = mh;
-    ctx.setTransform(MASK_SCALE, 0, 0, MASK_SCALE, 0, 0);
-    ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H); ctx.fillStyle = "#fff"; ctx.strokeStyle = "#fff"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
-    const items = [];                                      // {r: where it is, cta: uses the accent colour}
-    if (hv !== "caps") {
-      const mr = mark.getBoundingClientRect();
-      ctx.save(); ctx.translate(mr.left, mr.top); ctx.scale(mr.width / 200, mr.height / 170); ctx.fill(markPath); ctx.restore(); items.push({ r: mr });
-    }
-    const wr = word.getBoundingClientRect(), wcs = getComputedStyle(word), size = parseFloat(wcs.fontSize), fam = wcs.fontFamily;
-    const sp = parseFloat(wcs.letterSpacing) || 0, up = wcs.textTransform === "uppercase", yc = wr.top + wr.height / 2;
-    const bRect = word.querySelector("b").getBoundingClientRect();
-    [["Aeolus", 500, wr.left], ["Labs", 700, bRect.left]].forEach(([txt, wt, x0]) => {
-      ctx.font = `${wt} ${size}px ${fam}`; const t2 = up ? txt.toUpperCase() : txt; let x = x0;
-      if (!sp) ctx.fillText(t2, x, yc);
-      else for (const ch of t2) { ctx.fillText(ch, x, yc); x += ctx.measureText(ch).width + sp; }
-    });
-    items.push({ r: wr });
-    links.forEach(a => {
-      if (a.offsetParent === null) return;
-      const r = a.getBoundingClientRect(), cs = getComputedStyle(a), cta = a.classList.contains("cta");
-      const tn = [...a.childNodes].reverse().find(n => n.nodeType === 3), rg = document.createRange(); rg.selectNodeContents(tn); const tr = rg.getBoundingClientRect();
-      ctx.font = `600 ${cs.fontSize} ${cs.fontFamily}`; ctx.fillText(tn.textContent, tr.left, tr.top + tr.height / 2);
-      ctx.lineWidth = 1.1; ctx.strokeText(tn.textContent, tr.left, tr.top + tr.height / 2);
-      if (cta && !hollow) { const sr = spark.getBoundingClientRect(); ctx.save(); ctx.translate(sr.left + sr.width / 2, sr.top + sr.height / 2); ctx.scale(sr.width / 20, sr.height / 20); ctx.fill(sparkPath); ctx.restore(); }
-      if (cta && hollow) { ctx.lineWidth = 2; pill(ctx, r.left + 1, r.top + 1, r.width - 2, r.height - 2); ctx.stroke(); }
-      items.push({ r, cta });
-    });
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, maskTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mc);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    if (header) { gl.deleteBuffer(header.buf); gl.deleteVertexArray(header.vao); }
-    rs = 777;
-    if (hollow) {
-      // Hollow: dense stars hugging each element, so the holes have something to be a hole in.
-      const rects = items.map(i => i.r), sum = rects.reduce((q, r) => q + r.width * r.height, 0), total = Math.min(22000, Math.round(sum / 1.5));
-      const pick = () => { let t = rnd() * sum; for (const r of rects) { t -= r.width * r.height; if (t <= 0) return r; } return rects[0]; };
-      header = makeBuffer(6, (d, o) => {
-        const r = pick(), px = r.left + rnd() * r.width + gauss() * 6, py = r.top + rnd() * r.height + gauss() * 5;
-        d[o] = rnd(); d[o+1] = 0.3 + Math.pow(rnd(), 2) * 0.55; d[o+2] = rnd() * 0.78; d[o+3] = px / innerWidth * 2 - 1; d[o+4] = 1 - py / innerHeight * 2; d[o+5] = 0;
-      }, total);
-      return;
-    }
-    // Built from stars: place bright stars on the ink of every letter, so the stars themselves are the logo and the menu.
-    const px = ctx.getImageData(0, 0, mw, mh).data, stars = [];
-    items.forEach(({ r, cta }) => {
-      const x0 = Math.max(0, Math.floor(r.left * MASK_SCALE) - 1), x1 = Math.min(mw, Math.ceil(r.right * MASK_SCALE) + 1);
-      const y0 = Math.max(0, Math.floor(r.top * MASK_SCALE) - 1), y1 = Math.min(mh, Math.ceil(r.bottom * MASK_SCALE) + 1), ink = [];
-      for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) if (px[(yy * mw + xx) * 4] > 110) ink.push(xx, yy);
-      const n = Math.min(5000, Math.round(ink.length / 2 / (MASK_SCALE * MASK_SCALE) * 1.7));
-      for (let k = 0; k < n && ink.length; k++) { const i = Math.floor(rnd() * (ink.length / 2)) * 2; stars.push([(ink[i] + rnd()) / MASK_SCALE, (ink[i + 1] + rnd()) / MASK_SCALE, cta ? 1 : 0]); }
-    });
-    header = makeBuffer(6, (d, o, i) => { const st = stars[i];
-      d[o] = rnd(); d[o+1] = 0.42 + Math.pow(rnd(), 2) * 0.4; d[o+2] = st[2] ? 0.9 + rnd() * 0.1 : rnd() * 0.75;
-      d[o+3] = st[0] / innerWidth * 2 - 1; d[o+4] = 1 - st[1] / innerHeight * 2; d[o+5] = 0; }, stars.length);
-  }
-
-  // ---------------------------------------------------------------- matrices, pointer, loop
+  // ---------------------------------------------------------------- camera, pointer, colours
   const persp = (fovy, a, n, f) => { const t = 1/Math.tan(fovy/2), nf = 1/(n-f); return [t/a,0,0,0, 0,t,0,0, 0,0,(f+n)*nf,-1, 0,0,2*f*n*nf,0]; };
   const mul = (a, b) => { const o = new Array(16).fill(0); for (let c=0;c<4;c++) for (let r=0;r<4;r++) for (let k=0;k<4;k++) o[c*4+r] += a[k*4+r]*b[c*4+k]; return o; };
   const rotZ = a => { const c=Math.cos(a), s=Math.sin(a); return [c,s,0,0, -s,c,0,0, 0,0,1,0, 0,0,0,1]; };
@@ -287,11 +164,9 @@
     dpr = Math.min(devicePixelRatio || 1, DPR_CAP); w = Math.max(1, Math.floor(canvas.clientWidth * dpr)); h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; } gl.viewport(0, 0, w, h);
   }
-  let rt = 0; addEventListener("resize", () => { resize(); clearTimeout(rt); rt = setTimeout(buildMask, 120); }); resize();
-  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(buildMask);
-  buildMask();
+  addEventListener("resize", resize); resize();
 
-  // Pointer: strength eases in and out; touch reaches further and pushes a little harder than a mouse, toned down 25 percent.
+  // Pointer strength eases in and out; touch reaches further and pushes a little harder than a mouse (toned down by a quarter).
   const ptr = { x: 0, y: 0, tx: 0, ty: 0, str: 0, target: 0, touch: false };
   const setPtr = e => { const r = canvas.getBoundingClientRect(); ptr.touch = e.pointerType === "touch";
     ptr.tx = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.ty = -(((e.clientY - r.top) / r.height) * 2 - 1);
@@ -300,31 +175,20 @@
   addEventListener("pointermove", setPtr); addEventListener("pointerdown", setPtr); addEventListener("pointerup", release); addEventListener("pointercancel", release);
   document.addEventListener("pointerleave", release);
 
-  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); gl.clearColor(0, 0, 0, 1);
-  gl.uniform1i(u.uMask, 0); gl.uniform1i(u.uWedge, useWedge ? 1 : 0);
   const picker = document.getElementById("picker");
   function applyPalette() {
-    const r = document.documentElement.style;
-    r.setProperty("--bg", pal.bg); r.setProperty("--star", pal.star); r.setProperty("--accent", pal.accent);
+    const r = document.documentElement.style; r.setProperty("--bg", pal.bg); r.setProperty("--star", pal.star); r.setProperty("--accent", pal.accent);
     const b = hex(pal.bg); gl.clearColor(b[0], b[1], b[2], 1);
     gl.uniform3fv(u.uStar, hex(pal.star)); gl.uniform3fv(u.uAccent, hex(pal.accent));
     picker.querySelectorAll("button").forEach(btn => btn.setAttribute("aria-pressed", String(btn.dataset.id === pal.id)));
     try { localStorage.setItem("aeolus-first-screen-palette", pal.id); } catch (e) {}
   }
-  const applyStyle = () => {
-    document.body.classList.remove("v-plain", "v-built", "v-caps", "v-hollow"); document.body.classList.add("v-" + hv);
-    picker.querySelectorAll("button[data-style]").forEach(btn => btn.setAttribute("aria-pressed", String(btn.dataset.style === hv)));
-    gl.uniform1f(u.uHollow, hv === "hollow" ? 1 : 0); gl.uniform1f(u.uBoost, 1);
-    try { localStorage.setItem("aeolus-first-screen-header", hv); } catch (e) {}
-    requestAnimationFrame(() => requestAnimationFrame(buildMask));
-  };
   PALETTES.forEach(p => { const b = document.createElement("button"); b.type = "button"; b.dataset.id = p.id;
     b.innerHTML = `<i aria-hidden="true"><span style="background:${p.bg}"></span><span style="background:${p.star}"></span><span style="background:${p.accent}"></span></i>`;
     b.append(p.name); b.addEventListener("click", () => { pal = p; applyPalette(); }); picker.append(b); });
-  const lab = document.createElement("div"); lab.className = "picker-label"; lab.textContent = "Logo and menu style"; picker.append(lab);
-  STYLES.forEach(st => { const b = document.createElement("button"); b.type = "button"; b.dataset.style = st.id; b.textContent = st.name;
-    b.addEventListener("click", () => { hv = st.id; applyStyle(); }); picker.append(b); });
-  applyPalette(); applyStyle();
+
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); gl.uniform1i(u.uWedge, useWedge ? 1 : 0);
+  applyPalette();
 
   let t = 0, last = performance.now(), rx = 0, ry = 0;
   function frame(now) {
@@ -336,14 +200,11 @@
     const aspect = w / h, dist = 4.4;
     const MV = mul(trans(0, 0, -dist), mul(rotX(rx), mul(rotY(ry), rotZ(t * 0.006))));
     gl.uniformMatrix4fv(u.uMV, false, MV); gl.uniformMatrix4fv(u.uP, false, persp(0.8, aspect, 0.1, 30));
-    gl.uniform1f(u.uTime, t); gl.uniform1f(u.uDpr, dpr); gl.uniform1f(u.uSize, (h / 900 > 0.7 ? 2.7 : 2.3));
+    gl.uniform1f(u.uTime, t); gl.uniform1f(u.uDpr, dpr); gl.uniform1f(u.uSize, h / 900 > 0.7 ? 2.7 : 2.3);
     gl.uniform1f(u.uFocus, dist); gl.uniform1f(u.uMotion, motion); gl.uniform1f(u.uAspect, aspect);
     gl.uniform2f(u.uPointer, ptr.x, ptr.y); gl.uniform1f(u.uPush, ptr.str);
     gl.uniform1f(u.uRadius, ptr.touch ? 0.465 : 0.38); gl.uniform1f(u.uAmt, ptr.touch ? 0.12 : 0.08);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, maskTex);
-    gl.uniform1f(u.uScreen, 0); gl.bindVertexArray(world.vao); gl.drawArrays(gl.POINTS, 0, world.n);
-    if (header) { gl.uniform1f(u.uScreen, 1); gl.bindVertexArray(header.vao); gl.drawArrays(gl.POINTS, 0, header.n); }
+    gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, N);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
