@@ -1,0 +1,60 @@
+/* Contact page of the new site. Everything is scoped under .np and uses np-contact-* names. */
+.np .np-contact { display: flex; flex-direction: column; align-items: flex-start; max-width: 44rem; margin-inline: auto; padding-inline: 16px; box-sizing: border-box; width: 100%; min-width: 0; }
+.np .np-contact > .np-lead { margin-bottom: 28px; }
+.np .np-contact-card { width: 100%; box-sizing: border-box; padding: clamp(16px, 4vw, 32px); border: 1px solid color-mix(in srgb, var(--np-star) 18%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--np-bg) 55%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+
+.np .np-contact-form, .np .np-contact-panel, .np .np-contact-assistant, .np .np-contact-chat { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.np .np-contact-pair { display: grid; grid-template-columns: 1fr; gap: 18px; }
+@media (min-width: 640px) { .np .np-contact-pair { grid-template-columns: 1fr 1fr; } }
+.np .np-contact-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.np .np-contact-field > label, .np .np-contact-consent label { font-family: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; color: var(--np-star); margin: 0; }
+.np .np-contact-optional { font-size: 14px; font-weight: 400; color: var(--np-deep); margin-left: 6px; }
+
+.np .np-contact input:not([type='checkbox']), .np .np-contact select, .np .np-contact textarea { box-sizing: border-box; width: 100%; min-height: 44px; margin: 0; padding: 10px 12px; font-family: inherit; font-size: 16px; font-weight: 400; line-height: 1.4; color: var(--np-star); background: color-mix(in srgb, var(--np-bg) 70%, transparent); border: 1px solid color-mix(in srgb, var(--np-star) 40%, transparent); border-radius: 10px; }
+.np .np-contact textarea { resize: vertical; min-height: 140px; }
+.np .np-contact select option { color: #111; background: #fff; }
+.np .np-contact input::placeholder, .np .np-contact textarea::placeholder { color: var(--np-deep); opacity: 1; }
+.np .np-contact input[aria-invalid='true'], .np .np-contact textarea[aria-invalid='true'] { border-color: #ffb4a2; }
+
+.np .np-contact input:focus-visible, .np .np-contact select:focus-visible, .np .np-contact textarea:focus-visible,
+.np .np-contact button:focus-visible, .np .np-contact a:focus-visible, .np .np-contact-log:focus-visible, .np .np-contact-draft:focus-visible { outline: 3px solid var(--np-accent); outline-offset: 2px; }
+
+.np .np-contact-consent { display: flex; align-items: flex-start; gap: 12px; }
+.np .np-contact-consent input[type='checkbox'] { flex: none; width: 24px; height: 24px; margin: 10px 0 0; accent-color: var(--np-accent); }
+.np .np-contact-consent label { min-height: 44px; padding-block: 10px; font-weight: 400; box-sizing: border-box; }
+
+.np .np-contact-hint, .np .np-contact-note { margin: 0; font-family: inherit; font-size: 14px; font-weight: 400; line-height: 1.5; color: var(--np-star); opacity: .85; }
+.np .np-contact-error { margin: 0; font-family: inherit; font-size: 15px; font-weight: 500; line-height: 1.4; color: #ffb4a2; }
+.np .np-contact-error::before { content: 'Error: '; font-weight: 700; }
+.np .np-contact-error--form { padding: 10px 12px; border: 1px solid #ffb4a2; border-radius: 10px; }
+
+.np .np-contact-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.np .np-contact-btn { min-height: 44px; min-width: 44px; border: 0; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: 600; }
+.np .np-contact-btn:disabled { opacity: .6; cursor: not-allowed; }
+.np .np-contact-textbtn { min-height: 44px; padding: 0 4px; margin: 0; background: none; border: 0; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; color: var(--np-accent); text-decoration: underline; text-underline-offset: 3px; }
+.np .np-contact-textbtn:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Anti-spam trap: out of sight, out of the tab order, ignored by screen readers. */
+.np .np-contact-trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+.np .np-contact-done { display: flex; flex-direction: column; gap: 14px; }
+.np .np-contact-done-title { margin: 0; font-family: inherit; font-size: 22px; font-weight: 600; line-height: 1.25; color: var(--np-star); }
+
+.np .np-contact-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+.np .np-contact-switch button, .np .np-contact-starters button { min-height: 44px; padding: 8px 16px; margin: 0; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: 500; line-height: 1.3; color: var(--np-star); background: transparent; border: 1px solid color-mix(in srgb, var(--np-star) 40%, transparent); border-radius: 999px; text-align: left; }
+.np .np-contact-switch button[aria-pressed='true'] { color: var(--np-bg); background: var(--np-accent); border-color: var(--np-accent); }
+.np .np-contact-starters { display: flex; flex-wrap: wrap; gap: 8px; }
+.np .np-contact-starters button:disabled { opacity: .6; cursor: not-allowed; }
+
+.np .np-contact-log { display: flex; flex-direction: column; gap: 14px; max-height: 22rem; overflow-y: auto; padding: 14px; border: 1px solid color-mix(in srgb, var(--np-star) 25%, transparent); border-radius: 10px; }
+.np .np-contact-turn { display: flex; flex-direction: column; gap: 4px; }
+.np .np-contact-turn p { margin: 0; font-family: inherit; font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--np-star); overflow-wrap: anywhere; }
+.np .np-contact-turn--you p { color: var(--np-accent); }
+.np .np-contact-who { font-family: inherit; font-size: 14px; font-weight: 600; color: var(--np-deep); }
+.np .np-contact-draft { margin: 0 0 18px; padding: 12px 14px; font-family: inherit; font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--np-star); border: 1px solid var(--np-accent); border-radius: 10px; }
+
+.np .np-contact-email { margin: 28px 0 0; font-family: inherit; font-size: 18px; font-weight: 400; line-height: 1.4; color: var(--np-star); overflow-wrap: anywhere; }
+.np .np-contact-next { margin-top: 32px; width: 100%; }
+.np .np-contact-next h2 { margin: 0 0 10px; font-family: inherit; font-size: 20px; font-weight: 600; line-height: 1.3; color: var(--np-star); }
+.np .np-contact-next ol { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 6px; }
+.np .np-contact-next li { font-family: inherit; font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--np-star); }
