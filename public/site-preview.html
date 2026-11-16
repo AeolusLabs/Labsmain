@@ -31,7 +31,7 @@
   main { position:relative; z-index:1; }
   .panel { height:var(--sec); position:relative; padding:0 clamp(20px, 6vw, 88px); display:flex; }
   .panel:last-child { height:calc(var(--vh) * 100); }
-  .copy { margin-top:calc(var(--vh) * 50 - 130px); max-width:34rem; opacity:0; transform:translateY(18px); will-change:opacity, transform; text-shadow:0 0 18px var(--bg), 0 0 4px var(--bg); }
+  .copy { margin-top:calc(var(--vh) * 50 - 130px); max-width:min(34rem, 40vw); opacity:0; transform:translateY(18px); will-change:opacity, transform; text-shadow:0 0 18px var(--bg), 0 0 4px var(--bg); }
   .panel.right { justify-content:flex-end; }
   .kicker { margin:0 0 .8rem; font-size:13px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); }
   h1, h2 { margin:0 0 1rem; font-weight:500; letter-spacing:-.03em; line-height:1.04; }
@@ -144,7 +144,7 @@
   // The story: one shape per section. Index in FORMS is the id the shader sees.
   const FORMS = ["sky", "brain", "agent", "cube", "bulb"];
   const SEQ = ["sky", "brain", "agent", "cube", "bulb", "sky"];
-  const OFFX = [0, -1.0, 1.0, -1.0, 1.0, 0];                // wide screens: the shape sits opposite the words
+  const OFFX = [0, -0.5, 0.5, -0.5, 0.5, 0];                // wide screens: the shape sits opposite the words (a share of half the screen width)
 
   // ---------------------------------------------------------------- shaders
   const VS = `#version 300 es
@@ -315,22 +315,28 @@
     return { p, n, cell, cid };
   }
 
-  // The agent diagram: a small brain at the centre, wired to a ring of eight connected tools and four outer hubs.
-  const AG = 0.5;                                          // overall size of the diagram
-  const NODES = [...Array(8)].map((_, k) => [Math.sin(k / 8 * TAU) * 1.55 * AG * 1.15, Math.cos(k / 8 * TAU) * 1.55 * AG]);
-  const HUBS = [[0, 2.35], [2.85, 0], [0, -2.35], [-2.85, 0]].map(h => [h[0] * AG, h[1] * AG]);
+  // The agent diagram: a small brain in the middle, wired to a ring of eight tools and four outer hubs.
+  // Thin, evenly dotted lines (the points are shared out by line length), small tidy balls for the tools, and it all sits inside a radius of about 1.7.
+  const NODES = [...Array(8)].map((_, k) => [Math.sin(k / 8 * TAU) * 1.0, Math.cos(k / 8 * TAU) * 0.95]);
+  const HUBS = [[0, 1.55], [1.7, 0], [0, -1.55], [-1.7, 0]];
+  const SEGS = []; let segTotal = 0;
+  const addSeg = (kind, a, b, len) => { SEGS.push({ kind, a, b, len, from: segTotal }); segTotal += len; };
+  for (let k = 0; k < 8; k++) { const a = NODES[k], b = NODES[(k + 1) % 8]; addSeg("line", a, b, Math.hypot(b[0] - a[0], b[1] - a[1])); }                    // ring between the tools
+  for (let k = 0; k < 8; k++) { const nd = NODES[k], l = Math.hypot(nd[0], nd[1]); addSeg("line", [nd[0] / l * 0.55, nd[1] / l * 0.55], nd, l - 0.55); }       // spokes into the brain
+  for (let h = 0; h < 4; h++) { const nd = NODES[h * 2], hub = HUBS[h]; addSeg("line", nd, hub, Math.hypot(hub[0] - nd[0], hub[1] - nd[1])); }                // each hub wired to a tool
+  for (let h = 0; h < 4; h++) addSeg("ring", HUBS[h], null, TAU * 0.17);                                                                                      // hubs as small rings
   function agentPoint(i, surfaceN) {
-    const t = i / surfaceN, n = unit(), z = gauss() * 0.03;
-    const line = (a, b) => { const u2 = rnd(); return [mixf(a[0], b[0], u2), mixf(a[1], b[1], u2), z]; };
-    let p, nn = n, fd = 0;
-    if (t < 0.36 && brain) { const b = brainAt(Math.floor(rnd() * BRAIN_MAX), 0.62 * AG * 1.1); return [b[0], b[1], b[2], b[3], b[4], b[5], b[6]]; }
-    if (t < 0.36) { p = [n[0] * 0.5, n[1] * 0.5, n[2] * 0.5]; }
-    else if (t < 0.48) { const nd = NODES[Math.floor(rnd() * 8)], q = unit(); p = [nd[0] + q[0] * 0.17, nd[1] + q[1] * 0.17, q[2] * 0.17]; nn = q; }          // the eight tools
-    else if (t < 0.64) { const k = Math.floor(rnd() * 8); p = line(NODES[k], NODES[(k + 1) % 8]); }                                                                    // ring between them
-    else if (t < 0.76) { const nd = NODES[Math.floor(rnd() * 8)], l = Math.hypot(nd[0], nd[1]); p = line([nd[0] / l * 0.62, nd[1] / l * 0.62, 0], nd); }               // spokes into the brain
-    else if (t < 0.84) { const h = Math.floor(rnd() * 4), nd = NODES[h * 2], hub = HUBS[h]; p = line(nd, hub); }                                                       // each hub is wired to a tool
-    else { const h = HUBS[Math.floor(rnd() * 4)], a = rnd() * TAU; p = [h[0] + Math.cos(a) * 0.3, h[1] + Math.sin(a) * 0.3, z]; }                                      // hubs as small rings
-    return [p[0], p[1], p[2], nn[0], nn[1], nn[2], fd];
+    const t = i / surfaceN, n = unit(), z = gauss() * 0.02;
+    if (t < 0.2) {                                         // the brain at the centre
+      if (brain) { const b = brainAt(Math.floor(rnd() * BRAIN_MAX), 0.5); return [b[0], b[1], b[2], b[3], b[4], b[5], b[6]]; }
+      return [n[0] * 0.45, n[1] * 0.45, n[2] * 0.45, n[0], n[1], n[2], 0.2];
+    }
+    if (t < 0.31) { const nd = NODES[Math.floor(rnd() * 8)], q = unit(), r = 0.1 * Math.cbrt(rnd()); return [nd[0] + q[0] * r, nd[1] + q[1] * r, q[2] * r, q[0], q[1], q[2], 0.05]; }   // the eight tools
+    let r = rnd() * segTotal, seg = SEGS[SEGS.length - 1];
+    for (const sg of SEGS) if (r <= sg.from + sg.len) { seg = sg; break; }
+    if (seg.kind === "ring") { const a = rnd() * TAU; return [seg.a[0] + Math.cos(a) * 0.17, seg.a[1] + Math.sin(a) * 0.17, z, n[0], n[1], n[2], 0.3]; }
+    const u2 = rnd(), j = (rnd() - 0.5) * 0.02;
+    return [mixf(seg.a[0], seg.b[0], u2) + j, mixf(seg.a[1], seg.b[1], u2) + j, z, n[0], n[1], n[2], 0.3];
   }
 
   // One block of per-particle data per shape: home xyz, normal xyz + foldedness, cube cell xyz, colour = 11 floats.
@@ -521,7 +527,8 @@
 
     // camera: where the shape sits and how it turns blend with the scroll
     const wide = innerWidth >= 760, aspect = w / h, dist = 4.4 * Math.max(1, 1.25 / aspect);
-    const offX = wide ? mixf(OFFX[i], OFFX[i + 1], m) : 0, offY = wide ? 0 : (curA === "sky" && curB === "sky" ? 0 : 0.75) * 1;
+    const halfW = dist * Math.tan(0.4) * aspect, fit = Math.min(1, 0.42 * halfW / 1.5);
+    const offX = wide ? mixf(OFFX[i], OFFX[i + 1], m) * halfW : 0, offY = wide ? 0 : (curA === "sky" && curB === "sky" ? 0 : 0.75) * 1;
     const skyMix = (curA === "sky" ? 1 - m : 0) + (curB === "sky" ? m : 0);                  // 1 when the sky is showing
     const tgtY = wide ? 0 : mixf(0.75, 0, skyMix);
     ox += (offX - ox) * 0.12; oy += (tgtY - oy) * 0.12;
@@ -530,7 +537,8 @@
     ry += ((mixf(spinOf(curA), spinOf(curB), m) + px * 0.2) - ry) * 0.05;
     rx += ((Math.sin(t * 0.05) * 0.06 + py * 0.1 + mixf(tiltOf(curA), tiltOf(curB), m)) - rx) * 0.05;
     const size = k => k === "sky" ? 3.0 : 4.6;
-    const MV = mul(trans(ox, oy, -dist), mul(rotX(rx), mul(rotY(ry), rotZ(skyMix * t * 0.006))));
+    const sc = skyMix + (1 - skyMix) * (wide ? fit : Math.min(1, 0.9 * halfW / 1.5));       // the sky fills the screen; shapes shrink to fit narrow ones
+    const MV = mul(trans(ox, oy, -dist), mul([sc,0,0,0, 0,sc,0,0, 0,0,sc,0, 0,0,0,1], mul(rotX(rx), mul(rotY(ry), rotZ(skyMix * t * 0.006)))));
     gl.uniformMatrix4fv(u.uMV, false, MV); gl.uniformMatrix4fv(u.uP, false, persp(0.8, aspect, 0.1, 30));
     gl.uniform1f(u.uMorph, m); gl.uniform1f(u.uFormA, FORMS.indexOf(curA)); gl.uniform1f(u.uFormB, FORMS.indexOf(curB));
     gl.uniform3f(u.uMove, cube.mv[0], cube.mv[1], cube.mv[2]);
