@@ -63,6 +63,7 @@
   uniform vec3 uMove;                                    // cube turn: axis index, layer coordinate, angle (radians)
   uniform float uTime, uDpr, uSize, uFocus, uMotion, uAspect;
   uniform vec2 uPointer;
+  uniform float uPush, uRadius, uAmt;                    // pointer strength, reach and push distance (touch gets more)
   out vec3 vCol; out float vAlpha, vSoft, vRot;
   vec3 rotAxis(vec3 v, float ax, float a){
     float c = cos(a), sn = sin(a);
@@ -87,9 +88,9 @@
     vec2 ndc = clip.xy / clip.w;
     vec2 d = ndc - uPointer; d.x *= uAspect;
     float dist = length(d);
-    float push = smoothstep(0.38, 0.0, dist) * uMotion;
+    float push = smoothstep(uRadius, 0.0, dist) * uMotion * uPush;
     vec2 dir = d / (dist + 1e-4); dir.x /= uAspect;
-    ndc += dir * push * 0.08;
+    ndc += dir * push * uAmt;
     gl_Position = vec4(ndc * clip.w, clip.z, clip.w);
     float depth = -mv.z;
     float blur = clamp(abs(depth - uFocus) / uFocus * 1.3, 0.0, 1.0);
@@ -160,7 +161,7 @@
   gl.useProgram(prog);
   const U = n => gl.getUniformLocation(prog, n);
   const u = { mv:U("uMV"), p:U("uP"), time:U("uTime"), dpr:U("uDpr"), size:U("uSize"), focus:U("uFocus"),
-              motion:U("uMotion"), aspect:U("uAspect"), pointer:U("uPointer"), shape:U("uShape"), form:U("uForm"), cube:U("uCube"), move:U("uMove") };
+              motion:U("uMotion"), aspect:U("uAspect"), pointer:U("uPointer"), shape:U("uShape"), form:U("uForm"), cube:U("uCube"), move:U("uMove"), push:U("uPush"), radius:U("uRadius"), amt:U("uAmt") };
 
   const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
   const buf = gl.createBuffer();
@@ -333,13 +334,20 @@
   }
   addEventListener("resize", resize); resize();
 
-  const ptr = { x: 9, y: 9, tx: 9, ty: 9 };         // off-screen until the pointer arrives
+  // Pointer strength eases in and out instead of jumping, so a finger lifting leaves a fading ripple at the last
+  // touch point. A finger covers the cloud and moves in short strokes, so touch gets a wider reach and a firmer push.
+  const ptr = { x: 0, y: 0, tx: 0, ty: 0, str: 0, target: 0, touch: false };
   const setPtr = e => { const r = canvas.getBoundingClientRect();
-    ptr.tx = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.ty = -(((e.clientY - r.top) / r.height) * 2 - 1); };
+    ptr.touch = e.pointerType === "touch";
+    ptr.tx = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.ty = -(((e.clientY - r.top) / r.height) * 2 - 1);
+    if (ptr.target === 0 || e.type === "pointerdown") { ptr.x = ptr.tx; ptr.y = ptr.ty; }   // arrive at the finger, do not sweep in
+    ptr.target = 1; };
+  const release = () => { ptr.target = 0; };
   canvas.addEventListener("pointermove", setPtr);
   canvas.addEventListener("pointerdown", setPtr);
-  canvas.addEventListener("pointerleave", () => { ptr.tx = 9; ptr.ty = 9; });
-  canvas.addEventListener("pointerup", e => { if (e.pointerType === "touch") { ptr.tx = 9; ptr.ty = 9; } });
+  canvas.addEventListener("pointerleave", release);
+  canvas.addEventListener("pointerup", release);
+  canvas.addEventListener("pointercancel", release);
 
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
   gl.clearColor(0.039, 0.067, 0.086, 1);
@@ -373,8 +381,10 @@
         count.toLocaleString() + " pts · dpr " + dpr.toFixed(2) + " · " + gpu.replace(/ANGLE \(|, .*$/g, "");
       stat.textContent = shown; acc = 0; frames = 0; worst = 0;
     }
-    ptr.x += (ptr.tx - ptr.x) * 0.12; ptr.y += (ptr.ty - ptr.y) * 0.12;
-    const px = Math.max(-1, Math.min(1, ptr.x)), py = Math.max(-1, Math.min(1, ptr.y));
+    const follow = ptr.touch ? 0.35 : 0.12;
+    ptr.x += (ptr.tx - ptr.x) * follow; ptr.y += (ptr.ty - ptr.y) * follow;
+    ptr.str += (ptr.target - ptr.str) * (ptr.target > ptr.str ? 0.4 : 0.05);
+    const px = Math.max(-1, Math.min(1, ptr.x)) * ptr.str, py = Math.max(-1, Math.min(1, ptr.y)) * ptr.str;
     // The brain and bulb sway so they stay readable; the cloud drifts round; the cube turns fully.
     const kind = kindOf(), spin = kind === "cube" ? 0.7 + Math.sin(t * 0.3) * 0.45 : (kind === "cloud" ? t * 0.07 : Math.sin(t * 0.22) * 0.5);
     ry += ((spin + px * 0.28) - ry) * 0.05;
@@ -386,7 +396,7 @@
     gl.uniformMatrix4fv(u.mv, false, MV); gl.uniformMatrix4fv(u.p, false, P);
     gl.uniform1f(u.time, t); gl.uniform1f(u.dpr, dpr); gl.uniform1f(u.size, (form ? 4.6 : 7.0) * (h / 900 > 0.7 ? 1 : 0.85));
     gl.uniform1f(u.focus, dist); gl.uniform1f(u.motion, motion); gl.uniform1f(u.aspect, aspect);
-    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1i(u.shape, shape); gl.uniform1f(u.form, form); gl.uniform1f(u.cube, kindOf() === "cube" ? 1 : 0); gl.uniform3f(u.move, cube.mv[0], cube.mv[1], cube.mv[2]);
+    gl.uniform2f(u.pointer, ptr.x, ptr.y); gl.uniform1f(u.push, ptr.str); gl.uniform1f(u.radius, ptr.touch ? 0.62 : 0.38); gl.uniform1f(u.amt, ptr.touch ? 0.16 : 0.08); gl.uniform1i(u.shape, shape); gl.uniform1f(u.form, form); gl.uniform1f(u.cube, kindOf() === "cube" ? 1 : 0); gl.uniform3f(u.move, cube.mv[0], cube.mv[1], cube.mv[2]);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.POINTS, 0, count);
     requestAnimationFrame(frame);
