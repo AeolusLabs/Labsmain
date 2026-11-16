@@ -1,0 +1,11 @@
+brain-points.bin is a point sample of a 3D brain mesh, resampled by AeolusLabs (scripts/bake-brain-points.mjs).
+
+Source model: "Brain" by dgallichan (https://sketchfab.com/dgallichan)
+Original: https://sketchfab.com/3d-models/brain-cadd2bde67404c43b2359a6a3281d84a
+Distributed via NIH 3D: "Detailed Human Brain Model (3D)", entry 3DPX-021161, v1.01, by Johnson J
+https://3d.nih.gov/entries/21161/1.01
+Licence: Creative Commons Attribution 4.0 International (https://creativecommons.org/licenses/by/4.0/)
+
+Changes made: the mesh was converted to a random surface point sample, recentred and rescaled. No endorsement by the authors is implied.
+
+Credit is required wherever this data is published. Add visible credit to the site before release.
