@@ -37,14 +37,10 @@ export const PALETTES: readonly Palette[] = [
  *     <Panel>...</Panel>                       -> <section data-np-panel="story"> <div data-np-copy>...</div> </section>
  *     <Panel flow>...</Panel>                  -> <section data-np-panel="flow">  <div class="np-flow">...</div> </section>
  *   </Story>
- *   <ParticleStage scenes={[...]} />           one scene per panel, in order
+ *   <ParticleStage />                          reads each panel's data-np-scene (Panel scene="brain"), so nothing has to be kept in step
  *
  * - A "story" panel is a full section whose words fade in and out and sit opposite (desktop) or below (phone) the shape.
- * - A "flow" panel is ordinary scrolling content (cards, images, lists). The stage does not fade or measure it; the
- *   shape stays where the previous panel's scene left it, so give flow panels the scene 'sky'.
+ * - A "flow" panel is ordinary scrolling content (cards, images, lists). The stage does not fade it; give flow panels the scene 'sky'.
  * - The stage measures the real top of every panel, so panels may have different heights.
- * - ParticleStage with scenes={['sky']} and no <Story> is an ambient sky for plain pages (contact, privacy, case studies).
+ * - A page with no <Story>, or with <Story still>, gets a calm ambient sky and no scroll work (contact, privacy, case studies, work, about, what we do).
  */
-export const STORY_ATTR = 'data-np-story'
-export const PANEL_ATTR = 'data-np-panel'
-export const COPY_ATTR = 'data-np-copy'

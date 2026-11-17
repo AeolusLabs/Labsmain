@@ -10,8 +10,8 @@ export const metadata: Metadata = { title: 'Work', description: 'Things we built
 
 export default function WorkPage() {
   return <>
-    <ParticleStage scenes={['sky', 'sky', 'sky', 'sky']} />
-    <Story>
+    <ParticleStage />
+    <Story still>
       <Panel flow>
         <div className="np-work-head np-work-beat">
           <div className="np-work-words">

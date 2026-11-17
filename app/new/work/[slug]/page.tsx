@@ -25,7 +25,7 @@ export default async function CasePage({ params }: { params: Promise<Params> }) 
   const p = projects.find(x => x.slug === slug)
   if (!p) notFound()
   return <div className="np-page">
-    <ParticleStage scenes={['sky']} />
+    <ParticleStage />
     <article className="np-case">
       <div className="np-case-words">
         <h1 className="np-h1">{p.name}</h1>

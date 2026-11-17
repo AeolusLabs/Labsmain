@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { MAX_USER_CHARS } from '@/lib/brief-assistant-limits'
+import { SendError } from './send-error'
 
 type Message = { role: 'user' | 'assistant'; content: string }
 export type Draft = { brief: string; need: string }
@@ -35,8 +36,8 @@ export function ContactAssistant({ onDraft }: { onDraft: (draft: Draft) => void 
     setBusy(true)
     try {
       const response = await fetch('/api/brief', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: next, finish }) })
-      const result = await response.json()
-      if (!response.ok) throw new Error(result.error || 'Something went wrong. You can use the form instead.')
+      const result = await response.json().catch(() => null)   // an error page is not JSON: never show its parser message
+      if (!response.ok || !result) throw new SendError(result?.error || 'Something went wrong. You can use the form instead.')
       if (result.type === 'brief') {
         setMessages([...next, { role: 'assistant', content: result.message }])
         onDraft({ brief: result.brief, need: result.need })
@@ -47,7 +48,7 @@ export function ContactAssistant({ onDraft }: { onDraft: (draft: Draft) => void 
       // Put things back as they were so the visitor can simply press Send again.
       setMessages(messages)
       setInput(content)
-      setError(caught instanceof Error ? caught.message : 'Something went wrong. You can use the form instead.')
+      setError(caught instanceof SendError ? caught.message : 'Something went wrong. You can use the form instead.')
     } finally {
       setBusy(false)
     }

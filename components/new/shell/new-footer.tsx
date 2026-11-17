@@ -1,24 +1,16 @@
 import Link from 'next/link'
-import { brainCredit } from '../content'
+import { brainCredit, footerLinks } from '../content'
 import { MotionToggle } from './motion-toggle'
-
-const links = [
-  { label: 'Work', href: '/new/work' },
-  { label: 'What we do', href: '/new/what-we-do' },
-  { label: 'About', href: '/new/about' },
-  { label: 'Contact', href: '/new/contact' },
-  { label: 'Privacy', href: '/new/privacy' },
-]
 
 export function NewFooter() {
   return (
     <footer className="np-foot">
       <span>© AeolusLabs. AI products &amp; automation. Built in Nigeria.</span>
       <nav className="np-foot-nav" aria-label="Footer navigation">
-        {links.map(l => <Link key={l.href} href={l.href}>{l.label}</Link>)}
+        {footerLinks.map(l => <Link key={l.href} href={l.href}>{l.label}</Link>)}
       </nav>
       <MotionToggle />
-      <span className="np-credit"><a href={brainCredit.sourceUrl} rel="noopener noreferrer">“Brain”</a> by dgallichan on Sketchfab, via <a href={brainCredit.nihUrl} rel="noopener noreferrer">NIH 3D</a> (Johnson J). Changed into a point sample. Licence: <a href={brainCredit.licenceUrl} rel="noopener noreferrer">{brainCredit.licence}</a>.</span>
+      <span className="np-credit"><a href={brainCredit.sourceUrl} rel="noopener noreferrer">{brainCredit.title}</a> by {brainCredit.author} on {brainCredit.platform}, via <a href={brainCredit.hostUrl} rel="noopener noreferrer">{brainCredit.host}</a> ({brainCredit.hostAuthor}). {brainCredit.change} Licence: <a href={brainCredit.licenceUrl} rel="noopener noreferrer">{brainCredit.licence}</a>.</span>
     </footer>
   )
 }

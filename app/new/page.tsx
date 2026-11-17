@@ -18,21 +18,21 @@ export default function NewHome() {
           <h1 id="np-t1" className="np-h1">AI-powered products.<br />Business <em>automation.</em></h1>
           <p className="np-lead">We build AI-powered products and automation systems for businesses across Africa and beyond.</p>
         </Panel>
-        <Panel side="right" labelledBy="np-t2">
+        <Panel side="right" scene="brain" labelledBy="np-t2">
           <p className="np-kicker">Intelligence</p>
           <h2 id="np-t2" className="np-h2">Smart businesses use intelligent systems that help improve efficiency.</h2>
         </Panel>
-        <Panel labelledBy="np-t3">
+        <Panel scene="agent" labelledBy="np-t3">
           <p className="np-kicker">Agentic systems</p>
           <h2 id="np-t3" className="np-h2">We build agentic AI systems.</h2>
           <p className="np-lead">They connect to the systems we build, or plug into the ones your business already runs on.</p>
           <ul className="np-dots-list">{tools.map(t => <li key={t}>{t}</li>)}</ul>
         </Panel>
-        <Panel side="right" labelledBy="np-t4">
+        <Panel side="right" scene="cube" labelledBy="np-t4">
           <p className="np-kicker">Simplify</p>
           <h2 id="np-t4" className="np-h2">We help businesses simplify complex processes and problems.</h2>
         </Panel>
-        <Panel labelledBy="np-t5">
+        <Panel scene="bulb" labelledBy="np-t5">
           <p className="np-kicker">Build with us</p>
           <h2 id="np-t5" className="np-h2">Build your own product.</h2>
           <p className="np-lead">Bring your bright ideas to us and we build it.</p>
@@ -79,7 +79,7 @@ export default function NewHome() {
           <a className="np-mail np-link" href={`mailto:${email}`}>{email}</a>
         </Panel>
       </Story>
-      <ParticleStage scenes={['sky', 'brain', 'agent', 'cube', 'bulb', 'sky', 'sky', 'sky', 'sky']} />
+      <ParticleStage />
     </>
   )
 }

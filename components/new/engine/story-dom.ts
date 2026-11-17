@@ -1,3 +1,4 @@
+import type { SceneId } from '../types'
 import { clamp01, ease } from './math'
 
 /**
@@ -8,10 +9,14 @@ import { clamp01, ease } from './math'
 
 const SNAP_CLASS = 'np-snap'
 const SNAP_SLACK = 2
+const SCENES: readonly SceneId[] = ['sky', 'brain', 'agent', 'cube', 'bulb']
+const sceneOf = (v: string | null): SceneId => SCENES.find(s => s === v) ?? 'sky'
 
 export interface StoryDom {
   /** Number of panels found. */
   readonly count: number
+  /** The scene each panel asks for (its data-np-scene), in order. */
+  readonly scenes: readonly SceneId[]
   /** For each panel, the side the shape takes on wide screens: -1 left (words are on the right), 1 right. */
   readonly sides: readonly number[]
   /** Height in px of each story panel's copy (0 for flow panels). */
@@ -37,24 +42,26 @@ export function attachStory(): StoryDom | null {
   const sides = panels.map(p => (p.classList.contains('np-panel--right') ? -1 : 1))
   const tops: number[] = new Array(panels.length).fill(0)
   const copyHeights: number[] = new Array(panels.length).fill(0)
-  let snapEnd = -1                                          // scroll offset up to which snapping stays on; -1 = never
+  let snapEnd = -1                                          // scroll offset at which snapping switches off (the last anchor); -1 = never
+  let snapBack = -1                                         // scroll offset at or below which it switches back on
   let snapOn = false
   let disposed = false
 
-  // The leading run of story panels snaps. The first flow panel after it also gets an anchor, so the visitor can scroll
-  // INTO the free content: with mandatory snapping and no further anchor, the page would pull them back for ever.
+  // The leading run of story panels snaps. The first flow panel after it snaps too, so the visitor can scroll INTO the free
+  // content: with mandatory snapping and no further anchor, the page would pull them back for ever. The anchors are rendered
+  // by React (see Panel); the stage only switches them on, so it never adds or removes nodes that React owns.
   let lastStory = -1
   for (let k = 0; k < panels.length && isStory[k]; k++) lastStory = k
   const firstFlow = lastStory >= 0 && lastStory + 1 < panels.length ? lastStory + 1 : -1
   const anchors: HTMLElement[] = []
   panels.forEach((p, k) => {
     if (!isStory[k] && k !== firstFlow) return
-    const a = document.createElement('span')
-    a.className = 'np-snap-anchor'
-    a.setAttribute('aria-hidden', 'true')
-    p.prepend(a)
+    const a = p.querySelector<HTMLElement>(':scope > .np-snap-anchor')
+    if (!a) return
+    a.setAttribute('data-snap', '')
     anchors.push(a)
   })
+  const scenes = panels.map(p => sceneOf(p.getAttribute('data-np-scene')))
 
   const measure = () => {
     if (disposed) return
@@ -65,13 +72,20 @@ export function attachStory(): StoryDom | null {
       const c = copies[k]
       copyHeights[k] = c ? c.offsetHeight : 0
     })
-    // Snapping stays on only while the visitor is above the last anchor, so the page never holds them back from what follows.
-    snapEnd = lastStory < 0 ? -1 : (firstFlow >= 0 ? tops[firstFlow] : tops[lastStory]) - SNAP_SLACK
+    // Snapping switches off at the last anchor, so the page never holds the visitor back from what follows. It switches back on
+    // only once they are half way to the anchor before it: scrolling up out of the free content must not turn it on while the
+    // page is still nearer the anchor below, which would pull them back down.
+    const edge = lastStory < 0 ? -1 : (firstFlow >= 0 ? firstFlow : lastStory)
+    snapEnd = edge < 0 ? -1 : tops[edge] - SNAP_SLACK
+    snapBack = edge < 0 ? -1 : (edge > 0 ? (tops[edge - 1] + tops[edge]) / 2 : tops[edge] - 200)
     syncSnap(window.scrollY)
   }
 
   function syncSnap(scrollY: number) {
-    const want = snapEnd >= 0 && scrollY <= snapEnd
+    let want = snapOn
+    if (snapEnd < 0) want = false
+    else if (snapOn && scrollY >= snapEnd) want = false
+    else if (!snapOn && scrollY <= snapBack) want = true
     if (want !== snapOn) { snapOn = want; document.documentElement.classList.toggle(SNAP_CLASS, want) }
   }
 
@@ -88,6 +102,7 @@ export function attachStory(): StoryDom | null {
 
   return {
     count: panels.length,
+    scenes,
     sides,
     copyHeights,
     position(y) {
@@ -116,7 +131,7 @@ export function attachStory(): StoryDom | null {
       ro?.disconnect()
       window.removeEventListener('resize', measure)
       window.removeEventListener('load', measure)
-      anchors.forEach(a => a.remove())
+      anchors.forEach(a => a.removeAttribute('data-snap'))
       document.documentElement.classList.remove(SNAP_CLASS)
       copies.forEach(c => { if (c) { c.style.opacity = ''; c.style.transform = ''; c.style.pointerEvents = '' } })
       root.removeAttribute('data-np-ready')

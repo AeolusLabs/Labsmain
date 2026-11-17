@@ -21,8 +21,8 @@ const steps = [
 
 export default function WhatWeDo() {
   return <>
-    <ParticleStage scenes={['sky', 'sky', 'sky', 'sky']} />
-    <Story>
+    <ParticleStage />
+    <Story still>
       <Panel flow>
         <div className="np-wwd-block">
           <h1 className="np-h1">What we do.</h1>

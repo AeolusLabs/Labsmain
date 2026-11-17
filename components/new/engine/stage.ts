@@ -87,10 +87,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
   story = attachStory()
   const storyRef = story
   if (storyRef) undo.push(() => storyRef.dispose())
-  const panelCount = story ? story.count : 0
-  const seqLen = Math.max(2, panelCount)
-  const fallbackScene: SceneId = opts.scenes[opts.scenes.length - 1] ?? 'sky'
-  const seq: FormId[] = Array.from({ length: seqLen }, (_, k) => opts.scenes[k] ?? (story ? fallbackScene : (opts.scenes[0] ?? 'sky')))
+  // Each panel names its own scene (data-np-scene), so a page can never drift out of step with its sections. Without a story
+  // the page is an ambient sky and the scenes passed in are used.
+  const base: readonly SceneId[] = story ? story.scenes : (opts.scenes.length ? opts.scenes : ['sky'])
+  const seqLen = Math.max(2, base.length)
+  const seq: FormId[] = Array.from({ length: seqLen }, (_, k) => base[k] ?? base[base.length - 1])
   const sideOf = (k: number) => (story ? (story.sides[k] ?? 1) : 0)
   const offXOf = (k: number) => (seq[k] === 'sky' ? 0 : sideOf(k) * 0.5)   // opposite the words, a share of half the screen width
 
@@ -103,6 +104,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
   let reduced = opts.reduced
   let brain: BrainData | null = null
   let dpr = 1, w = 1, h = 1
+  let needDraw = true                                        // something changed that the next frame must draw even if nothing is moving
+  let lastSig: number[] = []
 
   // ---------------------------------------------------------------- GPU data
   const blocks: Partial<Record<FormId, Block>> = {}
@@ -166,7 +169,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
       const parsed = parseBrain(ab)
       if (!parsed) return
       brain = parsed
-      dropBlock('brain'); dropBlock('agent'); bindPair(true)
+      dropBlock('brain'); dropBlock('agent'); bindPair(true); needDraw = true
       warm((['brain', 'agent'] as FormId[]).filter(k => used.has(k)), 120)
     })
     .catch(() => { /* the brain falls back to sky points; the page still works */ })
@@ -177,6 +180,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
     w = Math.max(1, Math.floor(canvas.clientWidth * dpr)); h = Math.max(1, Math.floor(canvas.clientHeight * dpr))
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h }
     gl.viewport(0, 0, w, h)
+    needDraw = true
   }
   window.addEventListener('resize', resize)
   undo.push(() => window.removeEventListener('resize', resize))
@@ -270,6 +274,12 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
     rx += ((Math.sin(t * 0.05) * 0.06 + py * 0.1 + mixf(tiltOf(curA), tiltOf(curB), m)) - rx) * 0.05
     const sc = wide ? skyMix + (1 - skyMix) * fit : scPhone                          // the sky fills the screen; shapes shrink to fit
     const MV = mul(trans(ox, oy, -dist), mul(scaleM(sc), mul(rotX(rx), mul(rotY(ry), rotZ(skyMix * t * 0.006)))))
+    // With motion off and nothing moving there is nothing new to draw, so skip the GPU work (pausing then really rests the graphics card).
+    const sig = [sf, ox, oy, rx, ry, m, sc, ptr.x, ptr.y, ptr.str, cube.mv[2], w, h]
+    let moved = needDraw
+    for (let k = 0; k < sig.length && !moved; k++) if (Math.abs(sig[k] - lastSig[k]) > 1e-4) moved = true
+    if (!motion && !moved) return
+    needDraw = false; lastSig = sig
     gl.uniformMatrix4fv(loc.uMV, false, MV); gl.uniformMatrix4fv(loc.uP, false, persp(0.8, aspect, 0.1, 30))
     gl.uniform1f(loc.uMorph, m); gl.uniform1f(loc.uFormA, FORMS.indexOf(curA)); gl.uniform1f(loc.uFormB, FORMS.indexOf(curB))
     gl.uniform3f(loc.uMove, cube.mv[0], cube.mv[1], cube.mv[2])
@@ -285,11 +295,12 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
   return {
     status: 'ok',
     stage: {
-      setPalette: applyPalette,
+      setPalette(p) { applyPalette(p); needDraw = true },
       setMotion(motionOff, isReduced) {
         reduced = isReduced
         motion = motionOff || isReduced ? 0 : 1
         if (!motion) cube.stop()
+        needDraw = true
       },
       dispose() {
         if (disposed) return

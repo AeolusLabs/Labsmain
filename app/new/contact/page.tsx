@@ -8,7 +8,7 @@ export const metadata = { title: 'Start a conversation', description: 'Discuss a
 
 export default function NewContact() {
   return <>
-    <ParticleStage scenes={['sky']} />
+    <ParticleStage />
     <div className="np-page np-contact">
       <h1 className="np-h1">What would you build or automate?</h1>
       <p className="np-lead">Tell us your idea. No finished brief needed.</p>

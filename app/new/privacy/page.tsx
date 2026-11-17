@@ -16,7 +16,7 @@ const sections: readonly (readonly [string, string])[] = [
 
 export default function Privacy() {
   return <div className="np-page">
-    <ParticleStage scenes={['sky']} />
+    <ParticleStage />
     <article className="np-privacy">
       <h1 className="np-h1">Your information, handled with care.</h1>
       <p className="np-lead">This notice explains how we use the details you share when contacting AeolusLabs.</p>

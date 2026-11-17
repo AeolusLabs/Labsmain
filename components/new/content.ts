@@ -9,6 +9,7 @@ export const nav = [
   { label: 'About', href: '/new/about' },
 ] as const
 export const cta = { label: 'Start a conversation', href: '/new/contact' } as const
+export const footerLinks = [...nav, { label: 'Contact', href: '/new/contact' }, { label: 'Privacy', href: '/new/privacy' }] as const
 
 export const founders = ['Allan Ajayi-Adjari', 'Bernard Nneboh'] as const
 
@@ -54,9 +55,14 @@ export const projects: readonly Project[] = [
 
 /** Visible credit required by the brain model's CC BY 4.0 licence. Show it wherever the brain is shown (the footer does). */
 export const brainCredit = {
-  text: '“Brain” by dgallichan on Sketchfab, via NIH 3D (Johnson J). Changed into a point sample.',
+  title: '“Brain”',
+  author: 'dgallichan',
+  platform: 'Sketchfab',
+  host: 'NIH 3D',
+  hostAuthor: 'Johnson J',
+  change: 'Changed into a point sample.',
   sourceUrl: 'https://sketchfab.com/3d-models/brain-cadd2bde67404c43b2359a6a3281d84a',
-  nihUrl: 'https://3d.nih.gov/entries/21161/1.01',
+  hostUrl: 'https://3d.nih.gov/entries/21161/1.01',
   licence: 'CC BY 4.0',
   licenceUrl: 'https://creativecommons.org/licenses/by/4.0/',
 }

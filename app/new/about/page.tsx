@@ -9,8 +9,8 @@ export const metadata: Metadata = { title: 'About', description: 'Two founders. 
 
 export default function About() {
   return <>
-    <ParticleStage scenes={['sky', 'sky', 'sky']} />
-    <Story>
+    <ParticleStage />
+    <Story still>
       <Panel flow>
         <div className="np-about-block">
           <h1 className="np-h1">Two founders. One goal.</h1>

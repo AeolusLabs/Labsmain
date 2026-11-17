@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { needOptions } from '@/lib/need-options'
+import { SendError } from './send-error'
 
 type Status = 'idle' | 'loading' | 'prepared' | 'sent' | 'error'
 type Field = 'name' | 'email' | 'challenge' | 'consent'
@@ -53,13 +54,13 @@ export function ContactEnquiryForm({ initialChallenge = '', initialNeed, fromAss
     setStatus('loading')
     try {
       const response = await fetch('/api/enquiries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.fromEntries(formData)) })
-      const result = await response.json()
-      if (!response.ok) throw new Error(result.error || 'Your enquiry could not be sent. Please try again or email us directly.')
+      const result = await response.json().catch(() => null)   // an error page is not JSON: never show its parser message
+      if (!response.ok || !result) throw new SendError(result?.error || 'Your enquiry could not be sent. Please try again or email us directly.')
       setDraft(result.mailto || '')
       setFallback(result.reason === 'delivery_failed' ? 'failed' : 'unconfigured')
       setStatus(result.mode === 'prepared' ? 'prepared' : 'sent')
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Please try again.')
+      setMessage(error instanceof SendError ? error.message : 'Your enquiry could not be sent. Please try again or email us directly.')
       setStatus('error')
     }
   }

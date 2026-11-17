@@ -5,13 +5,14 @@ import { createStage, type Stage } from './engine/stage'
 import { useNewPrefs } from './prefs'
 import type { SceneId } from './types'
 
+const AMBIENT: readonly SceneId[] = ['sky']
 const CANVAS_STYLE: CSSProperties = { position: 'fixed', inset: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none', display: 'block' }   // behind the words: the canvas sits inside <main>, so -1 puts it under its siblings
 
 /**
- * The fixed full-screen particle canvas. One scene per `[data-np-story]` panel, in order; with no story on the page
- * (scenes={['sky']}) it is a calm ambient sky. See the DOM contract in ./types.ts and the engine in ./engine.
+ * The fixed full-screen particle canvas. Inside a `[data-np-story]` each panel names its own scene (data-np-scene); with no
+ * story on the page it is a calm ambient sky. See the DOM contract in ./types.ts and the engine in ./engine.
  */
-export function ParticleStage({ scenes }: { scenes: readonly SceneId[] }) {
+export function ParticleStage({ scenes = AMBIENT }: { scenes?: readonly SceneId[] }) {
   const { palette, motion } = useNewPrefs()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const stageRef = useRef<Stage | null>(null)
