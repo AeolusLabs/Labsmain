@@ -5,7 +5,8 @@
 
 export type V3 = [number, number, number]
 export interface Hit { axis: 0 | 1 | 2; sign: 1 | -1; point: V3; cell: V3 }
-export interface Twist { ax: 0 | 1 | 2; layer: -1 | 0 | 1; sign: 1 | -1; pxPerRad: number }
+export interface Twist { ax: 0 | 1 | 2; layer: -1 | 0 | 1; sign: 1 | -1; pxPerRad: number; screen: [number, number] }
+// `screen` is the unit direction on screen in which a positive turn carries the touched point, so the signed angle of a drag is (drag . screen) / pxPerRad.
 
 /** Column-major 4x4 inverse; null when singular. */
 function invert4(m: ArrayLike<number>): number[] | null {
@@ -95,7 +96,7 @@ export function chooseTwist(hit: Hit, drag: [number, number], project: (p: V3) =
     const s: [number, number] = [q[0] - p0[0], q[1] - p0[1]], sl = Math.hypot(s[0], s[1])
     if (sl < 1e-6) continue
     const dot = s[0] * drag[0] + s[1] * drag[1], score = Math.abs(dot) / sl
-    if (score > bestScore) { bestScore = score; best = { ax: ax as 0 | 1 | 2, layer: hit.cell[ax] as -1 | 0 | 1, sign: dot >= 0 ? 1 : -1, pxPerRad: sl / 0.05 * rl } }
+    if (score > bestScore) { bestScore = score; best = { ax: ax as 0 | 1 | 2, layer: hit.cell[ax] as -1 | 0 | 1, sign: dot >= 0 ? 1 : -1, pxPerRad: sl / 0.05 * rl, screen: [s[0] / sl, s[1] / sl] } }
   }
   return best
 }

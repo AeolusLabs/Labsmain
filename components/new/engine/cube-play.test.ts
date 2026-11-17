@@ -43,12 +43,14 @@ test('chooseTwist drag right on the front face turns about y positively', () => 
   const t = chooseTwist(front, [40, 0], flat, 0.56)
   assert.ok(t)
   assert.deepEqual([t.ax, t.layer, t.sign], [1, 0, 1])
+  assert.ok(Math.abs(t.screen[0] - 1) < 1e-9 && Math.abs(t.screen[1]) < 1e-9)   // a positive turn about y carries the point right
 })
 
 test('chooseTwist drag up turns about x negatively', () => {
   const t = chooseTwist(front, [0, -40], flat, 0.56)
   assert.ok(t)
   assert.deepEqual([t.ax, t.layer, t.sign], [0, 0, -1])
+  assert.ok(Math.abs(t.screen[0]) < 1e-9 && Math.abs(t.screen[1] - 1) < 1e-9)   // a positive turn about x carries the point down
 })
 
 test("chooseTwist uses the hit cubelet's layer", () => {
