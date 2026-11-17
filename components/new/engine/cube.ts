@@ -23,12 +23,13 @@ export class CubeAnimator {
   private hold = 0.8
   private hist: Turn[] = []
   private prev: Turn | null = null
+  private manual = false
 
   constructor(private readonly count: number, private readonly getData: () => Float32Array | undefined, private readonly upload: (data: Float32Array) => void) {}
 
   /** Forget all progress. The caller restores the solved particle data. */
   reset(): void {
-    this.queue = []; this.cur = null; this.p = 0; this.hold = 0.8; this.hist = []; this.mv = [0, 0, 0]; this.prev = null
+    this.queue = []; this.cur = null; this.p = 0; this.hold = 0.8; this.hist = []; this.mv = [0, 0, 0]; this.prev = null; this.manual = false
   }
 
   /** Land any turn in progress instantly. */
@@ -37,8 +38,27 @@ export class CubeAnimator {
     this.mv = [0, 0, 0]
   }
 
+  /** True once a visitor has taken the cube; the automatic scramble and solve stays off until `reset`. */
+  get isManual(): boolean { return this.manual }
+
+  /** A visitor touched the cube: land any automatic turn and stop playing by itself. */
+  takeOver(): void { this.stop(); this.manual = true }
+
+  /** Show a layer part-way through a turn the visitor is dragging (layer -1..1, angle in radians). */
+  setManualTurn(ax: number, layer: number, angle: number): void { this.mv = [ax, layer * PITCH, angle] }
+
+  clearManualTurn(): void { this.mv = [0, 0, 0] }
+
+  /** Land `quarters` whole turns of one layer (sign = direction) in the particle data, then clear the shown turn. */
+  commitQuarters(ax: number, layer: number, quarters: number): void {
+    const n = Math.abs(Math.round(quarters)), dir = quarters < 0 ? -1 : 1
+    for (let i = 0; i < n; i++) this.commit({ ax, layer, dir, dur: 0 })
+    this.clearManualTurn()
+  }
+
   /** Advance by dt seconds. Callers pass nothing when motion is off (call `stop` instead). */
   update(dt: number): void {
+    if (this.manual) return
     if (!this.cur) {
       if (this.hold > 0) { this.hold -= dt; return }
       if (!this.queue.length) this.plan()
