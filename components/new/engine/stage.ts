@@ -1,8 +1,10 @@
 import type { Palette, SceneId } from '../types'
-import { frameFor, mul, persp, placePhone, rotX, rotY, rotZ, scaleM, trans, WIDE_MIN } from './camera'
+import { FOV, frameFor, mul, persp, placePhone, rotX, rotY, rotZ, scaleM, trans, WIDE_MIN } from './camera'
 import { CubeAnimator } from './cube'
+import { modelRay, pickCube, projectPoint, snapQuarters } from './cube-play'
+import { createCubePad } from './cube-play-input'
 import { clamp01, ease, mixf } from './math'
-import { FORMS, makeBlock, makeSeeds, parseBrain, STRIDE, type BrainData, type FormId } from './shapes'
+import { FORMS, makeBlock, makeSeeds, parseBrain, PITCH, STRIDE, type BrainData, type FormId } from './shapes'
 import { FRAGMENT_SHADER, VERTEX_SHADER } from './shaders'
 import { attachStory, markNoGl, type StoryDom } from './story-dom'
 
@@ -218,13 +220,37 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
   canvas.addEventListener('webglcontextlost', onLost)
   undo.push(() => canvas.removeEventListener('webglcontextlost', onLost))
 
+  // ---------------------------------------------------------------- playing with the cube
+  // A transparent disc over the cube takes drags: a sticker twists its layer, empty space turns the whole cube. Only the disc
+  // blocks touch scrolling, so the rest of the page scrolls as before. The first touch ends the cube's own scramble and solve.
+  let userRy = 0, userRx = 0
+  let snap: { ax: number; layer: number; from: number; to: number; q: number; t0: number } | null = null
+  let view: { mv: number[]; aspect: number; cssW: number; cssH: number; left: number; top: number } = { mv: [], aspect: 1, cssW: 1, cssH: 1, left: 0, top: 0 }
+  const finishSnap = () => { if (snap) { cube.commitQuarters(snap.ax, snap.layer, snap.q); snap = null; needDraw = true } }
+  const pad = canvas.parentElement ? createCubePad(canvas.parentElement, {
+    pick: (px, py) => {
+      if (snap || !view.mv.length) return null
+      const ray = modelRay(px - view.left, py - view.top, view.mv, view.aspect, FOV, view.cssW, view.cssH)
+      return ray ? pickCube(ray, PITCH, 0.25) : null
+    },
+    project: p => { const q = projectPoint(p, view.mv, view.aspect, FOV, view.cssW, view.cssH); return [q[0] + view.left, q[1] + view.top] },
+    onOrbit: (dx, dy) => { cube.takeOver(); userRy += dx * 0.008; userRx = Math.max(-1.9, Math.min(0.9, userRx + dy * 0.008)); needDraw = true },
+    onTwistStart: () => { cube.takeOver() },
+    onTwist: (ax, layer, angle) => { cube.setManualTurn(ax, layer, angle); needDraw = true },
+    onTwistEnd: (ax, layer, angle, velocity) => {
+      const q = snapQuarters(angle, velocity)
+      snap = { ax, layer, from: angle, to: q * Math.PI / 2, q, t0: performance.now() }
+    },
+  }, PITCH) : null
+  if (pad) undo.push(() => pad.dispose())
+
   // ---------------------------------------------------------------- frame loop
   let lastPair = -1, rx = 0, ry = 0, ox = 0, oy = 0, t = 0, last = performance.now(), raf = 0
   let sf = story ? story.position(window.scrollY) : 0
   bindPair(true)
   warm(usedKinds, 300)
 
-  const spinOf = (k: FormId) => (k === 'cube' ? 0.7 + Math.sin(t * 0.3) * 0.45 : (k === 'sky' ? Math.sin(t * 0.045) * 0.08 : Math.sin(t * 0.22) * 0.5))
+  const spinOf = (k: FormId) => (k === 'cube' ? 0.7 + (cube.isManual ? 0 : Math.sin(t * 0.3) * 0.45) : (k === 'sky' ? Math.sin(t * 0.045) * 0.08 : Math.sin(t * 0.22) * 0.5))
   const tiltOf = (k: FormId) => (k === 'cube' ? 0.5 : 0)
   const sizeOf = (k: FormId) => (k === 'sky' ? 3.0 : 4.6)
 
@@ -248,7 +274,14 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
 
     // cube turns only while the cube is the shape on screen, and only when motion is on
     const cubeShown = (curB === 'cube' && m >= 0.999) || (curA === 'cube' && m <= 0.001)
-    if (!cubeShown || !motion) cube.stop(); else cube.update(dt)
+    if (!cubeShown) { pad?.hide(); finishSnap(); cube.stop(); userRy *= 0.9; userRx *= 0.9 }
+    else if (!motion) { if (!cube.isManual) cube.stop() }
+    else cube.update(dt)
+    if (snap) {      // after a release the layer settles on a quarter turn (this runs with motion off too: the visitor is playing)
+      const k = Math.min(1, (performance.now() - snap.t0) / 180)
+      cube.setManualTurn(snap.ax, snap.layer, snap.from + (snap.to - snap.from) * (1 - Math.pow(1 - k, 3)))
+      if (k >= 1) finishSnap()
+    }
 
     if (story) { story.applyCopy(f, reduced); story.syncSnap(scrollY) }
 
@@ -270,12 +303,19 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
       tgtY = mixf(pa.y, pb.y, m); scPhone = mixf(pa.s, pb.s, m)
     }
     ox += (offX - ox) * 0.12; oy += (tgtY - oy) * 0.12
-    ry += ((mixf(spinOf(curA), spinOf(curB), m) + px * 0.2) - ry) * 0.05
-    rx += ((Math.sin(t * 0.05) * 0.06 + py * 0.1 + mixf(tiltOf(curA), tiltOf(curB), m)) - rx) * 0.05
+    ry += ((mixf(spinOf(curA), spinOf(curB), m) + px * 0.2 + userRy) - ry) * 0.05
+    rx += ((Math.sin(t * 0.05) * 0.06 + py * 0.1 + mixf(tiltOf(curA), tiltOf(curB), m) + userRx) - rx) * 0.05
     const sc = wide ? skyMix + (1 - skyMix) * fit : scPhone                          // the sky fills the screen; shapes shrink to fit
     const MV = mul(trans(ox, oy, -dist), mul(scaleM(sc), mul(rotX(rx), mul(rotY(ry), rotZ(skyMix * t * 0.006)))))
     // With motion off and nothing moving there is nothing new to draw, so skip the GPU work (pausing then really rests the graphics card).
-    const sig = [sf, ox, oy, rx, ry, m, sc, ptr.x, ptr.y, ptr.str, cube.mv[2], w, h]
+    // the pad follows the cube while it is the shape on screen
+    const rect = canvas.getBoundingClientRect()
+    view = { mv: MV, aspect, cssW: rect.width || 1, cssH: rect.height || 1, left: rect.left, top: rect.top }
+    if (pad && cubeShown) {
+      const c = projectPoint([0, 0, 0], MV, aspect, FOV, view.cssW, view.cssH), ppu = view.cssH / (2 * dist * Math.tan(FOV / 2))
+      pad.place(c[0] + view.left, c[1] + view.top, 1.4 * sc * ppu * 1.1)
+    }
+    const sig = [sf, ox, oy, rx, ry, m, sc, ptr.x, ptr.y, ptr.str, cube.mv[2], userRy, userRx, w, h]
     let moved = needDraw
     for (let k = 0; k < sig.length && !moved; k++) if (Math.abs(sig[k] - lastSig[k]) > 1e-4) moved = true
     if (!motion && !moved) return
@@ -299,7 +339,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
       setMotion(motionOff, isReduced) {
         reduced = isReduced
         motion = motionOff || isReduced ? 0 : 1
-        if (!motion) cube.stop()
+        if (!motion && !cube.isManual) cube.stop()
         needDraw = true
       },
       dispose() {
