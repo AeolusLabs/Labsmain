@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Playable cube test</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #10291D; color: #F4ECD6; font: 14px/1.4 system-ui, sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #hud { position: fixed; left: 12px; bottom: 12px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,.45); border-radius: 6px; font: 12px/1.4 ui-monospace, monospace; pointer-events: none; }
+  #note { position: fixed; left: 12px; top: 12px; z-index: 10; max-width: 260px; opacity: .8; pointer-events: none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="note">Test page. Drag a sticker to twist a layer; drag empty space inside the circle to turn the cube. R = reset.</div>
+<div id="hud">idle</div>
+<script type="module">
+import { FOV, persp, mul, trans, scaleM, rotX, rotY } from './cube-play/camera.js'
+import { makeBlock, makeSeeds, STRIDE, PITCH } from './cube-play/shapes.js'
+import { VERTEX_SHADER, FRAGMENT_SHADER } from './cube-play/shaders.js'
+import { CubeAnimator } from './cube-play/cube.js'
+import { modelRay, pickCube, projectPoint, snapQuarters } from './cube-play/cube-play.js'
+import { createCubePad } from './cube-play/cube-play-input.js'
+
+const N = 12000, DIST = 4.4
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255)
+const BG = hex('#10291D'), STAR = hex('#F4ECD6'), ACCENT = hex('#D9B04A')
+
+const canvas = document.getElementById('c')
+const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, depth: false, stencil: false })
+const hud = document.getElementById('hud')
+if (!gl) { hud.textContent = 'WebGL2 not available' ; throw new Error('no webgl2') }
+
+const compile = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s }
+const prog = gl.createProgram()
+gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERTEX_SHADER)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER))
+gl.linkProgram(prog)
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog))
+gl.useProgram(prog)
+const U = n => gl.getUniformLocation(prog, n), A = n => gl.getAttribLocation(prog, n)
+
+const vao = gl.createVertexArray(); gl.bindVertexArray(vao)
+const seedBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, seedBuf); gl.bufferData(gl.ARRAY_BUFFER, makeSeeds(N), gl.STATIC_DRAW)
+gl.enableVertexAttribArray(A('aS')); gl.vertexAttribPointer(A('aS'), 3, gl.FLOAT, false, 12, 0)
+const data = makeBlock('cube', N, null), solved = data.slice()
+const vbo = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW)
+const attr = (n, size, off) => { gl.enableVertexAttribArray(A(n)); gl.vertexAttribPointer(A(n), size, gl.FLOAT, false, STRIDE, off) }
+for (const s of ['A', 'B']) { attr('aHome' + s, 3, 0); attr('aNorm' + s, 4, 12); attr('aCell' + s, 3, 28); attr('aCol' + s, 1, 40) }
+const upload = d => { gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferSubData(gl.ARRAY_BUFFER, 0, d) }
+const cube = new CubeAnimator(N, () => data, upload)
+
+gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); gl.clearColor(BG[0], BG[1], BG[2], 1)
+gl.uniform3fv(U('uStar'), STAR); gl.uniform3fv(U('uAccent'), ACCENT); gl.uniform3fv(U('uDeep'), STAR.map((v, i) => v * 0.62 + BG[i] * 0.38))
+
+// ---- view: the cube sits in the middle; the user's orbit is added to a slow sway that fades after the first touch
+const SWAY0 = location.search.includes('still') ? 0 : 1   // ?still holds the view steady for testing
+let userRy = 0, userRx = 0, sway = SWAY0, t = 0, last = performance.now()
+let MV = mul(trans(0, 0, -DIST), scaleM(1)), cssW = 1, cssH = 1, aspect = 1, dpr = 1
+const clampRx = v => Math.max(-1.4 - 0.5, Math.min(1.4 - 0.5, v))
+
+// ---- snap animation after a release
+let snap = null
+const easeOut = x => 1 - Math.pow(1 - x, 3)
+
+const mode = { v: 'idle', ax: '-', layer: '-', angle: 0 }
+const pad = createCubePad(document.body, {
+  pick: (px, py) => {
+    if (snap) return null
+    const ray = modelRay(px, py, MV, aspect, FOV, cssW, cssH)
+    return ray ? pickCube(ray, PITCH, 0.25) : null
+  },
+  project: p => projectPoint(p, MV, aspect, FOV, cssW, cssH),
+  onOrbit: (dx, dy) => { cube.takeOver(); sway = 0; userRy += dx * 0.008; userRx = clampRx(userRx + dy * 0.008); mode.v = 'orbit' },
+  onTwistStart: () => { cube.takeOver(); sway = 0; mode.v = 'twist' },
+  onTwist: (ax, layer, angle) => { cube.setManualTurn(ax, layer, angle); Object.assign(mode, { ax, layer, angle }) },
+  onTwistEnd: (ax, layer, angle, velocity) => {
+    const q = snapQuarters(angle, velocity)
+    snap = { ax, layer, from: angle, to: q * Math.PI / 2, q, t0: performance.now() }
+    mode.v = 'snap'
+  },
+}, PITCH)
+
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2)
+  cssW = window.innerWidth; cssH = window.innerHeight
+  canvas.width = Math.max(1, Math.floor(cssW * dpr)); canvas.height = Math.max(1, Math.floor(cssH * dpr))
+  gl.viewport(0, 0, canvas.width, canvas.height); aspect = canvas.width / canvas.height
+}
+window.addEventListener('resize', resize); resize()
+
+function reset() { data.set(solved); upload(data); cube.reset(); snap = null; sway = SWAY0; userRy = 0; userRx = 0; mode.v = 'idle' }
+window.addEventListener('keydown', e => { if (e.key === 'r' || e.key === 'R') reset() })
+
+function frame(now) {
+  const dt = Math.min(0.1, (now - last) / 1000); last = now; t += dt
+  if (snap) {
+    const k = Math.min(1, (now - snap.t0) / 180)
+    cube.setManualTurn(snap.ax, snap.layer, snap.from + (snap.to - snap.from) * easeOut(k))
+    if (k >= 1) { cube.commitQuarters(snap.ax, snap.layer, snap.q); snap = null; mode.v = 'idle' }
+  }
+  cube.update(dt)
+  const ry = 0.7 + Math.sin(t * 0.3) * 0.45 * sway + userRy, rx = 0.5 + userRx
+  MV = mul(trans(0, 0, -DIST), mul(scaleM(1), mul(rotX(rx), rotY(ry))))
+  // the pad: a disc round the cube
+  const c = projectPoint([0, 0, 0], MV, aspect, FOV, cssW, cssH)
+  const pxPerUnit = cssH / (2 * DIST * Math.tan(FOV / 2))
+  pad.place(c[0], c[1], 1.4 * pxPerUnit * 1.15)
+  gl.uniformMatrix4fv(U('uMV'), false, MV); gl.uniformMatrix4fv(U('uP'), false, persp(FOV, aspect, 0.1, 30))
+  gl.uniform1f(U('uMorph'), 0); gl.uniform1f(U('uFormA'), 3); gl.uniform1f(U('uFormB'), 3)
+  gl.uniform3f(U('uMove'), cube.mv[0], cube.mv[1], cube.mv[2])
+  gl.uniform1f(U('uTime'), t); gl.uniform1f(U('uDpr'), dpr); gl.uniform1f(U('uSize'), 4.6 * (cssH > 630 ? 1 : 0.85))
+  gl.uniform1f(U('uFocus'), DIST); gl.uniform1f(U('uMotion'), 1); gl.uniform1f(U('uAspect'), aspect)
+  gl.uniform2f(U('uPointer'), 0, 0); gl.uniform1f(U('uPush'), 0); gl.uniform1f(U('uRadius'), 0.38); gl.uniform1f(U('uAmt'), 0.08)
+  gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, N)
+  hud.textContent = `${mode.v}  axis ${mode.ax}  layer ${mode.layer}  angle ${mode.angle.toFixed(2)}  ${cube.isManual ? 'manual' : 'auto'}`
+  requestAnimationFrame(frame)
+}
+requestAnimationFrame(frame)
+
+// handles for checking in the console
+window.__cube = {
+  cube, pad, data, solved, reset,
+  // true when every particle is back where the solved cube has it
+  isSolved: () => { for (let i = 0; i < data.length; i++) if (Math.abs(data[i] - solved[i]) > 1e-4) return false; return true },
+  get mv() { return MV }, get size() { return [cssW, cssH, aspect] },
+}
+</script>
+</body>
+</html>

@@ -26,3 +26,6 @@ local-home-*.png
 # Internal discovery and client drafts (publication approval pending)
 CLIENT-CASE-STUDIES-DRAFT.md
 PRODUCT.md
+
+# Cube test page build output (node scripts/build-cube-play.mjs)
+public/cube-play/
